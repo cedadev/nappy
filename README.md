@@ -1,33 +1,30 @@
-#nappy
+# nappy
 
-NASA Ames Package in Python.
+*NASA Ames Package in Python.*
 
-##Description:
+## Description:
 
 A NASA Ames I/O package - A python input/output package for NASA Ames file formats
 
-##Reference doc:
+## Reference doc:
 
 Software written with reference to:
 
 'Format Specification for Data Exchange' paper by Gaines and Hipkind (1998).
-makeheader.f fortran application to write NASA Ames headers, Anne de Rudder (2000).
+`makeheader.f` fortran application to write NASA Ames headers, Anne de Rudder (2000).
 Ames python library developed by Bryan Lawrence (2003).
 
-##Conventions:
+## Conventions:
 
-The basic NASAAmes class holds a dictionary called naVars which holds all the 
-variables described in the Gaines and Hipkind document and these are all named
-using CAPITAL LETTERS for compliance/reference with that document.
+The basic NASAAmes class holds a dictionary called naVars which holds all the variables described in the Gaines and Hipkind document and these are all named using CAPITAL LETTERS for compliance/reference with that document.
 
 For example the number of independent variables is held in the instance variable:
 
-self["NIV"]
+`self["NIV"]`
 
-Return values are being calculated for many functions/methods are often prefixed with
-'rt' symbolising 'return'.
+Return values are being calculated for many functions/methods are often prefixed with 'rt' symbolising 'return'.
 
-##Usage documentation for nappy
+## Usage documentation for nappy
 
 Nappy provides the following functionality:
 
@@ -38,7 +35,7 @@ naFile.getIndependentVariables(), naFile.getMissingValue() etc.).
  4. A set of  to allow conversion to and from NetCDF (for the most common FFIs) using the Climate Data Analysis Tools (CDAT) package. This functionality is only available on Unix/linux operating systems as CDAT has not been ported to Windows. *Note* that any CDAT-compatible format can potentially be converted to NASA Ames via these libraries.
  5. Some command line utilities for the format conversions in (4).
 
-###PYTHONPATH and import issues
+### PYTHONPATH and import issues
 
 The most common stumbling block for python users is getting to grips with PYTHONPATH (or `sys.path`), an environment variable used to tell python where it should look for modules and packages.  
 
@@ -46,13 +43,13 @@ In order for your python scripts, modules and interactive sessions to find the n
 
 If the nappy directory has been installed at `/my/nappy/location/nappy` then the directory you need to tell python about is `/my/nappy/location`.
 
-####Option 1. Append your nappy path to the `PYTHONPATH` environment variable:
+#### Option 1. Append your nappy path to the `PYTHONPATH` environment variable:
 
 ```
 $ export PYTHONPATH=$PYTHONPATH:/my/nappy/location
 ```
 
-####Option 2: Append your nappy path once within python:
+#### Option 2: Append your nappy path once within python:
 
 ```
 $ python
@@ -68,9 +65,11 @@ You should then be able to import nappy with:
 
 Note that if you have CDAT installed then you must also point to relevant CDAT directories with either the `PYTHONPATH` or `sys.path` variable.
 
+## Usage Examples
+
 The following examples demonstrate and overview of nappy usage:
 
-###Example 1: Opening and interrogating a NASA Ames file
+### Example 1: Opening and interrogating a NASA Ames file
 
 Open the python interactive prompt:
 
@@ -147,7 +146,7 @@ Inspect the data array ("V") in the NASA Ames dictionary:
 [[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 6.9000000000000004, 12.800000000000001, 14.699999999999999, 20.0, 21.5, 18.0, 8.1999999999999993], [-29.0, -15.199999999999999, 3.3999999999999999, 28.199999999999999, 41.0, 39.100000000000001, 17.899999999999999, 8.0, 0.10000000000000001], [-10.0, 8.4000000000000004, 31.199999999999999, 59.899999999999999, 78.5, 77.700000000000003, 47.0, 17.600000000000001, 16.0], [200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0]]]
 ```
 
-###Example 2: Writing a NASA Ames file
+### Example 2: Writing a NASA Ames file
 
 Start the python interactive prompt:
 
@@ -169,7 +168,7 @@ Write the data to a NASA Ames file:
 >>> nappy.openNAFile('my_file_to_write.na', 'w', na_contents)
 ```
 
-###Example 3: Converting a NASA Ames file to a NetCDF file
+### Example 3: Converting a NASA Ames file to a NetCDF file
 
 *[Note: this utility is only available on Unix/linux platforms]*
 
@@ -211,7 +210,7 @@ Where
                                  file with ".nc").
 ```
 
-###Example 4: Converting a NetCDF file to a NASA Ames file
+### Example 4: Converting a NetCDF file to a NASA Ames file
 
 *[Note: this utility is only available on Unix/linux platforms]*
 
