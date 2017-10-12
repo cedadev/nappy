@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: nappy
+Version: 1.1.2
+Summary: NASA Ames Processing in Python
+Home-page: http://proj.badc.rl.ac.uk/cows/wiki/CowsSupport/Nappy
+Author: Ag Stephens
+Author-email: ag.stephens@stfc.ac.uk
+License: UNKNOWN
+Description: A python package for reading/writing NASA Ames files, writing NASA Ames-style CSV files and converting to/from NetCDF (if CDMS enabled).
+Keywords: Python CSV NASA Ames NetCDF convert CDMS
+Platform: UNKNOWN

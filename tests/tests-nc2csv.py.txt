@@ -1,0 +1,14 @@
+../lib/nappy/script/nc2csv.py ../test_outputs/
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc.csv
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1010.nc -o ../test_outputs/1010-from-nc.csv
+../lib/nappy/script/nc2csv.py -i ../test_outputs/2010.nc -o ../test_outputs/2010-from-nc.csv
+../lib/nappy/script/nc2csv.py -i ../test_outputs/3010.nc -o ../test_outputs/3010-from-nc.csv
+../lib/nappy/script/nc2csv.py -i ../test_outputs/4010.nc -o ../test_outputs/4010-from-nc.csv
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-excludes.csv -e "Ascent Rate"
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-overwrite.csv --overwrite-metadata=ONAME,"See line 2 - my favourite org."
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-as-padded-ints.csv -f "%03d"
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-csv.csv -d ,
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-no-header.csv --no-header
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-annotated.csv --annotated
+../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc --names-only
+-c "print 'NOTE: If all tests failed try running the ../lib/nappy/script/na2nc tests first, because they are needed to generate the nc files!'"

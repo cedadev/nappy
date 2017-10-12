@@ -1,0 +1,6 @@
+
+      [console_scripts]
+      na2nc = nappy.script.na2nc:na2nc
+      nc2na = nappy.script.nc2na:nc2na
+      nc2csv = nappy.script.nc2csv:nc2csv
+      

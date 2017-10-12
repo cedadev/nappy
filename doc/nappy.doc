@@ -1,0 +1,257 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head>
+<!-- ViewCVS -- http://viewcvs.sourceforge.net/
+by Greg Stein -- mailto:gstein@lyra.org
+-->
+<title>CVS log for nappy/doc/nappy.doc</title>
+</head>
+<body text="#000000" bgcolor="#ffffff">
+<table width="100%" border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td rowspan=2><h1>CVS log for nappy/doc/nappy.doc</h1></td>
+<td align=right><img src="/icons/apache_pb.gif" alt="(logo)" border=0
+width=259 height=32></td>
+</tr>
+<tr>
+<td align=right><h3><b><a target="_blank"
+href="/viewcvs/viewcvs.cgi/*docroot*/help_log.html">Help</a></b></h3></td>
+</tr>
+</table>
+<a href="/viewcvs/viewcvs.cgi/nappy/doc/?cvsroot=NDG#nappy.doc"><img src="/icons/small/back.gif" alt="(back)" border=0
+width=16 height=16></a>
+<b>Up to <a href="/viewcvs/viewcvs.cgi/?cvsroot=NDG#dirlist">[NDG]</a> / <a href="/viewcvs/viewcvs.cgi/nappy/?cvsroot=NDG#dirlist">nappy</a> / <a href="/viewcvs/viewcvs.cgi/nappy/doc/?cvsroot=NDG#dirlist">doc</a></b><p>
+<a href="#diff">Request diff between arbitrary revisions</a>
+
+<hr noshade>
+
+Default branch: MAIN
+<br>
+Bookmark a link to:
+
+<a href="/viewcvs/viewcvs.cgi/*checkout*/nappy/doc/nappy.doc?rev=HEAD&cvsroot=NDG" target="cvs_checkout"
+onClick="window.open('about:blank', 'cvs_checkout',
+'resizeable=1,scrollbars=1')"
+><b>HEAD</b></a>
+
+
+<br>
+
+
+<hr size=1 noshade>
+
+<a name="rev1.2"></a>
+<a name="nappy-beta-1-0"></a>
+<a name="nappy-beta-0-1"></a>
+<a name="NDG0-1"></a>
+<a name="HEAD"></a>
+
+<a name="MAIN"></a>
+
+Revision
+
+<a href="nappy.doc?rev=1.2&cvsroot=NDG&content-type=text/vnd.viewcvs-markup"><b>1.2</b></a>
+/
+(<a href="/viewcvs/viewcvs.cgi/*checkout*/nappy/doc/nappy.doc?rev=1.2&cvsroot=NDG&content-type=application/msword" target="cvs_checkout"
+onClick="window.open('about:blank', 'cvs_checkout',
+'resizeable=1,scrollbars=1')"
+><b>download</b></a>)
+
+
+/
+(<a href="/viewcvs/viewcvs.cgi/*checkout*/nappy/doc/nappy.doc?rev=1.2&cvsroot=NDG&content-type=text/plain" target="cvs_checkout"
+onClick="window.open('about:blank', 'cvs_checkout',
+'resizeable=1,scrollbars=1')"><b>as text</b></a>)
+
+
+
+- <a href="nappy.doc?annotate=1.2&cvsroot=NDG">annotate</a>
+
+
+- <a href="nappy.doc?r1=1.2&cvsroot=NDG">[select for diffs]</a>
+
+
+
+, <i>Mon Nov 15 14:27:32 2004 UTC</i> (15 months ago) by <i>selatham</i>
+
+<br>Branch:
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=MAIN"><b>MAIN</b></a>
+
+
+
+<br>CVS Tags:
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=nappy-beta-1-0"><b>nappy-beta-1-0</b></a>,
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=nappy-beta-0-1"><b>nappy-beta-0-1</b></a>,
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=NDG0-1"><b>NDG0-1</b></a>,
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=HEAD"><b>HEAD</b></a>
+
+
+
+
+
+<br>Changes since <b>1.1: +65 -49 lines</b>
+
+
+
+
+<br>Diff to <a href="nappy.doc.diff?r1=1.1&r2=1.2&cvsroot=NDG">previous 1.1</a>
+
+
+
+
+
+
+
+<pre>08/11/04 include Sue Latham's changes for bug fixes and new Write methods.
+</pre>
+
+<hr size=1 noshade>
+
+<a name="rev1.1"></a>
+<a name="sue-03-11-04"></a>
+
+
+Revision
+
+<a href="nappy.doc?rev=1.1&cvsroot=NDG&content-type=text/vnd.viewcvs-markup"><b>1.1</b></a>
+/
+(<a href="/viewcvs/viewcvs.cgi/*checkout*/nappy/doc/nappy.doc?rev=1.1&cvsroot=NDG&content-type=application/msword" target="cvs_checkout"
+onClick="window.open('about:blank', 'cvs_checkout',
+'resizeable=1,scrollbars=1')"
+><b>download</b></a>)
+
+
+/
+(<a href="/viewcvs/viewcvs.cgi/*checkout*/nappy/doc/nappy.doc?rev=1.1&cvsroot=NDG&content-type=text/plain" target="cvs_checkout"
+onClick="window.open('about:blank', 'cvs_checkout',
+'resizeable=1,scrollbars=1')"><b>as text</b></a>)
+
+
+
+- <a href="nappy.doc?annotate=1.1&cvsroot=NDG">annotate</a>
+
+
+- <a href="nappy.doc?r1=1.1&cvsroot=NDG">[select for diffs]</a>
+
+
+
+, <i>Tue Jun 15 12:46:45 2004 UTC</i> (20 months ago) by <i>astephen</i>
+
+<br>Branch:
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=MAIN"><b>MAIN</b></a>
+
+
+
+<br>CVS Tags:
+
+<a href="nappy.doc?cvsroot=NDG&only_with_tag=sue-03-11-04"><b>sue-03-11-04</b></a>
+
+
+
+
+
+
+
+
+
+
+<pre>*** empty log message ***
+</pre>
+
+<a name=diff></a>
+<hr noshade>
+This form allows you to request diffs between any two revisions of
+a file. You may select a symbolic revision name using the selection
+box or you may type in a numeric name using the type-in text box.
+<p>
+<form method="POST" action="nappy.doc.diff?cvsroot=NDG" name="diff_select">
+Diffs between
+<select name="r1">
+<option value="text" selected>Use Text Field</option>
+
+<option value="1.1.0.2:sue-03-11-04">sue-03-11-04</option>
+
+<option value="1.2:nappy-beta-1-0">nappy-beta-1-0</option>
+
+<option value="1.2:nappy-beta-0-1">nappy-beta-0-1</option>
+
+<option value="1.2:NDG0-1">NDG0-1</option>
+
+<option value="0.1:MAIN">MAIN</option>
+
+<option value="1.2:HEAD">HEAD</option>
+
+</select>
+<input type="TEXT" size="12" name="tr1" value="1.1"
+onChange="document.diff_select.r1.selectedIndex=0">
+and
+<select name="r2">
+<option value="text" selected>Use Text Field</option>
+
+<option value="1.1.0.2:sue-03-11-04">sue-03-11-04</option>
+
+<option value="1.2:nappy-beta-1-0">nappy-beta-1-0</option>
+
+<option value="1.2:nappy-beta-0-1">nappy-beta-0-1</option>
+
+<option value="1.2:NDG0-1">NDG0-1</option>
+
+<option value="0.1:MAIN">MAIN</option>
+
+<option value="1.2:HEAD">HEAD</option>
+
+</select>
+<input type="TEXT" size="12" name="tr2" value="1.2"
+onChange="document.diff_select.r1.selectedIndex=0">
+<br>Type of Diff should be a
+<select name="diff_format" onchange="submit()">
+<option value="h" selected>Colored Diff</option>
+<option value="l" >Long Colored Diff</option>
+<option value="u" >Unidiff</option>
+<option value="c" >Context Diff</option>
+<option value="s" >Side by Side</option>
+</select>
+<input type=submit value=" Get Diffs "></form>
+<hr noshade>
+
+<a name=branch></a>
+<form method="GET" action="nappy.doc">
+<input type=hidden name="cvsroot" value="NDG">
+View only Branch:
+<select name="only_with_tag" onchange="submit()">
+<option value="" selected>Show all branches</option>
+
+<option value="sue-03-11-04" >sue-03-11-04</option>
+
+<option value="MAIN" >MAIN</option>
+
+</select>
+<input type=submit value=" View Branch ">
+</form>
+
+<a name=logsort></a>
+<form method="GET" action="nappy.doc">
+<input type=hidden name="cvsroot" value="NDG">
+Sort log by:
+<select name="logsort" onchange="submit()">
+<option value="cvs" >Not sorted</option>
+<option value="date" selected>Commit date</option>
+<option value="rev" >Revision</option>
+</select>
+<input type=submit value=" Sort ">
+</form>
+
+<hr noshade>
+<table width="100%" border=0 cellpadding=0 cellspacing=0><tr>
+<td align=left><address><a href="mailto:a.s.harwood@rl.ac.uk">Email CVS admin</a></address></td>
+<td align=right>
+Powered by<br><a href="http://viewcvs.sourceforge.net/">ViewCVS 0.9.3</a>
+</td></tr></table>
+</body></html>
+

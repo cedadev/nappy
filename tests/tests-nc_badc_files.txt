@@ -1,0 +1,15 @@
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/active-package_arsf-dornier_20051119140000_sd05.nc -o ../test_outputs/active-package_arsf-dornier_20051119140000_sd05.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/ceh-aws_pobe_20050220.nc -o ../test_outputs/ceh-aws_pobe_20050220.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/ceh-flux_wankama_20051117.nc -o ../test_outputs/ceh-flux_wankama_20051117.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/cfarr-lidar-uv_chilbolton_20080520_water-vapour.nc -o ../test_outputs/cfarr-lidar-uv_chilbolton_20080520_water-vapour.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/cfarr-met-sensors_chilbolton_20080531.nc -o ../test_outputs/cfarr-met-sensors_chilbolton_20080531.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/cfarr-radar-acrobat_chilbolton_20070206123544_rhi.nc -o ../test_outputs/cfarr-radar-acrobat_chilbolton_20070206123544_rhi.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/core_faam_20070726_v001_r0_b312_1hz.nc -o ../test_outputs/core_faam_20070726_v001_r0_b312_1hz.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/gome_ers2_200303190160_o3p.nc -o ../test_outputs/gome_ers2_200303190160_o3p.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/imk-sodar1_dudou_20060712_backscatter.nc -o ../test_outputs/imk-sodar1_dudou_20060712_backscatter.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/leeds-sodar1_chilbolton_20050712_backscatter.nc -o ../test_outputs/leeds-sodar1_chilbolton_20050712_backscatter.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/man-radar-1290mhz_achern_20070613_trt0-15min-1.nc -o ../test_outputs/man-radar-1290mhz_achern_20070613_trt0-15min-1.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/radar-mst_capel-dewi_20070303_st300_radial_v3.nc -o ../test_outputs/radar-mst_capel-dewi_20070303_st300_radial_v3.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/radar-mst_capel-dewi_20080504_st300_cartesian_v3.nc -o ../test_outputs/radar-mst_capel-dewi_20080504_st300_cartesian_v3.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/salford-aws-1_faccombe_20050826_10min.nc -o ../test_outputs/salford-aws-1_faccombe_20050826_10min.nc.na
+../lib/nappy/script/nc2na.py -i ../../nappy_test_files/salford-sonic-2_faccombe_20050825_1hz.nc -o ../test_outputs/salford-sonic-2_faccombe_20050825_1hz.nc.na

@@ -1,0 +1,1654 @@
+<html><head><title>SOLVE DATA ARCHIVE TUTORIAL</title>
+
+<style type="text/css">
+<!--
+pre {font-size: 12pt;}
+td {font-size: 14pt; font-weight: bold;}
+dt {font-size: 14pt;}
+dd {font-size: 14pt;}
+ol {font-size: 14pt;}
+li {font-size: 14pt;}
+#con {font-size: 14pt; font-weight: bold}
+ul {font-size: 14pt;}
+-->
+</style></head><body bgcolor="#fffaf0">
+<br>
+<center><h1>Format Specification for Data Exchange</h1></center>
+<p>&nbsp;</p>
+<center><h3>By</h3></center>
+<p>&nbsp;</p>
+
+<center><h2>Steven E. Gaines &nbsp;&nbsp; R. Stephen Hipskind</h2></center>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<center><h2>Version 1.3</h2></center>
+<center><h2>18 June 1998</h2></center>
+<p>&nbsp;</p>
+<center><p>&nbsp;</p>
+<table width="50%">
+<tbody><tr><td>Version 1:</td><td>16 May 1990</td></tr>
+<tr><td>Version 1.1:</td><td>6 February 1992</td></tr>
+<tr><td>Version 1.2:</td><td>12 January 1998</td></tr>
+</tbody></table></center>
+<center><table width="50%">
+<tbody><tr><td colspan="2" align="center">R.S.H.</td></tr>
+<tr><td>Voice:</td><td>650/604-5076</td></tr>
+<tr><td>FAX:</td><td>650/604-3625</td></tr>
+<tr><td>Email:</td><td>hipskind@cloud1.arc.nasa.gov</td></tr>
+<tr><td><br></td></tr>
+<tr><td colspan="2" align="center">S.E.G.</td></tr>
+<tr><td>Voice:</td><td>650/604-4546</td></tr>
+<tr><td>FAX:</td><td>650/604-3625</td></tr>
+<tr><td>Email:</td><td>gaines@cloud1.arc.nasa.gov</td></tr>
+</tbody></table></center>
+<p>&nbsp;</p>
+<center><h2>Contents</h2></center>
+<p>&nbsp;</p>
+<ol id="con" type="i">
+<li id="con"> Preface to Version 1.3
+</li><li id="con"> Preface to Version 1.2
+</li><li id="con"> Preface
+</li></ol>
+<ol id="con" type="1">
+<li id="con"> Introduction
+</li><li id="con"> Concepts and Structures
+</li><li id="con"> Implementation Considerations
+</li><li id="con"> Notation
+</li><li id="con"> Definitions
+</li><li id="con"> ASCII File Format Specifications
+<ol id="con" start="6">
+<li id="con">1 Summary of data record formats
+</li></ol>
+</li><li id="con"> Examples
+</li></ol>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<center><h2>Preface to Version 1.3</h2></center>
+<p>
+The file format standards defined in Version 1.3 are the same as those
+in previous versions. The main change in this version is the
+elimination of the Section on file naming conventions, and the
+renumbering of the remaining Sections and pages. The file formats are
+independent of any particular file naming scheme, so the description of
+the file naming convention has been moved to a separate document.
+</p>
+<p>&nbsp;</p>
+<center><h2>Preface to Version 1.2</h2></center>
+<p>
+            The file format standards defined in Version 1.2 are the same
+       as those in the two previous versions.  The major changes in this
+       version are to emphasize the requirement that independent
+       variables be monotonic, and to slightly change the notation for
+       several parameters to show their dependence on the unbounded
+       independent variable.  In previous versions those dependencies
+       have been implied, and shown by examples, but not clearly stated.
+</p>
+<p>
+            Other minor changes have been made throughout the text to
+       help clarify the concepts and requirements of the format
+       standards, and variable definitions in some of the examples have
+       been condensed.  We appreciate the feedback we have received from
+       users of the exchange files, and have used it as a guide for
+       clarifying the standards.
+</p>
+<p>&nbsp;</p>
+<center><h2>Preface</h2></center>
+<p>
+            This document specifies format standards to be used to
+       facilitate data exchange for aircraft missions managed by the
+       Earth Science Division at NASA Ames Research Center.  It is
+       intended as a reference document for creating experimental
+       datasets.  The standards should be adhered to in all exchange
+       files being contributed to the project archive, including
+       instrumental measurements, theoretical calculations and
+       operational data.  It is important that the person responsible for
+       actually generating a given dataset refer to this document when
+       determining the format for that dataset.  It is the responsibility
+       of the principal investigator or team leader to make sure that the
+       appropriate people have access to this document and that their
+       data conform to the format standards.
+</p>
+<p>
+            The specifications described in this document grew out of an
+       effort beginning with the 1987 Stratosphere Troposphere Exchange
+       Project (STEP) to put the experimental aircraft data on a medium
+       and in a format that would be accessible to all experiment
+       participants during the field experiment.  Flight planning could
+       then take into account the data from a previous flight, increasing
+       the likelihood of meeting the overall goals and objectives of a
+       given campaign.  The standards developed for STEP were also used
+       in the 1987 Airborne Antarctic Ozone Experiment (AAOE) and the
+       1989 Airborne Arctic Stratospheric Expedition (AASE).  The basic
+       premise in specifying format standards was to create
+       self-descriptive datasets using a prescribed header structure to
+       contain information about the data in a given file.
+</p>
+<p>
+            The STEP experiment used only the ER-2 aircraft and consisted
+       primarily of in situ, time series data.  It was this single
+       dimensional data for which the original format specification was
+       written.  The use of remote sensing instruments on both the DC-8
+       and ER-2, and the generation of model output files creates
+       multi-dimensional data which do not fit well into that original
+       format.  To better account for the variety of data, we have
+       formalized some of the original concepts and have extended the
+       requirements for header information to more adequately
+       characterize the data.  The file header now must include explicit
+       specification of data dimensionality.  We have also allowed for a
+       more flexible specification of the data structure by the use of a
+       file format index, described in the text.
+</p>
+<p>
+            In writing this new format specification, a conscious effort
+       was made to retain much of the progress made in past experiments
+       towards creating an environment of free data exchange.  We have
+       tried to build a logical extension to the original concepts rather
+       than making a radical departure from them.  Those with experience
+       in the previous experiments (STEP, AAOE and AASE) should recognize
+       that, in many cases, the format for their exchange files will
+       remain much the same under these new specifications with only
+       relatively minor, but important, changes to the header entries.
+</p>
+<p>
+            We want to acknowledge the fact that this document is the
+       product of interactions between the authors and the experiment
+       participants; indeed, the idea of data exchange standards was
+       originally driven by a consensus of the participants, not by the
+       "data managers".  We appreciate the feedback that we have
+       received, both written and oral, and have incorporated many of the
+       suggestions into the final document.  We also want to encourage
+       everyone to feel free to contact us if they have any questions,
+       problems or suggestions.
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<center><h2>1</h2></center>
+<center><h2>Introduction</h2></center>
+<p>
+            This document describes a conceptual framework for specifying
+       exchange data formats, and then gives a detailed description of
+       the standard formats (although there are very important
+       distinctions between measured quantities and those resulting from
+       mathematical model calculations, for simplicity, the two will
+       often be loosely termed "data").  Those considering writing
+       exchange files must review the format options presented in this
+       document and determine the format most suitable for recording
+       their data.  If none are deemed suitable, consult with the project
+       archive manager to define a new format option.  New file formats
+       will be circulated to project participants as addenda to this
+       document.
+</p>
+<p>The primary goal of instituting format standards for data exchange
+is to promote accessibility and ease of use of a variety of datasets
+from different instruments, platforms and numerical models. The
+specific goals of the proposed system are:
+</p><ul>
+<li> The exchange files must be readable on all computer systems
+commonly in use. These include PC's (MS DOS), Apple Macs, DEC VMS and
+Unix systems.<br><br>
+
+</li><li> The exchange files must be self describing, such that the
+information needed to read the data is contained in an order dependent
+file header, and the minimum information required to analyze the
+particular dataset is contained within the file.<br><br>
+
+</li><li> Maintain as much compatibility as possible with existing
+formats from previous experiments, while allowing flexibility to handle
+new datasets and formats.<br><br>
+
+</li><li> Minimize the amount of software required to access diverse
+datasets by categorizing the datasets and allowing a minimal number of
+data formats.<br><br>
+</li></ul>
+<p></p>
+<p>
+            The complexity of any system of standards increases with
+       increasing generality.  This standard represents a compromise
+       between simplicity and generality.  The generality of the proposed
+       system stems from the incorporation of a file format index which,
+       by referencing pre-defined format options, defines the format of
+       both the file header and the data records.  Thus, new file formats
+       can be incorporated at a future time without changing those
+       defined in this document.  The complexity of this system increases
+       with the number of file formats, so an attempt has been made to
+       minimize the number of format options while at the same time
+       accommodate the existing standard data formats from previous
+       experiments; the file header formats are, however, different from
+       the older standards.
+</p>
+<p>
+            An additional advantage of standardized file formats is that
+       the data files can more easily be checked for format errors.
+       Plans for future field experiments include computer programs to
+       check the format of each data file as part of the procedure for
+       submittal to the data archive.
+</p>
+<p>
+           The system described here assumes that all exchange files are
+       in ASCII, because ASCII coded files are the most universally
+       readable across computer systems from different vendors.  It is
+       anticipated that the same standards can be extended to include
+       binary files as well.  However, before that can be done, a
+       convention for external data representation must be agreed upon
+       due to the differences in internal representation on different
+       machines.  A special naming convention for binary files would also
+       have to be adopted.
+</p>
+<p>
+            Section 2 describes the basic structure of the data files,
+       the types of variables, and how they regulate the format
+       specifications.  Section 3 describes some precautionary measures
+       to ensure readable files.  The array and implied loop notation
+       used to specify the formats are defined in Section 4, and a
+       collection of definitions of the variables and terminology is
+       contained in Section 5.  The file format specifications are given
+       in Section 6, with a summary of data record formats at the end of
+       the Section.  An example of each standard format is given in
+       Section 7.  Since any particular format option can accommodate a
+       variety of types of data, the concepts, terminology, and format
+       specifications are first presented in an abstract manner so not to
+       bias or narrow their definition.  The examples in Section 7 are
+       included to provide a tangible link between the abstract
+       definitions and actual exchange data files.  It will, therefore,
+       be useful to refer to these examples while (or before) reading the
+       rest of this document.
+</p>
+<p>&nbsp;</p>
+<center><h2>2</h2></center>
+<center><h2>Concepts and Structures</h2></center>
+<p>
+            The reason for writing an exchange file is to convey some
+       measured, calculated, or otherwise derived quantity, which will be
+       called the PRIMARY variable.  There may be more than one PRIMARY
+       variable in a given exchange file.  In addition, there may be some
+       ancillary information concerning the measurement, calculation, or
+       interpretation of the PRIMARY variables or the data records
+       containing their values.  These secondary quantities will be
+       referred to as AUXILIARY variables.  Usually the inclusion of
+       AUXILIARY variables is optional, but there are some format options
+       in which they are required because they provide information about
+       the ensuing data records.  Both PRIMARY and AUXILIARY variables
+       are considered as dependent variables, and are always recorded
+       with reference to at least one INDEPENDENT variable.  INDEPENDENT
+       variables can be time, spatial coordinates, index values, or any
+       other monotonic quantity that can be used to uniquely identify a
+       particular PRIMARY variable value.  Each INDEPENDENT variable
+       represents a dimension on which the PRIMARY variables are
+       dependent.  PRIMARY variables are considered as discrete functions
+       of the INDEPENDENT variables, whereas AUXILIARY variables are
+       associated with an explicitly recorded INDEPENDENT variable.
+</p>
+<p>
+            The information recorded within exchange files is of two
+       types, either numeric or character string.  Character strings may
+       contain any printable ASCII character (ASCII decimal values
+       between 32 and 126 inclusive), whereas numeric values are
+       restricted to characters 0 through 9, the plus sign, the minus
+       sign, the period, and the letter E used in exponential notation.
+       Except for the purpose noted in Section 3, an exchange file must
+       not contain non-printable ASCII characters.  The non-printable
+       characters have ASCII decimal values of 0 through 31, and values
+       greater than 126.
+</p>
+<p>
+            Each exchange file has a file header which conveys
+       information about the PRIMARY, AUXILIARY, and INDEPENDENT
+       variables, and the order in which they are recorded in the file.
+       Rather than attempt to pre-define a single file header format
+       which accounts for all existing data formats, as well as any
+       future formats, a File Format Index (FFI) is used to uniquely
+       define the exchange file format.  By reference to pre-defined
+       format options, the value of the FFI determines the number of
+       INDEPENDENT variables, whether the values of the INDEPENDENT and
+       dependent variables are numeric or character string, the format of
+       the file header, and the format of the data records.
+</p>
+<p>
+            Included in the file header are descriptions and/or units of
+       measure for the INDEPENDENT, PRIMARY, and AUXILIARY variables.
+       All variables must be defined in the records in which they are
+       expected to appear, and cannot be omitted or have blank spaces
+       substituted for their values.  Associated with each PRIMARY and
+       AUXILIARY variable is a "missing" value to denote missing or
+       erroneous data values.  These missing values must be larger than
+       any "good" data values recorded within the file so that a simple
+       test on the magnitude of a data value will determine if it
+       represents missing or usable data.  A scale factor is associated
+       with each numeric PRIMARY and AUXILIARY variable.  The scale
+       factors are included to encourage recording of the data as scaled
+       whole numbers, without a decimal point or exponential notation,
+       and thus reduce the size of the file.  There are no scale factors
+       or missing values for the INDEPENDENT variables.
+</p>
+<p>
+            The order in which the PRIMARY and AUXILIARY variables are
+       defined in the file header is the same order in which they are
+       recorded in the data records.  The order in which the INDEPENDENT
+       variables are defined in the file header determines the dependence
+       of the PRIMARY variables on the INDEPENDENT variables and,
+       therefore, the manner in which the PRIMARY variables are recorded.
+       The recorded dependence of the PRIMARY variables on the
+       INDEPENDENT variables is such that, from the point of view of
+       writing the data records, the most rapidly varying dimension is
+       listed first in the file header, and the most slowly varying
+       dimension is listed last.
+</p>
+<p>
+            If the number of values in the most slowly varying dimension
+       is not pre-determined (as with the time dimension in many cases)
+       then it is termed the unbounded dimension.  Of necessity, only one
+       dimension, or INDEPENDENT variable, can be unbounded, while the
+       others, if any, must be bounded.  The number of values in the
+       bounded dimensions are defined in either the file header or the
+       data records.  Values of the unbounded INDEPENDENT variable are
+       explicitly recorded at pre-determined locations within the data
+       records and are termed INDEPENDENT VARIABLE MARKS.  The AUXILIARY
+       variables, if any, are specified immediately after the INDEPENDENT
+       VARIABLE MARKS, either within the same record or the subsequent
+       records.  The unbounded INDEPENDENT variable must be a monotonic
+       quantity.  The bounded INDEPENDENT variables, for a given
+       INDEPENDENT VARIABLE MARK, must also be monotonic.
+</p>
+<p>
+            As an illustration, consider airborne lidar measurements of
+       ozone, recorded as a time sequence of vertical profiles of ozone.
+       For this example, ozone number density is the PRIMARY variable,
+       altitude above Earth's surface is the bounded INDEPENDENT
+       variable, and a monotonic measure of time is the unbounded
+       INDEPENDENT variable.  The same records which contain time may
+       also contain AUXILIARY variables.  Since ozone values at all
+       recorded altitudes are read for each time mark, the dependence on
+       altitude is considered the more rapidly varying dependence, so
+       altitude is the first INDEPENDENT variable defined in the file
+       header; time is defined second in the file header.  An examination
+       of the standard formats in Section 6 reveals that there are
+       several file formats which could accommodate the data in this
+       example, the selection of the most appropriate format depends on
+       the nature of the altitude measurements.  If the values of
+       altitude are constant then FFI 2010 could be used, with the
+       monotonic, constant altitudes defined in the file header.  In this
+       instance, AUXILIARY variables are optional, but one may wish to
+       include additional information, say, aircraft longitude and
+       latitude, in the AUXILIARY variable list.  If the altitude values
+       are variable, but the interval between the altitudes is constant,
+       then FFI 2310 is more appropriate.  In this instance the number of
+       altitudes, base altitude value, and altitude increment are
+       supplied in the AUXILIARY variable list.  If the altitude values
+       and the intervals between altitudes are variable then FFI 2110 is
+       the most appropriate option, with the number of altitudes given in
+       the AUXILIARY variable list, and the altitude values read from the
+       records containing the ozone values.  In these last two instances
+       (FFI 2310, 2110), the indicated AUXILIARY variables are required,
+       in the sense that they provide necessary information for reading
+       subsequent data records, but one still has the option to include
+       additional AUXILIARY variables.  Also, the values of the bounded
+       INDEPENDENT variable (altitude) in FFI 2110 and 2310 can be
+       different for each INDEPENDENT VARIABLE MARK (time mark) and,
+       therefore, are dependent on the unbounded INDEPENDENT VARIABLE.
+       For each time mark the altitude values must be monotonic.
+</p>
+<p>
+            The file header also contains information on the originators
+       of the exchange file and their affiliations, the source of the
+       PRIMARY variables, the mission which the data supports, and (by
+       popular demand) the number of lines in the file header.  The
+       originators will often be the principal investigators for a
+       particular instrument or model simulation, and the instrument and
+       platform, or model, will be the source.  At the beginning of each
+       mission, a mission name will be decided upon and used in all
+       exchange files.
+</p>
+<p>
+            Also included, are the date for which the data applies, the
+       date the data was reduced or revised (not necessarily the date the
+       file was written, although the two may be the same), the volume
+       number for the exchange file, and the total number of volumes
+       required to record the complete dataset.  For large datasets
+       requiring more than one volume of the medium on which they are
+       written (diskette, etc.), the data are continued in a new file, on
+       a new volume, and after a file header with an incremented volume
+       counter (see IVOL, NVOL in Section 5).
+</p>
+<p>
+            There are allowances for three types of comments in the file
+       header.  Two of these comment types have reserved locations within
+       the file header, and are associated with counters defining the
+       number of lines occupied by each type of comment.  The first type
+       is for more complete descriptions of the variables, instrument, or
+       other comments that apply in general to all of a particular kind
+       of dataset; these are called normal comments.  The second type,
+       called special comments, are reserved to note special problems or
+       circumstances concerning the data within a specific exchange file.
+       If the exchange file is a revised dataset then it is recommended
+       that the special comments describe how it differs from the
+       previous version of the dataset.  The third type of comments are
+       merely annotations which may follow numeric values; these comments
+       must be contained on the same line as, and separated by at least
+       one space from the last numeric value expected in the record.
+       They should not be included in lines containing character values
+       because the annotations can not easily be separated from the
+       character string values.
+</p>
+<p>
+            The data records immediately follow the file header records
+       and continue to the end of the file.  One or more spaces (ASCII
+       decimal value 32) delimit successive numeric values within a line
+       in both the file header and the data records.
+</p>
+<p>&nbsp;</p>
+<center><h2>3</h2></center>
+<center><h2>Implementation Considerations</h2></center>
+<p>
+            Even though an ASCII file is the most universally readable
+       type of file, there are differences in the way different operating
+       systems define the end of a line for ASCII text files.  Therefore,
+       some consideration must be given to the way in which files are
+       transferred between machines with different operating systems.
+</p>
+<p>
+            MS DOS uses the ASCII characters for carriage return <cr> and
+       line feed <lf> to terminate each line, Macintosh uses just <cr>,
+       Unix uses just <lf>, whereas VAX/VMS has control words at the
+       beginning of each line which give the number of characters in the
+       line.  It is, therefore, impracticable to write an ASCII file
+       which will appear as a native to every operating system.  If
+       inter-system file transfers are performed using some of the
+       "standard" file transfer software (Kermit, FTP, DECnet-DOS, etc.)
+       then the conversion to the appropriate end-of-line designator is
+       done automatically during the file transfer, assuming it is not a
+       bit for bit (binary) transfer.  But if the file is written to some
+       storage medium (diskette, tape, compact disc, etc.) under one
+       operating system, and read from the medium by another operating
+       system, then it may be necessary to rewrite or edit the file to a
+       form with the appropriate end-of-line designator.  Analogous to
+       the end-of-line designator, the end-of-file designator differs
+       with different operating systems, but is appropriately converted
+       using standard file transfer software.
+</lf></cr></lf></cr></p>
+<p>
+            There is currently no convenient solution to the above stated
+       dilemma.  It is mentioned mainly to alert originators and users of
+       exchange files to the potential problems with transferring ASCII
+       files between different operating systems.  In the past, the MS
+       DOS designators have been the convention for transferring files
+       via diskette and compact disc, but this may change as technology
+       and industry standards change.  In any case, prior to each
+       mission, the mode of file transfer, and the acceptable end-of-line
+       and end-of-file designators, will be decided upon and communicated
+       to the project participants.
+</p>
+<p>
+            Except for the purpose of preparing a file for use on a
+       different operating system, there must not be any extraneous
+       non-printable ASCII characters within an exchange file.  The
+       non-printable characters have ASCII decimal values of 0 through
+       31, and values greater than 126.  For similar reasons, exchange
+       files must not be Fortran output files with Fortran carriage
+       control characters embedded within the file.
+</p>
+<p>
+            Programming languages impose limitations on record length,
+       magnitudes of integer and real numbers, and precision of real
+       numbers.  To comply with limitations in the most commonly used
+       environments, the maximum record length in exchange files is 32766
+       characters.  It is suggested that all numeric values be limited to
+       seven significant digits within the magnitude range of 1.0E-38 to
+       1.0E+38.
+</p>
+<p>
+            For numeric data, there should be an adequate number of
+       digits to resolve the anticipated precision, but in the interest
+       of minimizing the file size, the number of digits should not be
+       larger than necessary.  Also, unnecessary records of missing
+       values should not be used to pad the beginning or end of the data
+       section of an exchange file.  If, for example, the data from an
+       airborne instrument begins 10 minutes after takeoff, and
+       terminates 10 minutes before landing, it is unnecessary to include
+       10 minutes of missing values before the data begins and after it
+       terminates.
+</p>
+<p>&nbsp;</p>
+<center><h2>4</h2></center>
+<center><h2>Notation</h2></center>
+<p>
+            The array and implied loop notation, used to generalize the
+       exchange file format definitions given in Section 6, will now be
+       explained.  The notation is merely a convenient means of
+       specifying the file formats, and not intended to indicate useful
+       or desirable array structures in computer programs.
+</p>
+<p>
+            Quantities enclosed in square brackets [ ] are read with one
+       "read" statement and, therefore, the quantities occupy one record
+       which may exceed one line.  One or more quantities appearing in a
+       line, and not enclosed in square brackets, are read as one record
+       and constitute one line in the exchange file.  Similar comments
+       apply to writing the records, but the descriptions which follow in
+       this Section are from the perspective of reading the records.
+</p>
+<p>
+            The indices act merely as counters to indicate the dependence
+       of some variable, but several indices are consistently used for
+       special purposes.  The index m is always used to count independent
+       variable marks, and the implied loop over m is unbounded.  The
+       index s is the counter for the independent variables (dimensions),
+       n for the primary variables, and a for the auxiliary variables.
+       The usage of other indices (i,j,k) is less consistent, but usually
+       they are counters for the bounded independent variable values.
+</p>
+<p>
+            Consider the array X, which contains values of the
+       independent variables on which the primary variables are
+       dependent.  To reference a specific array element we write X(2,1).
+       To reference a general array element we write X(i,s), where i and
+       s can assume any allowable values.  To indicate the allowable
+       range of values for i and s we write X(i,s), i=1,NX(s), s=1,NIV;
+       which states that s may take on integer values of 1 to NIV, and i
+       may assume integer values of 1 to NX(s), the value of NX depending
+       on the value of s.  NIV is the number of independent variables,
+       and NX(s) is the number of values for the s-th independent
+       variable.
+</p>
+<p>
+            Now consider the array V(X,n), which contains values of the
+       primary variables as functions of two independent variables.
+       Since NIV=2, V(X,n) may also be expressed as V(X(i,1),X(m,2),n),
+       or simply as V(i,m,n).  To completely specify the contents of V we
+       write V(i,m,n), i=1,NX(1), n=1,NV, where NV is the number of
+       primary variables, and NX(1) is the number of bounded independent
+       variable values.  It is implied that m can pertain to any
+       independent variable mark within the file.
+</p>
+<p>
+            For reading data records, the implied loop notation has a
+       slightly different meaning, because then it implies that during
+       the read operation the loop index will sequentially take on the
+       values dictated by the loop limits.  If the terminal value of a
+       loop is smaller than the initial value, the implication is that
+       the loop is not executed.  Let the general expression for the data
+       format be:<br><br>
+
+       [ X(m,2)  ( A(m,a), a=1,NAUXV ) ]<br>
+       [ V(i,m,n), i=1,NX(1) ]  n=1,NV<br>
+</p>
+<p>
+            In the above expressions X(m,2) represents the m-th
+       independent variable mark for the unbounded independent variable;
+       A(m,a) is the value of the a-th auxiliary variable at the m-th
+       independent variable mark; and V(i,m,n) is the value of the n-th
+       primary variable at the m-th independent variable mark and i-th
+       bounded independent variable value.  NAUXV is the number of
+       auxiliary variables.
+</p>
+<p>
+            The square brackets enclosing the first line of the
+       expression indicate that an independent variable mark and NAUXV
+       auxiliary variables are read as one record which may span more
+       than one line.  The second line of the expression is to be
+       interpreted to mean that for the m-th independent variable mark
+       there are NV records of primary variables, which will be read with
+       n starting at a value of 1, incrementing by one for each record,
+       and ending with a value of NV for the last record.  The notation
+       within the square brackets indicates that, for each record, NX(1)
+       values of the n-th primary variable at the m-th independent
+       variable mark are read.  In this case, the constant values of the
+       bounded independent variable (X(i,1), i=1,NX(1)) are read from the
+       file header.
+</p>
+<p>
+            To be more specific, assume there are three auxiliary
+       variables (NAUXV=3), two primary variables (NV=2), and four values
+       for the bounded independent variable (NX(1)=4).  Given these
+       values for the loop limits, the general expressions for the data
+       format imply the following record structure (the intra-record
+       spacing between values is merely for clarity):<br><br>
+
+       [ X(m,2)    A(m,1)    A(m,2)    A(m,3) ]<br>
+       [  V(1,m,1)    V(2,m,1)    V(3,m,1)  V(4,m,1) ]<br>
+       [  V(1,m,2)    V(2,m,2)    V(3,m,2)    V(4,m,2) ]<br>
+       [ X(m+1,2)  A(m+1,1)  A(m+1,2)  A(m+1,3) ]<br>
+       [  V(1,m+1,1)  V(2,m+1,1)  V(3,m+1,1)  V(4,m+1,1) ]<br>
+       [  V(1,m+1,2)  V(2,m+1,2)  V(3,m+1,2)  V(4,m+1,2) ]<br>
+       [ X(m+2,2)  A(m+2,1)  A(m+2,2)  A(m+2,3) ]<br>
+       etc., etc.
+</p>
+<p>
+            If, for the sake of illustration, NAUXV=0 then according to
+       the loop limits in the general expressions for the data format
+       given above, the terminal value of the loop would be smaller than
+       the initial value.  The implication would then be that no
+       auxiliary variables were present in the file and, therefore, none
+       would be read from the file.  The data records would remain the
+       same as those in the above example, with the exception that there
+       would be no auxiliary variables in the records containing the
+       independent variable marks.
+</p>
+<p>&nbsp;</p>
+<center><h2>5</h2></center>
+<center><h2>Definitions</h2></center>
+<p>
+</p><dl>
+<dt>A(m,a):</dt><dd> value of the a-th auxiliary variable at the m-th
+independent variable mark (a=1,NAUXV). If A(m,a) is real, the use of
+scaled whole numbers is encouraged.
+</dd><dt>AMISS(a):</dt><dd> a quantity indicating missing or erroneous
+data for the a-th auxiliary variable. The value of AMISS(a) must be
+larger than any "good" value of A(m,a) recorded in the file. The value
+of AMISS(a) defined in the file header is the same value that appears
+in the data records for missing/bad values of A(m,a).
+</dd><dt>ANAME(a):</dt><dd> a character string specifying the name
+and/or description of the a-th auxiliary variable, on one line and not
+exceeding 132 characters. Include units of measure the data will have
+after multiplying by the a-th scale factor, ASCAL(a). The order in
+which the auxiliary variable names are listed in the file header is the
+same order in which the auxiliary variables are read from the data
+records, and the same order in which the auxiliary variable scale
+factors and missing values are read from the file header records.
+</dd><dt>ASCAL(a):</dt><dd> scale factor (real) by which one
+multiplies recorded values of the a-th auxiliary variable to convert
+them to the units specified in ANAME(a).
+</dd><dt>character string:</dt><dd> a string of at most 132 printable
+ASCII characters occupying one line of an exchange file. The printable
+ASCII characters have ASCII decimal values between 32 and 126
+inclusive.
+</dd><dt>DATE:</dt><dd> UT date at which the data within the exchange
+file begins. For aircraft data files DATE is the UT date of takeoff.
+DATE is in the form YYYY MM DD (year, month, day) with each integer
+value separated by at least one space. For example: 1989 1 16 or 1989
+01 16 for 16 January 1989.
+</dd><dt>DX(s):</dt><dd> interval (real) between values of the s-th
+independent variable, X(i,s), i=1,NX(s); in the same units as specified
+in XNAME(s). DX(s) is zero for a non-uniform interval. DX(s) is
+non-zero for a constant interval. If DX(s) is non-zero then it is
+required that NX(s) = (X(NX(s),s)-X(1,s)) / DX(s) + 1. For some file
+formats the value of DX also depends on the unbounded independent
+variable and is expressed as DX(m,s).
+</dd><dt>FFI:</dt><dd> file format index (integer). The FFI uniquely
+defines the file header and data formats. It is the second value
+recorded on the first line of an exchange file. The first (left-most)
+digit in the FFI gives the number of independent variables listed in
+the file header, the second digit gives the number of required (in the
+sense that they are necessary for reading the subsequent data records)
+auxiliary variables. The remaining digits are used to loosely associate
+file formats with similar characteristics.
+</dd><dt>independent variable mark:</dt><dd> a value of the unbounded
+independent variable which is explicitly recorded in the data records.
+Independent variable marks must be monotonic.
+</dd><dt>integer:</dt><dd> a whole number written without a decimal point.  Leading zeros are insignificant.
+
+</dd><dt>IVOL:</dt><dd> volume number (integer) of the total number of
+volumes required to store a complete dataset, assuming only one file
+per volume. To be used in conjunction with NVOL to allow data exchange
+of large datasets requiring more than one volume of the exchange medium
+(diskette, etc.).
+</dd><dt>LENA(a):</dt><dd> integer number of characters used to record
+auxiliary variable A(m,a) when A(m,a) is represented as a character
+string. The value of LENA(a) must be less than 133.
+</dd><dt>LENX(s):</dt><dd> integer number of characters used to record
+independent variable X(i,s) when X(i,s) is represented as a character
+string. The value of LENX(s) must be less than 133.
+</dd><dt>line:</dt><dd> refers to a string of printable ASCII
+characters within an exchange file, terminated by the appropriate
+end-of-line (or new line) designator for the operating system on which
+the file resides. The maximum number of printable characters per line
+is 132.
+</dd><dt>MNAME:</dt><dd> a character string specifying the mission
+which the data is supporting, on one line and not exceeding 132
+characters. The appropriate value for MNAME will be decided upon prior
+to the start of the mission.
+</dd><dt>NAUXC:</dt><dd> number of auxiliary variables (integer) whose
+values are recorded as character strings. If NAUXC=0 then no auxiliary
+variables are recorded as character strings.
+</dd><dt>NAUXV:</dt><dd> number of auxiliary variables (integer). If
+NAUXV=0 then no auxiliary variables are recorded and no missing values,
+scale factors, or names for the auxiliary variables are present in the
+file header.
+</dd><dt>NCOM(k):</dt><dd> a character string containing the k-th normal comment line (k=1,NNCOML).
+
+</dd><dt>NIV:</dt><dd> number of independent variables (integer) on which the primary variables are dependent.
+
+</dd><dt>NLHEAD:</dt><dd> number of lines (integer) composing the file header.  NLHEAD is the first recorded value on the first line of an exchange file.
+
+</dd><dt>NNCOML:</dt><dd> number of normal comment lines (integer)
+within the file header, including blank lines and data column headers,
+etc. Normal comments are those which apply to all of a particular kind
+of dataset, and can be used to more completely describe the contents of
+the file. If NNCOML=0 then there are no normal comment lines.
+</dd><dt>NSCOML:</dt><dd> number of special comment lines (integer)
+within the file header. Special comments are reserved to note special
+problems or circumstances concerning the data within a specific
+exchange file so they may easily be found and flagged by those reading
+the file. If NSCOML=0 then there are no special comment lines.
+</dd><dt>NV:</dt><dd> number of primary variables in the exchange file (integer).
+
+</dd><dt>NVOL:</dt><dd> total number of volumes (integer) required to
+store the complete dataset, assuming one file per volume. If NVOL&gt;1
+then each volume must contain a file header with an incremented value
+for IVOL, and continue the data records with monotonic independent
+variable marks.
+</dd><dt>NVPM(s):</dt><dd> integer number of independent variable
+values between independent variable marks, for the s-th independent
+variable. NVPM(s) = (X(m+1,s)-X(m,s)) / DX(s).
+</dd><dt>NX(s):</dt><dd> number of values (integer) for the s-th
+independent variable. If NX(s) is defined in the file header then it
+represents the constant number of values for the s-th independent
+variable. Otherwise, NX=NX(m,s) is defined in the data records and its
+values can vary with the independent variable marks. In the case of an
+unbounded independent variable, NX(NIV) is never specified in the file
+but the values of X(m,NIV) are read from the data records (independent
+variable marks).
+</dd><dt>NXDEF(s):</dt><dd> number of values (integer) of the s-th
+independent variable which are explicitly defined in the file header.
+If NXDEF(s)=NX(s) then all values of X(i,s), i=1,NX(s) are recorded in
+the file header. If NXDEF(s)=1 then only the first value, X(1,s), is
+recorded in the file header and the remaining values of X(i,s) are
+calculated as X(i,s) = X(1,s) + (i-1) * DX(s) for i=2,NX(s).
+</dd><dt>ONAME:</dt><dd> a character string specifying the name(s) of
+the originator(s) of the exchange file, last name first. On one line
+and not exceeding 132 characters.
+</dd><dt>ORG:</dt><dd> character string specifying the organization or
+affiliation of the originator of the exchange file. Can include
+address, phone number, email address, etc. On one line and not
+exceeding 132 characters.
+</dd><dt>RDATE:</dt><dd> date of data reduction or revision, in the same form as DATE.
+
+</dd><dt>real:</dt><dd> a real valued number that may include a decimal
+point or be written in exponential notation. It is preferred that the
+values of real numbers be limited to seven significant digits within
+the magnitude range of 1.0E-38 to 1.0E+38.
+</dd><dt>record:</dt><dd> a logical record to be read by one "read"
+statement. The maximum record length is 32766 characters with a maximum
+of 132 characters per line. The first character of a record is also the
+first character of a line.
+</dd><dt>SCOM(k):</dt><dd> a character string containing the k-th special comment line (k=1,NSCOML).
+
+</dd><dt>SNAME:</dt><dd> a character string specifying the source of
+the measurements or model results which compose the primary variables,
+on one line and not exceeding 132 characters. Can include instrument
+name, measurement platform, etc.
+</dd><dt>V(X,n):</dt><dd> value of n-th primary variable (n=1,NV) at
+specified values of independent variables X. If V is real then the use
+of scaled whole numbers, without decimal points, is encouraged.
+</dd><dt>VMISS(n):</dt><dd> a quantity indicating missing or erroneous
+data values for the n-th primary variable. VMISS(n) must be larger than
+any "good" data value, of the n-th primary variable, recorded in the
+file. The value of VMISS(n) defined in the file header is the same
+value that appears in the data records for missing/bad values of
+V(X,n).
+</dd><dt>VNAME(n):</dt><dd> a character string giving the name and/or
+description of the n-th primary variable, on one line and not exceeding
+132 characters. Include units of measure the data will have after
+multiplying by the n-th scale factor, VSCAL(n). The order in which the
+primary variable names are listed in the file header is the same order
+in which the primary variables are read from the data records, and the
+same order in which scale factors and missing values for the primary
+variables are read from the file header records.
+</dd><dt>VSCAL(n):</dt><dd> scale factor (real) by which one
+multiplies recorded values of the n-th primary variable to convert them
+to the units specified in VNAME(n).
+</dd><dt>X(i,s):</dt><dd> i-th value of the s-th independent variable
+(X(i,s), i=1,NX(s), s=1,NIV). For some file formats the values of a
+bounded independent variable may also depend on the unbounded
+independent variable, and in those cases we will denote the bounded
+independent variable as X(i,m,s), with s<niv. values="" of="" (x(i,s),="" and="" (x(i,m,s),="" i="1,NX(s))" must="" be="" monotonic.=""></niv.></dd><dt>XNAME(s):</dt><dd>
+a character string giving the name and/or description of the s-th
+independent variable, on one line and not exceeding 132 characters.
+Include units of measure and order the independent variable names such
+that, when reading primary variables from the data records, the most
+rapidly varying independent variable is listed first and the most
+slowly varying independent variable is listed last.
+</dd></dl>
+<p></p>
+<p>
+</p><p>&nbsp;</p>
+<center><h2>6</h2></center>
+<center><h2>ASCII File Format Specifications</h2></center>
+<p></p>
+<p>
+            The file format specifications, ordered by increasing file
+       format index, FFI, are given in this Section.  Refer to the
+       definitions in Section 5 for explanations of the variables.  A
+       brief description of the variables and file format is followed by
+       the format of the file header, and the general expression for the
+       data records.  Occasionally, lower case characters, preceded by
+       several periods, are used to annotate certain variables.
+</p>
+<p>
+
+<b>FFI = 1001:</b><br>
+       One real, unbounded independent variable (NIV=1).<br>
+       Primary variables are real.<br>
+       No auxiliary variables.<br>
+       Independent and primary variables are recorded in the same record.
+</p>
+<pre>       NLHEAD   1001<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL   NVOL<br>
+       DATE   RDATE<br>
+       DX(1)<br>
+       XNAME(1)<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,1)  ( V(m,n), n=1,NV ) ]<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 1010:</b><br>
+       One real, unbounded independent variable (NIV=1).<br>
+       Primary variables are real.<br>
+       Auxiliary variables are real.<br>
+       The independent and auxiliary variables are in the same record.<br>
+       All primary variables for a given independent variable mark are<br>
+       recorded in the same record.<br>
+</p>
+<pre>       NLHEAD   1010<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL   NVOL<br>
+       DATE   RDATE<br>
+       DX(1)<br>
+       XNAME(1)<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,1)  ( A(m,a), a=1,NAUXV ) ]<br>
+       [ V(m,n), n=1,NV ]<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 1020:</b><br>
+       One real, constant increment, unbounded independent variable with<br>
+       implied values between independent variable marks (NIV=1).<br>
+       Primary variables are real.<br>
+       Auxiliary variables are real.<br>
+       The independent and auxiliary variables are in the same record.<br>
+       A record of primary variable values at implied independent<br>
+       variable values is recorded for each primary variable.<br>
+</p>
+<pre>       NLHEAD   1020<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL   NVOL<br>
+       DATE   RDATE<br>
+       DX(1)  ..............DX(1) not equal to zero<br>
+       NVPM(1)<br>
+       XNAME(1)<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,1)  ( A(m,a), a=1,NAUXV ) ]<br>
+       [ V(i,n), i=1+(m-1)*NVPM(1),m*NVPM(1) ]  n=1,NV<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 2010:</b><br>
+       Two real independent variables, one unbounded and one bounded with<br>
+       constant values (NIV=2).<br>
+       Primary variables are real.<br>
+       Auxiliary variables are real.<br>
+       Independent variable mark and auxiliary variables are in the same<br>
+       record.<br>
+       For each primary variable is a record of its values at the bounded<br>
+       independent variable values.<br>
+</p>
+<pre>       NLHEAD   2010<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL    NVOL<br>
+       DATE    RDATE<br>
+       DX(1)   DX(2)<br>
+       NX(1)<br>
+       NXDEF(1)<br>
+       [ X(i,1), i=1,NXDEF(1) ]<br>
+       [ XNAME(s) ]  s=1,2<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,2)  ( A(m,a), a=1,NAUXV ) ]<br>
+       [ V(i,m,n), i=1,NX(1) ]  n=1,NV<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 2110:</b><br>
+       Two real independent variables, one unbounded and one bounded with<br>
+       its values recorded in the data records (NIV=2).<br>
+       Primary variables are real.<br>
+       The first auxiliary variable is NX(m,1), other auxiliary variables<br>
+       are real.<br>
+       The values of X(i,m,1) are included in the records with the primary<br>
+       variables.<br>
+       If DX(2) is non-zero then X(m,2) must be recorded at a constant<br>
+       interval of DX(2).  For this case, if NX(m,1)=AMISS(1) or NX(m,1)=0<br>
+       then the implication is that the records containing values of the<br>
+       bounded independent variable and primary variables are omitted, and<br>
+       the next record contains the succeeding independent variable mark<br>
+       and auxiliary variables.<br>
+</p>
+<pre>       NLHEAD   2110<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL   NVOL<br>
+       DATE   RDATE<br>
+       DX(1)  DX(2)<br>
+       [ XNAME(s) ]  s=1,2<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV .................The first auxiliary variable is NX(m,1)<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,2)    NX(m,1)  ( A(m,a), a=2,NAUXV ) ]<br>
+       [ X(i,m,1)  ( V(i,m,n), n=1,NV ) ]  i=1,NX(m,1)<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 2160:</b><br>
+       Two independent variables; the unbounded independent variable is a<br>
+       character string of length LENX(2); the bounded independent<br>
+       variable is real with its values recorded in the data records<br>
+       (NIV=2).<br>
+       Primary variables are real.<br>
+       The independent variable mark is in a separate record from the<br>
+       auxiliary variables.<br>
+       The first auxiliary variable is NX(m,1).<br>
+       NAUXC is the number of auxiliary variables recorded as character<br>
+       strings, which follow the real-valued auxiliary variables, and<br>
+       have lengths  LENA(a), a=NAUXV-NAUXC+1,NAUXV.  Therefore,<br>
+       AMISS(a), a=NAUXV-NAUXC+1,NAUXV are also character strings of<br>
+       length LENA(a).<br>
+       The values of X(i,m,1) are included in the records with the<br>
+       primary variables.<br>
+</p>
+<pre>       NLHEAD   2160<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL   NVOL<br>
+       DATE   RDATE<br>
+       DX(1)<br>
+       LENX(2)<br>
+       [ XNAME(s) ]  s=1,2<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV  ........................first auxiliary variable is NX(m,1)<br>
+       NAUXC<br>
+       [ ASCAL(a), a=1,NAUXV-NAUXC ]<br>
+       [ AMISS(a), a=1,NAUXV-NAUXC ]  ...................these are real<br>
+       [  LENA(a), a=NAUXV-NAUXC+1,NAUXV ]<br>
+       [ AMISS(a) ]  a=NAUXV-NAUXC+1,NAUXV  ..........these are strings<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,2) ]  .....................................character string<br>
+       [ NX(m,1)  ( A(m,a), a=2,NAUXV-NAUXC ) ]<br>
+       [ A(m,a) ]  a=NAUXV-NAUXC+1,NAUXV  ..............character strings<br>
+       [ X(i,m,1)  ( V(i,m,n), n=1,NV ) ]  i=1,NX(m,1)<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 2310:</b><br>
+       Two real independent variables, one unbounded and one bounded with<br>
+       its number of constant increment values, base value, and increment<br>
+       defined in the auxiliary variable list (NIV=2).<br>
+       Primary variables are real.<br>
+       The first three auxiliary variables are NX(m,1), X(1,m,1), and<br>
+       DX(m,1); the other auxiliary variables are real.<br>
+       If DX(2) is non-zero then X(m,2) must be recorded at a constant<br>
+       interval of DX(2).  For this case, if NX(m,1)=AMISS(1) or NX(m,1)=0<br>
+       then the implication is that the records containing values of the<br>
+       primary variables are omitted, and the next record contains the<br>
+       succeeding independent variable mark and auxiliary variables.<br>
+       For each primary variable is a record of its values at the bounded<br>
+       independent variable values.<br>
+       The bounded independent variable values are<br>
+       X(i,m,1) = X(1,m,1) + (i-1) * DX(m,1) for i=1,NX(m,1).<br>
+</p>
+<pre>       NLHEAD   2310<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL   NVOL<br>
+       DATE   RDATE<br>
+       DX(2)<br>
+       [ XNAME(s) ]  s=1,2<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV ............first 3 auxil. var. are NX(m,1),X(1,m,1),DX(m,1)<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,2)  NX(m,1)  X(1,m,1)  DX(m,1)  ( A(m,a), a=4,NAUXV ) ]<br>
+       [ V(i,m,n), i=1,NX(m,1) ]  n=1,NV<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 3010:</b><br>
+       Three real independent variables, one unbounded and two bounded<br>
+       with constant values defined in the file header (NIV=3).<br>
+       Primary variables are real.<br>
+       Auxiliary variables are real.<br>
+       The independent variable marks and auxiliary variables are in the<br>
+       same record.<br>
+       For each primary variable and value of the second independent<br>
+       variable, is a record of primary variable values at values of the<br>
+       first independent variable.<br>
+</p>
+<pre>       NLHEAD   3010<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL      NVOL<br>
+       DATE      RDATE<br>
+       DX(1)     DX(2)    DX(3)<br>
+       NX(1)     NX(2)<br>
+       NXDEF(1)  NXDEF(2)<br>
+       [ X(i,1), i=1,NXDEF(1) ]<br>
+       [ X(j,2), j=1,NXDEF(2) ]<br>
+       [ XNAME(s) ]  s=1,3<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,3)  ( A(m,a), a=1,NAUXV ) ]<br>
+       [ V(i,j,m,n), i=1,NX(1) ]  j=1,NX(2)  n=1,NV<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>
+<b>FFI = 4010:</b><br>
+       Four real independent variables, one unbounded and three bounded<br>
+       with constant values defined in the file header (NIV=4).<br>
+       Primary variables are real.<br>
+       Auxiliary variables are real.<br>
+       The independent variable marks and auxiliary variables are in the<br>
+       same record.<br>
+       For each primary variable and value of the third and second<br>
+       independent variables, is a record of primary variable values, at<br>
+       values of the first independent variable.<br>
+</p>
+<pre>       NLHEAD   4010<br>
+       ONAME<br>
+       ORG<br>
+       SNAME<br>
+       MNAME<br>
+       IVOL      NVOL<br>
+       DATE      RDATE<br>
+       DX(1)     DX(2)     DX(3)    DX(4)<br>
+       NX(1)     NX(2)     NX(3)<br>
+       NXDEF(1)  NXDEF(2)  NXDEF(3)<br>
+       [ X(i,1), i=1,NXDEF(1) ]<br>
+       [ X(j,2), j=1,NXDEF(2) ]<br>
+       [ X(k,3), k=1,NXDEF(3) ]<br>
+       [ XNAME(s) ]  s=1,4<br>
+       NV<br>
+       [ VSCAL(n), n=1,NV ]<br>
+       [ VMISS(n), n=1,NV ]<br>
+       [ VNAME(n) ]  n=1,NV<br>
+       NAUXV<br>
+       [ ASCAL(a), a=1,NAUXV ]<br>
+       [ AMISS(a), a=1,NAUXV ]<br>
+       [ ANAME(a) ]  a=1,NAUXV<br>
+       NSCOML<br>
+       [ SCOM(k) ]  k=1,NSCOML<br>
+       NNCOML<br>
+       [ NCOM(k) ]  k=1,NNCOML<br>
+       [ X(m,4)  ( A(m,a), a=1,NAUXV ) ]<br>
+       [ V(i,j,k,m,n), i=1,NX(1) ]  j=1,NX(2)  k=1,NX(3)  n=1,NV<br>
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<center><h2>6.1</h2></center>
+<center><h2>Summary of data record formats</h2></center>
+<pre>
+       FFI=1001:  [ X(m,1)  ( V(m,n), n=1,NV ) ]
+
+
+       FFI=1010:  [ X(m,1)  ( A(m,a), a=1,NAUXV ) ]
+                  [ V(m,n), n=1,NV ]
+
+
+       FFI=1020:  [ X(m,1)  ( A(m,a), a=1,NAUXV ) ]
+                  [ V(i,n), i=1+(m-1)*NVPM(1),m*NVPM(1) ]  n=1,NV
+
+
+       FFI=2010:  [ X(m,2)  ( A(m,a), a=1,NAUXV ) ]
+                  [ V(i,m,n), i=1,NX(1) ]  n=1,NV
+
+
+       FFI=2110:  [ X(m,2)  NX(m,1)  ( A(m,a), a=2,NAUXV ) ]
+                  [ X(i,m,1)  ( V(i,m,n), n=1,NV ) ]  i=1,NX(m,1)
+
+
+       FFI=2160:  [ X(m,2) ] ................................... string
+                  [ NX(m,1)  ( A(m,a), a=2,NAUXV-NAUXC ) ]
+                  [ A(m,a) ]  a=NAUXV-NAUXC+1,NAUXV ............ strings
+                  [ X(i,m,1)  ( V(i,m,n), n=1,NV ) ]  i=1,NX(m,1)
+
+
+       FFI=2310:  [ X(m,2) NX(m,1) X(1,m,1) DX(m,1) (A(m,a),a=4,NAUXV) ]
+                  [ V(i,m,n), i=1,NX(m,1) ]  n=1,NV
+
+
+       FFI=3010:  [ X(m,3)  ( A(m,a), a=1,NAUXV ) ]
+                  [ V(i,j,m,n), i=1,NX(1) ]  j=1,NX(2)  n=1,NV
+
+
+       FFI=4010:  [ X(m,4)  ( A(m,a), a=1,NAUXV ) ]
+                  [ V(i,j,k,m,n), i=1,NX(1) ]  j=1,NX(2)  k=1,NX(3)  n=1,NV
+</pre>
+<p>&nbsp;</p>
+<center><h2>7</h2></center>
+<center><h2>Examples</h2></center>
+<p>
+            Examples of the file formats, ordered by increasing file
+       format index, are given in this Section.  These are fictitious
+       examples and any similarity with existing exchange files is purely
+       a manifestation of the author's lack of imagination.  For each
+       example is a file header, followed by a sample of the data
+       records.  Numeric constants in the file headers have been
+       annotated with comments enclosed by { }.  The annotations are
+       included here as references and need not appear in exchange files.
+       The data records in some of the examples have also been annotated,
+       but those are solely for illustration since annotations should not
+       appear in the data records of exchange files.
+</p>
+<p>&nbsp;</p>
+<pre>       22  1001                   {NLHEAD  FFI}
+       MERTZ, FRED
+       PACIFIC UNIV.
+       WIND DATA FROM ER-2 METEOROLOGICAL MEASUREMENT SYSTEM (MMS)
+       TAHITI OZONE PROJECT
+        1  3                      {IVOL  NVOL}
+       1991  1 16   1991  1 16    {DATE  RDATE}
+       0                          {DX(1)=0 for non-uniform time intervals}
+       TIME (UT SECONDS) from 00 HOURS ON LAUNCH DATE
+       3                          {NV=number of primary variables}
+       0.1  0.1   0.1             {primary variable scale factors}
+       999  9999  999             {primary variable missing values}
+       HORIZONTAL WIND SPEED (m/s)
+       HORIZONTAL WIND DIRECTION (deg); TRUE DIRECTION FROM WHICH IT BLOWS.
+       VERTICAL WIND SPEED + up (m/s)
+       1                          {NSCOML=number of special comment lines}
+       Pilot experienced CAT between the times 50300-50400.
+       4                          {NNCOML=number of normal comment lines}
+       Preliminary wind data
+       1Hz desampled from 5Hz
+       OMEGA used for calc = 0.06280  RAD/SEC
+         UTs      Spd  Direc Vert Wind
+         30446.9  305  2592   22
+         30447.9  304  2596   22
+         30448.9  305  2601  999
+         30449.9  306  2603  999
+         30450.9  307  2606   25
+         30451.8  307  2607   27
+         30452.8  309  2610   29
+         30453.8  310  2610   29
+         30454.8  312  2621   32
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       41  1010               {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific University
+       DC-8 Mark IV Interferometer
+       TAHITI OZONE PROJECT
+       1  1                       {IVOL  NVOL}
+       1991  1 16   1991  2 15    {DATE  RDATE}
+       0                          {DX(1)=0 for nonuniform time intervals}
+       UT fractional day number of year given in DATE
+       8                          {NV=number of primary variables}
+       1.0E+17 1.0E+14 1.0E+13 1.0E+14 1.0E+14 1.0E+13 1.0E+13 1.0E+18
+       999 999 9999 9999 999 9999 9999 9999        {VMISS}
+       O3 column density (molecules/cm**2)
+       NO column density (molecules/cm**2)
+       NO2 column density (molecules/cm**2)
+       HNO3 column density (molecules/cm**2)
+       ClNO3 column density (molecules/cm**2)
+       HCl column density (molecules/cm**2)
+       HF column density (molecules/cm**2)
+       H2O column density (molecules/cm**2)
+       10                         {NAUXV=number of auxiliary variables}
+       1.0 1.0 1.0 1.0 0.1 0.1 0.1 1.0 1.0 1.0      {ASCAL}
+       99 99 99 99 9999 99999 9999 999 999 999      {AMISS}
+       UT Month
+       UT Day
+       UT Hour
+       UT Minutes
+       Latitude of DC-8 (degrees)
+       Longitude of DC-8 (degrees)
+       Solar zenith angle (degrees) reckoned from DC-8
+       Air temperature (Celsius)
+       Static pressure (millibars)
+       Potential temperature (Kelvin)
+       0                          {NSCOML}
+       6                          {NNCOML}
+       NOTE 1: This is a single file for the entire mission, which will
+       be updated after each flight during the mission.  See line 7 of
+       header for date of last update.
+       NOTE 2: All these column values will change when analyses are
+       repeated.
+
+        16.521  1 16 12 30  -59 -1250  884 -56 237 328
+         80  24   75  142  12  240   72   47
+        16.538  1 16 12 55  -60 -1211  885 -57 237 328
+         70  19   82  121  12  243   72   56
+        16.558  1 16 13 24  -64 -1277  889 -57 237 327
+         71  16   78  118  10  237   56   49
+        19.530  1 19 12 43  -60 -1250  882 -56 315 330
+        105  24   85  241  26  390  106   61
+        19.633  1 19 15 11  -58 -1266  882 -50 329 304
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       29  1020                   {NLHEAD  FFI}
+       MERTZ, FRED
+       PACIFIC UNIVERSITY
+       ER-2 LYMAN-ALPHA HYGROMETER
+       TAHITI OZONE PROJECT
+       1  1                       {IVOL  NVOL}
+       1991 01 16  1991 01 16     {DATE  RDATE}
+       1.0                        {DX(1), constant time interval}
+       30               {NVPM(1)=number of implied times per marked time}
+       TIME (UT SECONDS) FROM 00 HOURS ON LAUNCH DATE
+       1                      {NV=number of primary variables}
+       0.01                   {scale factor for primary variable}
+       999999                 {missing value for primary variable}
+       WATER VAPOR VOLUME MIXING RATIO IN PARTS PER MILLION
+       4                      {NAUXV=number of auxiliary variables}
+       1.0 1.0 1.0 1.0        {scale factors for auxiliary variables}
+       99 99 99 99999         {missing values for auxiliary variables}
+       UT HOURS
+       UT MINUTES
+       UT SECONDS
+       OBSERVATION COUNT STARTING FROM TIME COMPUTER IS TURNED ON.
+       0                      {NSCOML}
+       6                      {NNCOML}
+       This is PRELIMINARY data
+       08:05:01 COMPUTER ON
+       CALB 8.525E+13    4.829E+7     T =  3.000E+2    DltP =  0.000E+0
+       NOB  2.799E+2    -1.471E-3    -7.641E+22
+       OHB  1.279E+2     5.113E-4    -7.641E+22
+
+        29301.0   08 08 21     200
+        999999 999999 999999 999999 999999 999999 999999 999999
+        999999 999999 999999 999999 999999 999999 999999 999999
+        999999 999999  87166  84175  76721  80130  81401  79359
+         79887  84339  89955  97811  95614  91508
+        29331.0   08 08 51     230
+         88126  86236  79440  81826  82911  90481  92042  91391
+         94605  93040  87099  85103  87131  87423  82418  75260
+         64485  59903  63633  68262  72430  75216  78814  77879
+         72445  69610  66126  60302  55169  48993
+        29361.0   08 09 21     260
+         39742  39137  38357  38002  36171  35267  36094  38442
+         40786  41725  42796  43492  44009  43589  42926  43308
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       31  2010               {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific University
+       NMC analyzed grid data interpolated to DC-8 flight path
+       TAHITI OZONE PROJECT
+       1  1                       {IVOL  NVOL}
+       1991 01 16   1991 01 16    {DATE  RDATE}
+       0.0  30.0                  {DX(1), DX(2)}
+       8                          {NX(1)}
+       8                          {NXDEF(1)}
+       250 200 150 100 70 50 30 10     {X(i,1)}
+       Pressure levels (mb)
+       Time (UT seconds) from 00 hours on launch date
+       3                      {NV=number of primary variables}
+       1.0   0.1  1.0E-09     {primary variable scale factors}
+       99999 9999 9999999     {primary variable missing values}
+       Geopotential height (gpm)
+       Temperature (K)
+       Potential vorticity (K m**2/(kg s))
+       2                      {NAUXV=number of auxiliary variables}
+       1.0 0.1                {auxiliary variable scale factors}
+       99999 9999             {auxiliary variable missing values}
+       Geopotential height (gpm) of the DC-8
+       Temperature (K) at DC-8's position
+       0                      {NSCOML}
+       5                      {NNCOML}
+       The geopotential height, temperature, and potential vorticity
+       values were interpolated from NMC analyses to a vertical cross-
+       section along the DC-8 flight path.
+       NOTE: PRELIMINARY data.
+            250mb   200mb   150mb   100mb    70mb    50mb    30mb    10mb
+         3350  1127 2682
+             9994   11395   13219   15762   17970   20000   23016   29411
+             2150    2154    2156    2115    2082    2042    1991    2021
+             4119    7050    8030   11300   16200   23500   50300  386000
+         3380  1289 2671
+             9992   11393   13217   15760   17968   19998   23013   29408
+             2151    2154    2156    2115    2081    2041    1990    2020
+             4128    7050    8040   11300   16200   23500   50400  386000
+         3410  1479 2653
+             9990   11392   13215   15759   17966   19996   23010   29404
+             2151    2154    2156    2115    2081    2041    1990    2020
+             4138    7060    8050   11400   16200   23500   50500  386000
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       38  2110               {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific University
+       ER-2 Microwave Temperature Profiler (MTP)
+       TAHITI OZONE PROJECT
+       1  1                       {IVOL  NVOL}
+       1991  1 16  1991  1 16     {DATE  RDATE}
+       0.0  0.0                   {DX(1), DX(2)}
+       Remote sensing "applicable altitude" (meters)
+       Elapsed UT seconds from 0 hours on day given in DATE
+       2                      {NV=number of primary variables}
+       0.1 0.1                {scale factors for primary variables}
+       9999 9999              {missing values for primary variables}
+       Brightness temperature (C)
+       Potential temperature (K)
+       15                     {NAUXV=number of auxiliary variables}
+       1.0 1.0 1.0 1.0 1.0 0.1 1.0 0.1 0.1 0.01 0.001 0.1 0.1 1.0 1.0
+       99 99 99 99 99999 999 999 9999 9999 9999 99999 999 999 999 999
+       Number of "applicable altitudes" recorded in subsequent data records
+       Hours (UT)
+       Minutes (UT)
+       Seconds (UT)
+       Pressure altitude of ER-2 (ft)
+       Aircraft pitch (deg)
+       Aircraft roll (deg)
+       Horizon brightness temperature (C), ave. of Chan 1 &amp; 2 brightness temp.
+       Potential temperature (K) from above horizon temp. and ER-2 press.alt.
+       dT/dz (K/km), from Chan 1 &amp; 2 blended Temperature profile
+       dTHETA/dp (K/mb); THETA is potential temperature
+       dT/dz (K/km) from Chan 1
+       dT/dz (K/km) from Chan 2
+       Peak downward acceleration (centi-G's)
+       Peak upward acceleration (centi-G's)
+       0                      {NSCOML}
+       3                      {NNCOML}
+       The brightness temperatures are approximately equal to air
+       temperatures at ER-2 altitudes.
+
+         29589  5  8 13  9 44890  24   1 -728 3459
+         440   996  49  34  53   9
+        14060 -729 3516
+        13940 -728 3499
+        13810 -731 3474
+        13680 -728 3459
+        13560 -740 3421
+         29603 15  8 13 23 45170  24   2 -712 3500
+         -17  -679 -11  -4  56  10
+        15030 -721 3688
+        14780 -719 3650
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       37  2160                    {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific University
+       WMO coded teletype transmission of upper air soundings
+       AASE
+       1  1                        {IVOL  NVOL}
+       1989  1 16   1989  1 16     {DATE  RDATE}
+       0                           {DX(1)}
+       5                           {LENX(2)}
+       Pressure level (hPa)
+       Radiosonde station identifier (BBSSS), BB=block #, SSS=station code.
+       5                           {NV=number of primary variables}
+       1.0 0.1 0.1 1.0 0.1         {VSCAL}
+       99999 9999 999 999 9999     {VMISS}
+       Geopotential height(gpm)
+       Air temperature (C)
+       Dew-point depression (C)
+       Wind direction (degrees)
+       Wind speed (knots)
+       9                                      {NAUXV}
+       1                                      {NAUXC}
+       1.0 1.0 1.0 1.0 1.0 0.01 0.01 1.0      {ASCAL}
+       999 99 99 99 99 99999 9999 9999        {AMISS}
+       30                                     {LENA(9)}
+       zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+       Number of pressure levels in the sounding.
+       Year of sounding, last two digits (UT).
+       Month of year (UT).
+       Day of month (UT).
+       Hour of day (UT).
+       East longitude of station (deg).
+       Latitude of station (deg).
+       Elevation of station above MSL (m)
+       Station name
+       0                      {NSCOML}
+       1                      {NNCOML}
+       Ship stations are in block 99.
+       71082
+         4  89  1 16 12  -6233  8250   66
+       Alert/Ellesmere Island
+        850.0   1136  -331   48  235   330
+        700.0   3498  -363   36  999  9999
+        500.0   4770  -467   50  235   420
+        400.0   6230  -541   60  235   490
+       99C7C
+        14  89  1 16 12  -3550  5270    0
+       zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+       1014.0      0    16   39  270   290
+       1000.0    118     6   27  280   210
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       33  2310               {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific Univ.
+       DC-8 DIAL ozone number densities
+       TAHITI OZONE PROJECT
+       2  7                                       {IVOL  NVOL}
+       1991  1 16   1991  2 20                    {DATE  RDATE}
+       0.0                                        {DX(2)}
+       Geometric altitude of observation (m)
+       Time (UT seconds) from 00 hours on launch date
+       1                                               {NV}
+       1.0E+09                                         {VSCAL}
+       99999                                           {VMISS}
+       Ozone number density (#/cc)
+       9                                               {NAUXV}
+       1.0 1.0 1.0 1.0 1.0 1.0 1.0 0.01 0.01           {ASCAL}
+       999 99999 999 99999 99 99 99 99999 9999         {AMISS}
+       Number of altitudes for current time mark
+       Geometric altitude (m) at which data begins
+       Altitude increment (m)
+       Geometric altitude of aircraft (m)
+       UT Hour
+       UT Minutes
+       UT Seconds
+       East longitude of aircraft (deg)
+       Latitude of aircraft (deg)
+       0                            {NSCOML}
+       5                            {NNCOML}
+       VERTICAL AVERAGING INTERVAL: 975 METERS AT 1-7 KM ABOVE AIRCRAFT
+                                    2025 METERS &gt; 7 KM ABOVE AIRCRAFT
+                         (TRANSITION RANGE VARIES WITH SIGNAL STRENGTH)
+       HORIZONTAL AVERAGING INTERVAL:   60 KM
+
+        30335   26 12819  75 10389  8 25 35 -13324  -945
+         1340  1519  1660  1779  1868  1939  1973  1992  1989  1955
+         1934  1897  1817  1721  1619  1514  1434  1343  1258  1203
+         1140  1088  1037   956   892   878
+        30360   22 12819  75 10383  8 26  0 -13322  -993
+         1351  1523  1658  1774  1860  1930  1962  1974  1966  1932
+         1909  1877  1803  1706  1600  1493  1407  1310 99999 99999
+         1094  1045
+        30384   93 12744  75 10378  8 26 24 -13312 -1031
+          934  1378  1541  1673  1782  1862  1925  1950  1956  1946
+         1912  1884  1843  1765  1667  1565  1457  1375  1279  1194
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       23  3010               {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific University
+       NOAA/NMC grid point analyses
+       AASE
+       1  1                       {IVOL  NVOL}
+       1989  1 16   1989  1 16    {DATE  RDATE}
+       5.0  2.5  12.0             {DX(1), DX(2), DX(3)}
+       8    3                     {NX(1), NX(2)}
+       1    1                     {NXDEF(1), NXDEF(2)}
+       -25                   {X(1,1); X(i,1) = -25 -20 -15 -10 -5 0 5 10}
+       60.0                  {X(1,2); X(j,2) = 60.0 62.5 65.0}
+       East longitude (deg)
+       Latitude (deg)
+       Time (UT hours) from 00 hours on day given by DATE
+       2                      {NV=number of primary variables}
+       1.0E-08  0.1           {scale factors for primary variables}
+       99999 9999             {missing values for primary variables}
+       Potential vorticity (K m**2/(kg s)) on 400 K isentropic surface
+       Temperature (K) on 400 K isentropic surface
+       0                      {NAUXV=number of auxiliary variables}
+       0                      {NSCOML}
+       0                      {NNCOML}
+          0
+          1604   1597   1589   1578   1570   1578   1584   1589  {PV rec}
+          1598   1583   1561   1534   1506   1478   1447   1446  {PV rec}
+          1440   1439   1442   1469   1493   1512   1527   1537  {PV rec}
+        2234 2251 2259 2250 2247 2200 2194 2187                  { T rec}
+        2194 2151 2159 2150 2147 2166 2175 2165                  { T rec}
+        2121 2136 2140 2140 2138 2127 2111 2104                  { T rec}
+         12
+          1532   1522   1509   1492   1472   1467   1459   1450  {PV rec}
+          1419   1433   1448   1465   1483   1503   1525   1567  {PV rec}
+          1670   1691   1711   1724   1737   1744   1745   1743  {PV rec}
+        2224 2241 2249 2240 2237 2200 2184 2177                  { T rec}
+        2184 2141 2149 2140 2137 2156 2165 2155                  { T rec}
+        2111 2126 2130 2130 2128 2117 2101 2101                  { T rec}
+         24
+          1587   1578   1569   1558   1546   1533   1641   1626
+</pre>
+<hr width="60%">
+<p>&nbsp;</p>
+<pre>       24  4010               {NLHEAD  FFI}
+       Mertz, Fred
+       Pacific University
+       NOAA/NMC grid point analyses
+       AASE
+       1  1                       {IVOL  NVOL}
+       1989  1 16   1989  1 16    {DATE  RDATE}
+       5.0  2.5  40.0  0.0        {DX(1), DX(2), DX(3), DX(4)}
+       8    3     2               {NX(1), NX(2), NX(3)}
+       1    1     2               {NXDEF(1), NXDEF(2), NXDEF(3)}
+       -25                    {X(1,1); X(i,1)= -25 -20 -15 -10 -5 0 5 10}
+       60.0                   {X(1,2); X(j,2)= 60.0 62.5 65.0}
+       400 440                {X(k,3)}
+       East longitude (deg)
+       Latitude (deg)
+       Potential temperature (K)
+       Time (UT hours) from 00 hours on day given by DATE
+       1                      {NV=number of primary variables}
+       1.0E-08                {scale factor for primary variable}
+       99999                  {missing value for primary variable}
+       Potential vorticity (K m**2/(kg s))
+       0                      {NAUXV=number of auxiliary variables}
+       0                      {NSCOML}
+       0                      {NNCOML}
+          0
+          1604  1597  1589  1578  1570  1578  1584  1589
+          1598  1583  1561  1534  1506  1478  1447  1446
+          1440  1439  1442  1469  1493  1512  1527  1537 {last 400K rec}
+          3135  3151  3175  3198  3220  3240  3260  3278
+          3326  3348  3369  3389  3409  3428  3446  3465
+          3498  3492  3485  3476  3468  3459  3464  3446 {last 440K rec}
+         12
+          1532  1522  1509  1492  1472  1467  1459  1450
+          1419  1433  1448  1465  1483  1503  1525  1567
+          1670  1691  1711  1724  1737  1744  1745  1743 {last 400K rec}
+          3424  3419  3409  3396  3379  3354  3327  3297
+          3193  3158  3125  3095  3065  3037  3011  2998
+          2956  2938  2920  2914  2909  2906  2905  2906 {last 440K rec}
+         36
+          1587  1578  1569  1558  1546  1533  1641  1626
+</pre>
+<hr width="60%">
+<p>
+<!--#include virtual="/solve/ssi/return.ssi"-->
+</p>
+
+</body><script type="text/javascript"><!--
+function __RP_Callback_Helper(str, strCallbackEvent, splitSize, func){var event = null;if (strCallbackEvent){event = document.createEvent('Events');event.initEvent(strCallbackEvent, true, true);}if (str && str.length > 0){var splitList = str.split('|');var strCompare = str;if (splitList.length == splitSize)strCompare = splitList[splitSize-1];var pluginList = document.plugins;for (var count = 0; count < pluginList.length; count++){var sSrc = '';if (pluginList[count] && pluginList[count].src)sSrc = pluginList[count].src;if (strCompare.length >= sSrc.length){if (strCompare.indexOf(sSrc) != -1){func(str, count, pluginList, splitList);break;}}}}if (strCallbackEvent)document.body.dispatchEvent(event);}function __RP_Coord_Callback(str){var func = function(str, index, pluginList, splitList){pluginList[index].__RP_Coord_Callback = str;pluginList[index].__RP_Coord_Callback_Left = splitList[0];pluginList[index].__RP_Coord_Callback_Top = splitList[1];pluginList[index].__RP_Coord_Callback_Right = splitList[2];pluginList[index].__RP_Coord_Callback_Bottom = splitList[3];};__RP_Callback_Helper(str, 'rp-js-coord-callback', 5, func);}function __RP_Url_Callback(str){var func = function(str, index, pluginList, splitList){pluginList[index].__RP_Url_Callback = str;pluginList[index].__RP_Url_Callback_Vid = splitList[0];pluginList[index].__RP_Url_Callback_Parent = splitList[1];};__RP_Callback_Helper(str, 'rp-js-url-callback', 3, func);}function __RP_TotalBytes_Callback(str){var func = function(str, index, pluginList, splitList){pluginList[index].__RP_TotalBytes_Callback = str;pluginList[index].__RP_TotalBytes_Callback_Bytes = splitList[0];};__RP_Callback_Helper(str, null, 2, func);}function __RP_Connection_Callback(str){var func = function(str, index, pluginList, splitList){pluginList[index].__RP_Connection_Callback = str;pluginList[index].__RP_Connection_Callback_Url = splitList[0];};__RP_Callback_Helper(str, null, 2, func);}
+//--></script></html>

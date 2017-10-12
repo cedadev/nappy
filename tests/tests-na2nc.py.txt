@@ -1,0 +1,10 @@
+../lib/nappy/script/na2nc.py
+../lib/nappy/script/na2nc.py -i ../data_files/1001.na -o ../test_outputs/1001.nc -n -t "days since 2008-01-01 00:00:00"
+../lib/nappy/script/na2nc.py -i ../data_files/1001.na -o ../test_outputs/1001-renamed.nc -n -t "days since 2008-01-01 00:00:00" -r pressure,measurep
+../lib/nappy/script/na2nc.py -i ../data_files/1001.na -o ../test_outputs/1001-global-atts.nc -n -t "days since 2008-01-01 00:00:00" -g "useful_info","happy days"
+../lib/nappy/script/na2nc.py -i ../data_files/1010.na -o ../test_outputs/1010.nc -n -t "days since 2008-01-01 00:00:00"
+../lib/nappy/script/na2nc.py -i ../data_files/1010.na -o ../test_outputs/1010-v0-only.nc -n -t "days since 2008-01-01 00:00:00" -v 0
+../lib/nappy/script/na2nc.py -i ../data_files/2010.na -o ../test_outputs/2010.nc -n -t "days since 2008-01-01 00:00:00"
+../lib/nappy/script/na2nc.py -i ../data_files/3010.na -o ../test_outputs/3010.nc -n -t "days since 2008-01-01 00:00:00"
+../lib/nappy/script/na2nc.py -i ../data_files/4010.na -o ../test_outputs/4010.nc -n -t "days since 2008-01-01 00:00:00"
+../lib/nappy/script/na2nc.py -i ../data_files/4010.na -o ../test_outputs/4010-renamed.nc -n -t "days since 2008-01-01 00:00:00" -r temperature,testvar1
