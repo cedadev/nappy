@@ -54,7 +54,8 @@ $ export PYTHONPATH=$PYTHONPATH:/my/nappy/location
 ```
 $ python
 >>> import sys   # Imports the sys module
->>> sys.path.append("/my/nappy/location")   # Adds the directory to others used when searching for a module.
+>>> sys.path.append("/my/nappy/location")   # Adds the directory to others
+                                            # used when searching for a module.
 ```
 
 You should then be able to import nappy with:
@@ -94,7 +95,30 @@ Query the methods on the 'myfile' objects:
 ```
 >>> dir(myfile)
 
-['A', 'AMISS', 'ANAME', 'ASCAL', 'DATE', 'DX', 'FFI', 'IVOL', 'LENA', 'LENX', 'MNAME', 'NAUXC', 'NAUXV', 'NCOM', 'NIV', 'NLHEAD', 'NNCOML', 'NSCOML', 'NV', 'NVOL', 'NVPM', 'NX', 'NXDEF', 'ONAME', 'ORG', 'RDATE', 'SCOM', 'SNAME', 'V', 'VMISS', 'VNAME', 'VSCAL', 'X', 'XNAME', '__doc__', '__getitem__', '__init__', '__module__', '_checkForBlankLines', '_normalizeIndVars', '_normalizedX', '_open', '_parseDictionary', '_readAuxVariablesHeaderSection', '_readCharAuxVariablesHeaderSection', '_readComments', '_readCommonHeader', '_readData1', '_readData2', '_readLines', '_readNormalComments', '_readSpecialComments', '_readTopLine', '_readVariablesHeaderSection', '_setupArrays', '_writeAuxVariablesHeaderSection', '_writeComments', '_writeCommonHeader', '_writeVariablesHeaderSection', 'auxToCdmsVariable', 'close', 'createCdmsAuxVariables', 'createCdmsAxes', 'createCdmsVariables', 'file', 'filename', 'floatFormat', 'getAuxMissingValue', 'getAuxScaleFactor', 'getAuxVariable', 'getAuxVariables', 'getFFI', 'getFileDates', 'getIndependentVariable', 'getIndependentVariables', 'getMissingValue', 'getMission', 'getNADict', 'getNormalComments', 'getNumHeaderLines', 'getOrg', 'getOrganisation', 'getOriginator', 'getScaleFactor', 'getSource', 'getSpecialComments', 'getVariable', 'getVariables', 'getVolumes', 'naDict', 'pattnBrackets', 'readData', 'readHeader', 'delimiter', 'toCdmsAxis', 'toCdmsFile', 'toCdmsVariable', 'writeData', 'writeHeader']
+['A', 'AMISS', 'ANAME', 'ASCAL', 'DATE', 'DX', 'FFI', 'IVOL', 
+'LENA', 'LENX', 'MNAME', 'NAUXC', 'NAUXV', 'NCOM', 'NIV', 
+'NLHEAD', 'NNCOML', 'NSCOML', 'NV', 'NVOL', 'NVPM', 'NX', 
+'NXDEF', 'ONAME', 'ORG', 'RDATE', 'SCOM', 'SNAME', 'V', 
+'VMISS', 'VNAME', 'VSCAL', 'X', 'XNAME', '__doc__', 
+'__getitem__', '__init__', '__module__', '_checkForBlankLines', 
+'_normalizeIndVars', '_normalizedX', '_open', '_parseDictionary', 
+'_readAuxVariablesHeaderSection', '_readCharAuxVariablesHeaderSection',
+'_readComments', '_readCommonHeader', '_readData1', '_readData2', 
+'_readLines', '_readNormalComments', '_readSpecialComments', 
+'_readTopLine', '_readVariablesHeaderSection', '_setupArrays', 
+'_writeAuxVariablesHeaderSection', '_writeComments', 
+'_writeCommonHeader', '_writeVariablesHeaderSection', 
+'auxToCdmsVariable', 'close', 'createCdmsAuxVariables', 
+'createCdmsAxes', 'createCdmsVariables', 'file', 'filename', 
+'floatFormat', 'getAuxMissingValue', 'getAuxScaleFactor', 
+'getAuxVariable', 'getAuxVariables', 'getFFI', 'getFileDates', 
+'getIndependentVariable', 'getIndependentVariables', 
+'getMissingValue', 'getMission', 'getNADict', 'getNormalComments', 
+'getNumHeaderLines', 'getOrg', 'getOrganisation', 'getOriginator', 
+'getScaleFactor', 'getSource', 'getSpecialComments', 'getVariable', 
+'getVariables', 'getVolumes', 'naDict', 'pattnBrackets', 'readData', 
+'readHeader', 'delimiter', 'toCdmsAxis', 'toCdmsFile', 'toCdmsVariable', 
+'writeData', 'writeHeader']
 ```
 
 List the variables:
@@ -115,7 +139,34 @@ Get a dictionary of the file contents in the form of NASA Ames documentation:
 
 ```
 >>> myfile.getNADict()
-{'ASCAL': [1.0], 'NLHEAD': 43, 'NNCOML': 11, 'NCOM': ['The files included in this data set illustrate each of the 9 NASA Ames file', 'format indices (FFI). A detailed description of the NASA Ames format can be', 'found on the Web site of the British Atmospheric Data Centre (BADC) at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 'E-mail contact: badc@rl.ac.uk', 'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 'Exchange, Version 1.3, 1998. This work can be found at', 'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 'and a copy of it at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', ''], 'DX': [20.0, 10.0], 'DATE': [1969, 1, 1], 'NXDEF': [1], 'ONAME': 'De Rudder, Anne', 'SNAME': 'Anemometer measurements averaged over longitude', 'MNAME': 'NERC Data Grid (NDG) project', 'NX': [9], 'NSCOML': 9, 'RDATE': [2002, 10, 31], 'AMISS': [2000.0], 'VSCAL': [1.0], 'NV': 1, 'NVOL': 13, 'X': [[], [0.0]], 'XNAME': ['Altitude (km)', 'Latitude (degrees North)'], 'VNAME': ['Mean zonal wind (m/s)'], 'SCOM': ['Example of FFI 2010 (b).', 'This example illustrating NASA Ames file format index 2010 is based on results', 'from Murgatroyd (1969) as displayed in Brasseur and Solomon, Aeronomy of the', 'Middle Atmosphere, Reidel, 1984 (p.36). It is representative of the mean zonal', 'wind distribution in the winter hemisphere as a function of latitude and height.', 'The first date on line 7 (1st of January 1969) is fictitious.', 'From line 10 (NXDEF = 1) we know that the latitude points are defined by', 'X(i) = X(1) + (i-1)DX1 for i = 1, ..., NX', 'with X(1) = 0 deg (line 11), DX1 = 10 deg (line 8) and NX = 9 (line 9).'], 'VMISS': [200.0], 'IVOL': 7, 'FFI': 2010, 'ORG': 'Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837', 'NIV': 2, 'ANAME': ['Pressure (hPa)'], 'NAUXV': 1}
+{'ASCAL': [1.0], 'NLHEAD': 43, 'NNCOML': 11, 'NCOM': 
+['The files included in this data set illustrate each of the 9 NASA Ames file', 
+'format indices (FFI). A detailed description of the NASA Ames format can be', 
+'found on the Web site of the British Atmospheric Data Centre (BADC) at', 
+'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 
+'E-mail contact: badc@rl.ac.uk', 
+'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 
+'Exchange, Version 1.3, 1998. This work can be found at', 
+'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 
+'and a copy of it at', 
+'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', ''], 
+'DX': [20.0, 10.0], 'DATE': [1969, 1, 1], 'NXDEF': [1], 
+'ONAME': 'De Rudder, Anne', 'SNAME': 'Anemometer measurements averaged over longitude', 
+'MNAME': 'NERC Data Grid (NDG) project', 'NX': [9], 'NSCOML': 9, 
+'RDATE': [2002, 10, 31], 'AMISS': [2000.0], 'VSCAL': [1.0], 'NV': 1, 
+'NVOL': 13, 'X': [[], [0.0]], 'XNAME': ['Altitude (km)', 'Latitude (degrees North)'], 
+'VNAME': ['Mean zonal wind (m/s)'], 'SCOM': ['Example of FFI 2010 (b).', 
+'This example illustrating NASA Ames file format index 2010 is based on results', 
+'from Murgatroyd (1969) as displayed in Brasseur and Solomon, Aeronomy of the', 
+'Middle Atmosphere, Reidel, 1984 (p.36). It is representative of the mean zonal', 
+'wind distribution in the winter hemisphere as a function of latitude and height.', 
+'The first date on line 7 (1st of January 1969) is fictitious.', 
+'From line 10 (NXDEF = 1) we know that the latitude points are defined by', 
+'X(i) = X(1) + (i-1)DX1 for i = 1, ..., NX', 
+'with X(1) = 0 deg (line 11), DX1 = 10 deg (line 8) and NX = 9 (line 9).'], 
+'VMISS': [200.0], 'IVOL': 7, 'FFI': 2010, 
+'ORG': 'Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837', 'NIV': 2, 
+'ANAME': ['Pressure (hPa)'], 'NAUXV': 1}
 ```
 
 Grab the normal comments:
@@ -123,14 +174,30 @@ Grab the normal comments:
 ```
 >>> comm=myfile.naDict["NCOM"]
 >>> print comm
-['The files included in this data set illustrate each of the 9 NASA Ames file', 'format indices (FFI). A detailed description of the NASA Ames format can be', 'found on the Web site of the British Atmospheric Data Centre (BADC) at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 'E-mail contact: badc@rl.ac.uk', 'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 'Exchange, Version 1.3, 1998. This work can be found at', 'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 'and a copy of it at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', '']
+['The files included in this data set illustrate each of the 9 NASA Ames file', 
+'format indices (FFI). A detailed description of the NASA Ames format can be', 
+'found on the Web site of the British Atmospheric Data Centre (BADC) at', 
+'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 'E-mail contact: badc@rl.ac.uk', 
+'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 
+'Exchange, Version 1.3, 1998. This work can be found at', 
+'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 
+'and a copy of it at', 
+'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', '']
 ```
 
 Use the file method to get the normal comments:
 
 ```
 >>> myfile.getNormalComments()
-['The files included in this data set illustrate each of the 9 NASA Ames file', 'format indices (FFI). A detailed description of the NASA Ames format can be', 'found on the Web site of the British Atmospheric Data Centre (BADC) at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 'E-mail contact: badc@rl.ac.uk', 'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 'Exchange, Version 1.3, 1998. This work can be found at', 'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 'and a copy of it at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', '']
+['The files included in this data set illustrate each of the 9 NASA Ames file', 
+'format indices (FFI). A detailed description of the NASA Ames format can be', 
+'found on the Web site of the British Atmospheric Data Centre (BADC) at', 
+'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 'E-mail contact: badc@rl.ac.uk',
+'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 
+'Exchange, Version 1.3, 1998. This work can be found at', 
+'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 
+'and a copy of it at', 
+'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', '']
 ```
 
 Read the actual data:
@@ -143,7 +210,14 @@ Inspect the data array ("V") in the NASA Ames dictionary:
 
 ```
 >>> print myfile.naDict["V"}
-[[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 6.9000000000000004, 12.800000000000001, 14.699999999999999, 20.0, 21.5, 18.0, 8.1999999999999993], [-29.0, -15.199999999999999, 3.3999999999999999, 28.199999999999999, 41.0, 39.100000000000001, 17.899999999999999, 8.0, 0.10000000000000001], [-10.0, 8.4000000000000004, 31.199999999999999, 59.899999999999999, 78.5, 77.700000000000003, 47.0, 17.600000000000001, 16.0], [200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0]]]
+[[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 
+4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 
+6.9000000000000004, 12.800000000000001, 14.699999999999999, 20.0, 21.5, 18.0, 
+8.1999999999999993], [-29.0, -15.199999999999999, 3.3999999999999999, 
+28.199999999999999, 41.0, 39.100000000000001, 17.899999999999999, 8.0, 
+0.10000000000000001], [-10.0, 8.4000000000000004, 31.199999999999999, 
+59.899999999999999, 78.5, 77.700000000000003, 47.0, 17.600000000000001, 
+16.0], [200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0]]]
 ```
 
 ### Example 2: Writing a NASA Ames file
