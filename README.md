@@ -2,11 +2,17 @@
 
 *NASA Ames Package in Python.*
 
-## Description:
+## Description
 
-A NASA Ames I/O package - A python input/output package for NASA Ames file formats
+A NASA Ames I/O package - A python input/output package for NASA Ames file formats.
 
-## Reference doc:
+## Version History
+
+This repository was previously hosted on CEDA's Subversion repository. The first tagged release here is:
+
+ - version 1.1.3
+
+## Reference doc
 
 Software written with reference to:
 
