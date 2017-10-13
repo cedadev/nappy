@@ -9,15 +9,14 @@ from setuptools import setup, find_packages
 
 setup(
       name='nappy',
-      version='1.1.2',
+      version='1.1.4',
 
       description = 'NASA Ames Processing in Python',
       long_description = "A python package for reading/writing NASA Ames files, writing NASA Ames-style CSV files and converting to/from NetCDF (if CDMS enabled).",
       keywords = 'Python CSV NASA Ames NetCDF convert CDMS',
       author = 'Ag Stephens',
       author_email = 'ag.stephens@stfc.ac.uk',
-      url = 'http://proj.badc.rl.ac.uk/cows/wiki/CowsSupport/Nappy',
-      #classifiers = [],
+      url = 'https://github.com/cedadev/nappy',
 
       # We make the package non-zip_safe so that we don't need to
       # change the way ini files are read too much.
