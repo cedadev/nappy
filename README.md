@@ -10,7 +10,7 @@ A NASA Ames I/O package - A python input/output package for NASA Ames file forma
 
 This repository was previously hosted on CEDA's Subversion repository. The first tagged release here is:
 
- - version 1.1.3
+ - version 1.1.4
 
 ## Reference doc
 
