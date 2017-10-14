@@ -1,5 +1,4 @@
-Nappy Units Tests directory
-===========================
+# Nappy Units Tests directory
 
 Need unit tests as follows:
 
@@ -23,11 +22,12 @@ Need unit tests as follows:
 9. Error stack needed
 
 
-Running tests
-=============
+# Running tests
 
 nose is handy utility. It allows you to run:
 
+```bash
 $ nosetests __init__.py 
+````
 
-and it runs all tests that match "test_*.py"
+and it runs all tests that match `test_*.py`

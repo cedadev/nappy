@@ -36,8 +36,7 @@ Nappy provides the following functionality:
 
  1. A set of I/O routines for most NASA Ames File Format Indices (FFIs).
  2. An implicit checking facility for NASA Ames compliance - i.e. if the file is formatted incorrectly then a python error will be raised. This checking facility will eventually be made explicit to report NASA Ames specific errors.
- 3. Methods to interrogate the contents the contents of NASA Ames files (such as: naFile.getVariable(),
-naFile.getIndependentVariables(), naFile.getMissingValue() etc.).
+ 3. Methods to interrogate the contents the contents of NASA Ames files (such as: `naFile.getVariable()`, `naFile.getIndependentVariables()`, `naFile.getMissingValue()` etc.).
  4. A set of  to allow conversion to and from NetCDF (for the most common FFIs) using the Climate Data Analysis Tools (CDAT) package. This functionality is only available on Unix/linux operating systems as CDAT has not been ported to Windows. *Note* that any CDAT-compatible format can potentially be converted to NASA Ames via these libraries.
  5. Some command line utilities for the format conversions in (4).
 
@@ -51,14 +50,13 @@ If the nappy directory has been installed at `/my/nappy/location/nappy` then the
 
 #### Option 1. Append your nappy path to the `PYTHONPATH` environment variable:
 
-```
-$ export PYTHONPATH=$PYTHONPATH:/my/nappy/location
+```bash
+export PYTHONPATH=$PYTHONPATH:/my/nappy/location
 ```
 
 #### Option 2: Append your nappy path once within python:
 
-```
-$ python
+```pydoc
 >>> import sys   # Imports the sys module
 >>> sys.path.append("/my/nappy/location")   # Adds the directory to others
                                             # used when searching for a module.
@@ -66,11 +64,22 @@ $ python
 
 You should then be able to import nappy with:
 
-```
+```pydoc
 >>> import nappy
 ```
 
 Note that if you have CDAT installed then you must also point to relevant CDAT directories with either the `PYTHONPATH` or `sys.path` variable.
+
+#### Option 3: Installing to a virtualenv
+
+```bash
+virtualenv nappy
+cd nappy
+source bin/activate
+git clone https://github.com/cedadev/nappy.git
+cd nappy
+python setup.py install
+```
 
 ## Usage Examples
 
@@ -80,25 +89,25 @@ The following examples demonstrate and overview of nappy usage:
 
 Open the python interactive prompt:
 
-```
-$ python
+```bash
+python
 ```
 
 Import the nappy package:
 
-```
+```pydoc
 >>> import nappy
 ```
 
 Open a NASA Ames file (reading the header only):
 
-```
+```pydoc
 >>> myfile = nappy.openNAFile('some_nasa_ames_file.na')
 ```
 
 Query the methods on the 'myfile' objects:
 
-```
+```pydoc
 >>> dir(myfile)
 
 ['A', 'AMISS', 'ANAME', 'ASCAL', 'DATE', 'DX', 'FFI', 'IVOL', 
@@ -129,21 +138,21 @@ Query the methods on the 'myfile' objects:
 
 List the variables:
 
-```
+```pydoc
 >>> myfile.getVariables()
 [('Mean zonal wind', 'm/s', 200.0, 1.0)]
 ```
 
 List the independent variables (or dimension axes):
 
-```
+```pydoc
 >>> myfile.getIndependentVariables()
 [('Altitude', 'km'), ('Latitude', 'degrees North')]
 ```
 
 Get a dictionary of the file contents in the form of NASA Ames documentation:
 
-```
+```pydoc
 >>> myfile.getNADict()
 {'ASCAL': [1.0], 'NLHEAD': 43, 'NNCOML': 11, 'NCOM': 
 ['The files included in this data set illustrate each of the 9 NASA Ames file', 
@@ -177,7 +186,7 @@ Get a dictionary of the file contents in the form of NASA Ames documentation:
 
 Grab the normal comments:
 
-```
+```pydoc
 >>> comm=myfile.naDict["NCOM"]
 >>> print comm
 ['The files included in this data set illustrate each of the 9 NASA Ames file', 
@@ -193,7 +202,7 @@ Grab the normal comments:
 
 Use the file method to get the normal comments:
 
-```
+```pydoc
 >>> myfile.getNormalComments()
 ['The files included in this data set illustrate each of the 9 NASA Ames file', 
 'format indices (FFI). A detailed description of the NASA Ames format can be', 
@@ -208,13 +217,13 @@ Use the file method to get the normal comments:
 
 Read the actual data:
 
-```
+```pydoc
 >>> myfile.readData()
 ```
 
 Inspect the data array ("V") in the NASA Ames dictionary:
 
-```
+```pydoc
 >>> print myfile.naDict["V"}
 [[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 
 4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 
@@ -230,13 +239,13 @@ Inspect the data array ("V") in the NASA Ames dictionary:
 
 Start the python interactive prompt:
 
-```
-$ python
+```pydoc
+python
 ```
 
 Import the nappy package:
 
-```
+```pydoc
 >>> import nappy
 ```
 
@@ -244,7 +253,7 @@ Pretend you have created a complete NASA Ames file contents in a dictionary call
 
 Write the data to a NASA Ames file:
 
-```
+```pydoc
 >>> nappy.openNAFile('my_file_to_write.na', 'w', na_contents)
 ```
 
@@ -254,16 +263,16 @@ Write the data to a NASA Ames file:
 
 Run the command-line utility `na2nc`:
 
-```
-$ na2nc -t "seconds since 1999-01-01 00:00:00" -i my_nasa_ames_file.na -o my_netcdf_file.nc
+```bash
+na2nc -t "seconds since 1999-01-01 00:00:00" -i my_nasa_ames_file.na -o my_netcdf_file.nc
 ```
 
 Note that the `-t` argument allows you to pass a NetCDF-style data/time units description into your NetCDF that will allow software packages to identify the time axis correctly. This is required when the time unit string in your NASA Ames file is non-standard.
 
 For help on the command-line utility type:
 
-```
-$ na2nc -h
+```bash
+na2nc -h
 
 na2nc.py
 ========
@@ -296,14 +305,14 @@ Where
 
 Run the command-line utility `nc2na`:
 
-```
-$ nc2na -i my_netcdf_file.nc -o my_nasa_ames_file.na
+```bash
+nc2na -i my_netcdf_file.nc -o my_nasa_ames_file.na
 ```
 
 For help on the command-line utility type:
 
-```
-$ nc2na -h
+```bash
+nc2na -h
 
 nc2na.py
 ========
