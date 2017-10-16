@@ -74,7 +74,7 @@ class NAFile1020(nappy.na_file.na_file_1010.NAFile1010):
         Normalizes the values in the unbounded independent variable for FFIs
         that store an abbreviated version of this axis.
         """
-        if self._normalized_X == True: return
+        if self._normalized_X: return
         newX = []
         for x in self.X[0]:
             for i in range(self.NVPM):

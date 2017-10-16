@@ -80,7 +80,7 @@ class CDMSToNA:
         Otherwise variables must be auxiliary variables within that structure (i.e. only
         defined once per the least changing dimension.
         """
-        if self.converted == True:
+        if self.converted:
             return self.na_dict_list
         
         # Convert any singleton variables to CDMS variables
@@ -96,7 +96,7 @@ class CDMSToNA:
         collector.collectNAContent()
 
         # Return if no files returned
-        if collector.found_na == False:
+        if not collector.found_na:
             msg = "\nNo files created after variables parsed."
             if DEBUG: log.debug(msg)
             self.output_message.append(msg)
@@ -119,7 +119,7 @@ class CDMSToNA:
             self.output_message += collector.output_message
 
             # Append to list if more variables were captured
-            if collector.found_na == True:  
+            if collector.found_na:
                 na_dict_list.append((collector.na_dict, collector.var_ids))
 
         self.na_dict_list = na_dict_list

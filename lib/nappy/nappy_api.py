@@ -281,7 +281,7 @@ def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override={},
     convertor.convert()
 
     # If user only wants files then only give them that
-    if only_return_file_names == True:
+    if only_return_file_names:
         return convertor.constructNAFileNames(na_file)
     else:
         convertor.writeNAFiles(na_file, delimiter=delimiter, float_format=float_format, 

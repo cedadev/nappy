@@ -101,7 +101,7 @@ class NADictToCdmsObjects:
         Returns (variable_list, aux_variable_list, global_attributes_list).
         All these can be readily written to a CDMS File object.
         """
-        if self.converted == True:
+        if self.converted:
             log.info("Already converted to CDMS objects so not re-doing.")
             return (self.cdms_variables, self.cdms_aux_variables, self.global_attributes)
 
@@ -340,7 +340,7 @@ class NADictToCdmsObjects:
         """
         Creates a cdms axis from a NASA Ames independent variable.
         """
-        if self.na_file_obj._normalized_X == False:   self.na_file_obj._normalizeIndVars()
+        if not self.na_file_obj._normalized_X:   self.na_file_obj._normalizeIndVars()
 
         if self.na_file_obj.NIV == 1:
             array = self.na_file_obj.X
@@ -375,7 +375,7 @@ class NADictToCdmsObjects:
 
                 while time_units_input != "" and not time_units_pattn.match(time_units_input):
                     message = time_units_warning_message			    
-                    if self.time_warning == True:
+                    if self.time_warning:
                         log.debug(message)
                         time_units_input = raw_input("Please insert your time unit string here (or leave blank):").strip()
                     else: 

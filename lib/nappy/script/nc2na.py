@@ -130,7 +130,7 @@ def nc2na(args=None):
     na_files = apply(nappy.convertNCToNA, [nc_file], arg_dict)
 
     # If user only wants files then only give them that
-    if arg_dict["only_return_file_names"] == True:
+    if arg_dict["only_return_file_names"]:
         print "\nExpected file names would be:"
         for naf in na_files:
             print "    ", naf

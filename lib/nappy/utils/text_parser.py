@@ -41,7 +41,7 @@ def readItemsFromLine(line, nitems=None, rttype=str):
     rtitems = re.split(r"\s+", line.strip())
 
     if nitems and len(rtitems) != nitems:
-        raise "Incorrect number of items (%s) found in line: \n'%s'" % (nitems, line)
+        raise Exception("Incorrect number of items (%s) found in line: \n'%s'" % (nitems, line))
     if rttype is not str:
         rtitems = [rttype(x) for x in rtitems]
     return rtitems

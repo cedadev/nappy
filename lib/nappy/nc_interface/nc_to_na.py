@@ -224,7 +224,7 @@ class NCToNA(nappy.nc_interface.cdms_to_na.CDMSToNA):
                         self.output_message.append(msg)
 
             # For certain FFIs create final Normal comments as a list of column headers before data section 
-            if add_column_headers == True:
+            if add_column_headers:
                 self._updateWithColumnHeaders(this_na_dict, delimiter)
         
             # Cope with size limits if specified and FFI is 1001
@@ -398,7 +398,7 @@ class NCToNA(nappy.nc_interface.cdms_to_na.CDMSToNA):
             end_used = end_line
 
         # Check for alternative last line in NCOM
-        if end_used == False and key == "NCOM":
+        if not end_used and key == "NCOM":
             end_line2 = hp["data_next"]
             if existing_comments[-1] == end_line2:
                 existing_comments = existing_comments[:-1]

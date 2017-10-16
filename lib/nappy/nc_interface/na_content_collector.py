@@ -68,7 +68,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         Typical usage:
         >>> x = NAContentCollector(["temp", "precip"])
         >>> x.collectNAContent()
-        >>> if x.found_na == True:
+        >>> if x.found_na:
         ...     print x.na_dict, x.var_ids, x.unused_vars 
         """
         self.output_message = []
@@ -194,7 +194,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 first_axis = var.getAxis(0)
                 # Check if axis is identical to first axis of main best variable, if so, can be auxiliary var
-                if cdms_utils.axis_utils.areAxesIdentical(best_var_axes[0], first_axis) == False: 
+                if not cdms_utils.axis_utils.areAxesIdentical(best_var_axes[0], first_axis):
 
                     # If not identical, then it might still qualify as an auxiliary every n time points - valid for 1020
                     if len(var.shape) == 1:
@@ -222,7 +222,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 # Loop through dimensions
                 for i in range(number_of_dims):            
-                    if cdms_utils.axis_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]) == False:
+                    if not cdms_utils.axis_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]):
                         self.unused_vars.append(var)
                         break
                 else:
@@ -673,7 +673,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                         varflag = "using" 
                         spec_comm_flag = 1
 
-                    if var_name_written == False:
+                    if not var_name_written:
                         SCOM.append("  Variable %s: %s" % (var.id, name))
                         var_name_written = True
 

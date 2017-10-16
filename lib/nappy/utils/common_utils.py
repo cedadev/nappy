@@ -36,11 +36,12 @@ def readFFI(filename):
     Function to read the top line of a NASA Ames file to extract
     the File Format Index (FFI) and return it as an integer.
     """
-    fin = open(filename)
-    topline = fin.readline()
-    fin.close()
+    with open(filename) as fin:
+        topline = fin.readline()
+        nextline = fin.readline()
 
     ffi = text_parser.readItemsFromLine(topline, 2, int)[-1]
+
     return ffi
 
 

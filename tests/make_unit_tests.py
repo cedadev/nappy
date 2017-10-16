@@ -58,7 +58,8 @@ def makeUnitTestModule(dr, include_init=False):
         mod_name = os.path.split(mod)[-1]
         content = template % (mod_name, mod_name)
         ut_name = "test_%s" % mod_name
-        ut_file = open(ut_name, "w").write(content)
+        with open(ut_name, "w") as fh:
+            ut_file = fh.write(content)
         print "Wrote:", ut_name
 
 
