@@ -107,7 +107,7 @@ def compareSections(l1, l2, number_clever=True, approx_equal=False,
             else:
                 same = False
         else: 
-            if number_clever == False:
+            if not number_clever:
                 if items1 != items2:
                     same = False
             else:
@@ -135,7 +135,7 @@ def compareSections(l1, l2, number_clever=True, approx_equal=False,
                             same = False
                             break 
               
-        if same == False:
+        if not same:
             all_same = False
             print "Line %s:" % (i+1)
             print ">>>", l1[i]
@@ -169,8 +169,12 @@ def compNAFiles(f1, f2, header=True, body=True, number_clever=True, approx_equal
     
     # Note delimiter set as None will do split on white-space (which we want!)
 
-    l1 = open(f1).readlines()
-    l2 = open(f2).readlines()
+    with open(f1) as fh1:
+        l1 = fh1.readlines()
+
+    with open(f2) as fh2:
+        l2 = fh2.readlines()
+
     head_len1 = int(l1[0].split(delimiter_1)[0])
     head_len2 = int(l2[0].split(delimiter_2)[0])
 
@@ -180,22 +184,22 @@ def compNAFiles(f1, f2, header=True, body=True, number_clever=True, approx_equal
     body2 = l2[head_len2:]
 
     same = True
-    if header == True:
+    if header:
         print "Comparing headers:"
         print ">>> %s header:" % f1
         print "<<< %s header:" % f2
         same = compareSections(header1, header2, number_clever, approx_equal, delimiter_1, delimiter_2) 
-        if same == True:
+        if same:
             print "HEADERS ARE IDENTICAL."
         if len(header1) != len(header2):
             print "Header lengths differ:\n>>> %s: %s\n<<< %s: %s" % (f1, len(header1), f2, len(header2))
 
-    if body == True:
+    if body:
         print "Comparing bodies:"
         print ">>> %s body:" % f1
         print "<<< %s body:" % f2
         same = compareSections(body1, body2, number_clever, approx_equal, delimiter_1, delimiter_2)
-        if same == True:
+        if same:
             print "BODIES ARE IDENTICAL."
         if len(body1) != len(body2):
             print "Body lengths differ:\n>>> %s: %s\n<<< %s: %s" % (f1, len(body1), f2, len(body2))
@@ -238,7 +242,7 @@ def parseArgs(args):
     if len(files) != 2:
         exitNicely("Must provide a minimum of two file names as command line arguments.")
 
-    if a["header"] == False and a["body"] == False:
+    if not a["header"] and not a["body"]:
         exitNicely("Invalid selection: header-only and body-only cannot be selected together.")
 
     return (files, a)

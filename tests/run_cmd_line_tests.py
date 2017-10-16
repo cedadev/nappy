@@ -27,7 +27,8 @@ if len(args) == 0:
     sys.exit()
 
 fname = args[0]
-tests = open(fname).readlines()
+with open(fname) as fh:
+    tests = fh.readlines()
 limited_tests = [int(i) for i in args[1:]]
 
 

@@ -97,8 +97,11 @@ def compFiles(f1, f2):
             exitNicely("CANNOT compare files as item does not exist:" + f)
             
 
-    l1 = open(f1).readlines()
-    l2 = open(f2).readlines()
+    with open(f1) as fh1:
+        l1 = fh1.readlines()
+
+    with open(f2) as fh2:
+        l2 = fh2.readlines()
 
     leng = len(l1)
     if len(l2) < leng: 

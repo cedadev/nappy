@@ -97,17 +97,17 @@ class NAFile(nappy.na_file.na_core.NACore):
         if self.mode != "w":
             raise Exception("WARNING: Cannot write to read-only file. Can only write to NA file object when mode='w'.")
 
-        if self.data_written == True:
+        if self.data_written:
             raise Exception("WARNING: Cannot write multiple NASA Ames dictionaries to a single file. Please open a new NASA Ames file instance to write new data to.")
 
-        if self.is_open == False:
+        if not self.is_open:
             raise Exception("WARNING: NASA Ames file instance is closed and cannot be written to.")
    
         # Parse na_dict then write header and data
         self._parseDictionary()
         self.header = StringIO.StringIO()
 
-        if no_header == False:
+        if not no_header:
             self.writeHeader()
 
         self.writeData()
@@ -319,7 +319,10 @@ class NAFile(nappy.na_file.na_core.NACore):
         This method can be called directly by the user.
         """
         self._setupArrays()
-        datalines = open(self.filename).readlines()[self.NLHEAD:]
+
+        with open(self.filename) as fh:
+            datalines = fh.readlines()[self.NLHEAD:]
+
         datalines = self._checkForBlankLines(datalines)
 
         # Set up loop over unbounded indpendent variable
@@ -328,4 +331,4 @@ class NAFile(nappy.na_file.na_core.NACore):
             datalines = self._readData1(datalines, m)
             datalines = self._readData2(datalines, m)
             m = m + 1
-            
+
