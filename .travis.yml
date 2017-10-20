@@ -3,6 +3,7 @@ language: python
 addons:
   apt:
     packages:
+      - netcdf-bin
       - pandoc
 
 python:
