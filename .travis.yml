@@ -1,0 +1,28 @@
+language: python
+
+addons:
+  apt:
+    packages:
+      - netcdf-bin
+      - libnetcdf-dev
+      - pandoc
+
+python:
+  - "2.7"
+  - "3.4"
+
+install:
+  - pip install -r requirements-dev.txt
+  - pip install coveralls
+  - python setup.py install
+  - mkdir test_outputs
+
+script:
+  - python setup.py test
+  - find . -type f -name "*.py" | xargs flake8
+  - python setup.py --long-description | rst2html5.py
+
+after_success:
+  - coverage run --source=nappy -m unittest tests.run_tests
+  - coverage report -m
+  - coveralls
