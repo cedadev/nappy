@@ -1,2 +1,2 @@
-#cdat-lite
+cdat-lite
 numpy
