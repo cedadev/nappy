@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
       - netcdf-bin
+      - libnetcdf-dev
       - pandoc
 
 python:
