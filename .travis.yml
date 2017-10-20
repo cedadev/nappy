@@ -13,6 +13,7 @@ install:
   - pip install -r requirements-dev.txt
   - pip install coveralls
   - python setup.py install
+  - mkdir test_outputs
 
 script:
   - python setup.py test
