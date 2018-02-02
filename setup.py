@@ -9,12 +9,20 @@ import io
 import os
 from setuptools import setup, find_packages
 
+from nappy import __version__
+
+
 def read(filename, encoding='utf-8'):
     """read file contents"""
     full_path = os.path.join(os.path.dirname(__file__), filename)
     with io.open(full_path, encoding=encoding) as fh:
         contents = fh.read().strip()
     return contents
+
+
+def license():
+    return read('LICENSE')
+
 
 if os.path.exists('MANIFEST'):
     os.unlink('MANIFEST')
@@ -27,20 +35,19 @@ except(IOError, ImportError, OSError):
 
 setup(
     name='nappy',
-    version='1.1.4',
+    version=__version__,
     description='NASA Ames Processing in Python',
     long_description=LONG_DESCRIPTION,
     keywords='Python CSV NASA Ames NetCDF convert CDMS',
     author='Ag Stephens',
     author_email='ag.stephens@stfc.ac.uk',
     url='https://github.com/cedadev/nappy',
-    license='BSD',
+    license=license(),
     platforms='all',
 
     # We make the package non-zip_safe so that we don't need to
     # change the way ini files are read too much.
-    packages=find_packages('lib', exclude=['tests', 'tests.*']),
-    package_dir={'': 'lib'},
+    packages=find_packages(),
 
     include_package_data=True,
     zip_safe=False,
