@@ -22,12 +22,18 @@ class NAFile2160_TestCase(unittest.TestCase):
 
     def setUp(self):
         self.infile = os.path.join(data_files, "2160.na")
+        self.ndacc_infile = os.path.join(data_files, "2160_ndacc.na")
         self.outfile = os.path.join(test_outputs, "test_2160.na")
+        self.ndacc_outfile = os.path.join(test_outputs, "test_2160_ndacc.na")
         self.out_csv = os.path.join(test_outputs, "test_2160.csv")
         self.out_csv_annotated = os.path.join(test_outputs, "test_2160_annotated.csv")
         self.fin = nappy.openNAFile(self.infile)
         self.fin.readData()
-        self.na_dict = self.fin.getNADict()        
+        self.na_dict = self.fin.getNADict()
+        
+        self.ndacc_fin = nappy.openNAFile(self.ndacc_infile, ignore_header_lines=1)
+        self.ndacc_fin.readData()
+        self.ndacc_na_dict = self.ndacc_fin.getNADict()
 
     def test_read2160(self):
         "Tests reading FFI 2160."
@@ -36,6 +42,12 @@ class NAFile2160_TestCase(unittest.TestCase):
     def test_write2160(self):
         "Tests writing FFI 2160."
         fobj = nappy.openNAFile(self.outfile, mode="w", na_dict=self.na_dict)		
+        fobj.write()
+        self.failUnless(isinstance(fobj, nappy.na_file.na_file.NAFile))
+    
+    def test_write_ndacc(self):
+        "Tests writing FFI 2160 NDACC format."
+        fobj = nappy.openNAFile(self.ndacc_outfile, mode="w", na_dict=self.ndacc_na_dict)		
         fobj.write()
         self.failUnless(isinstance(fobj, nappy.na_file.na_file.NAFile))
 
