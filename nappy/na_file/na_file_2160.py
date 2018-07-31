@@ -35,7 +35,7 @@ class NAFile2160(nappy.na_file.na_file_2110.NAFile2110):
             self.ignored_header_lines.append(nappy.utils.text_parser.readItemFromLine(self.file.readline()))
 
         self._readCommonHeader()
-        self.NLHEAD+=self.ignore_header_lines
+        self.NLHEAD += self.ignore_header_lines
         self.DX = nappy.utils.text_parser.readItemsFromLine(self.file.readline(), 1, float)
         self.LENX = nappy.utils.text_parser.readItemFromLine(self.file.readline(), float)
         self.XNAME = nappy.utils.text_parser.readItemsFromLines(self._readLines(self.NIV), self.NIV, str)
