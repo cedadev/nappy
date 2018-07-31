@@ -30,7 +30,7 @@ class NACore:
                      "NAUXV", "NCOM", "NIV", "NLHEAD", "NNCOML",
                      "NSCOML", "NV", "NVOL", "NVPM", "NX", "NXDEF",
                      "ONAME", "ORG", "RDATE", "SCOM", "SNAME", "V",
-                     "VMISS", "VNAME", "VSCAL", "X", "XNAME")
+                     "VMISS", "VNAME", "VSCAL", "X", "XNAME", "ignored_header_lines")
 
     def __init__(self):
         """

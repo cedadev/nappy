@@ -31,12 +31,14 @@ def getNAFileClass(ffi):
     return eval("%s.%s" % (mod, cls))
    
 
-def readFFI(filename):
+def readFFI(filename, ignore_header_lines):
     """
     Function to read the top line of a NASA Ames file to extract
     the File Format Index (FFI) and return it as an integer.
     """
     with open(filename) as fin:
+        for i in range(ignore_header_lines):
+            fin.readline()
         topline = fin.readline()
         nextline = fin.readline()
 

@@ -30,7 +30,12 @@ class NAFile2160(nappy.na_file.na_file_2110.NAFile2110):
         Reads FFI-specifc header section.
         """
         self._normalized_X = False
+        
+        for i in range(self.ignore_header_lines):
+            self.ignored_header_lines.append(nappy.utils.text_parser.readItemFromLine(self.file.readline()))
+
         self._readCommonHeader()
+        self.NLHEAD+=self.ignore_header_lines
         self.DX = nappy.utils.text_parser.readItemsFromLine(self.file.readline(), 1, float)
         self.LENX = nappy.utils.text_parser.readItemFromLine(self.file.readline(), float)
         self.XNAME = nappy.utils.text_parser.readItemsFromLines(self._readLines(self.NIV), self.NIV, str)
@@ -43,6 +48,10 @@ class NAFile2160(nappy.na_file.na_file_2110.NAFile2110):
         """
         Writes FFI-specific header section.
         """
+        if self.ignored_header_lines:
+            self.file.write("\n".join(self.ignored_header_lines))
+            self.file.write("\n")
+        
         self._writeCommonHeader()
         DX = self.DX
         DX.reverse()
@@ -101,7 +110,7 @@ class NAFile2160(nappy.na_file.na_file_2110.NAFile2110):
         self.X[ivar_count].append(x1[0])
         # Set up list to take second changing independent variable
         self.X[ivar_count].append([])  
-
+        
         # Get NX and Non-character AUX vars
         (aux, datalines) = nappy.utils.text_parser.readItemsFromUnknownLines(datalines, (self.NAUXV - self.NAUXC), float)
         self.NX.append(int(aux[0]))
