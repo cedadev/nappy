@@ -14,8 +14,8 @@ Functions and classes commonly used in nappy.
 import logging
 
 # Imports from local package
-import parse_config
-import text_parser as text_parser
+from nappy.utils import parse_config
+from nappy.utils import text_parser
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -25,9 +25,9 @@ def getNAFileClass(ffi):
     """
     Returns class for an FFI.
     """
-    mod = "nappy.na_file.na_file_" + `ffi`
-    cls = "NAFile" + `ffi`
-    exec "import %s" % mod
+    mod = "nappy.na_file.na_file_" + str(ffi)
+    cls = "NAFile" + str(ffi)
+    exec("import %s" % mod)
     return eval("%s.%s" % (mod, cls))
    
 

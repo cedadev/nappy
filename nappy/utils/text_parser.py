@@ -73,8 +73,8 @@ def readItemsFromUnknownLines(object, nitems, rttype=str):
     if type(object) == type([2,3]): 
 
         while len(rtitems) < nitems:   
-	    nextitem = object[0]
-	    object = object[1:]
+            nextitem = object[0]
+            object = object[1:]
             items = rightStripCurlyBraces(nextitem).strip().split()
             lines.append(items)
             (rtitems, extras) = (rtitems + items[:nitems], items[nitems:])
@@ -86,12 +86,12 @@ def readItemsFromUnknownLines(object, nitems, rttype=str):
             (rtitems, extras) = (rtitems + items[:nitems], items[nitems:])
 
     if len(extras) > 0:
-        raise Exception("Could not split " + `len(lines)` + " lines exactly into required number (" + `nitems` + ") of items: \n" + str(lines))
+        raise Exception("Could not split " + str(len(lines)) + " lines exactly into required number (" + str(nitems) + ") of items: \n" + str(lines))
 
     if rttype is not str:
         rtitems = [rttype(x) for x in rtitems]
 
     if type(object) == type([1,2]):
-        return (rtitems, object)
+        return rtitems, object
     else:
         return rtitems
