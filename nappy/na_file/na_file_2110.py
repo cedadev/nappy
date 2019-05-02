@@ -77,7 +77,7 @@ class NAFile2110(nappy.na_file.na_file_2010.NAFile2010):
         # Start with independent and Auxilliary vars
         (x_and_a, rtlines) = nappy.utils.text_parser.readItemsFromUnknownLines(datalines, self.NAUXV + 1, float)
         (x, aux) = (x_and_a[0], x_and_a[1:])
-	count = 0
+        count = 0
         for a in range(self.NAUXV):
             self.A[a].append(aux[count])
             count = count + 1

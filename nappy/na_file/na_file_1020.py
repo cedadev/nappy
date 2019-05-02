@@ -65,9 +65,9 @@ class NAFile1020(nappy.na_file.na_file_1010.NAFile1010):
         count = 0
         for n in range(self.NV):
             for i in range(self.NVPM):   # Number of steps where independent variable is implied
-		self.V[n].append(v[count])						
-		count = count + 1										
-	return rtlines
+                self.V[n].append(v[count])
+                count = count + 1
+        return rtlines
 
     def _normalizeIndVars(self):
         """

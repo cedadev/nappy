@@ -95,7 +95,7 @@ class NAFile2010(nappy.na_file.na_file.NAFile):
         # Create an array size to request using read routines
         self.arraySize = 1
         for i in self.NX:
-        	self.arraySize = self.arraySize * i
+            self.arraySize = self.arraySize * i
         for n in range(self.NV):
             self.V.append([])
         for a in range(self.NAUXV):
