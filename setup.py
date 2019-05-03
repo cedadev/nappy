@@ -52,6 +52,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=read('requirements.txt').splitlines(),
+    extras_require={
+        'cdms_conversion': ['cdat-lite']
+    },
     tests_require=read('requirements-dev.txt').splitlines(),
     test_suite='nose.collector',
 
