@@ -37,7 +37,7 @@ Nappy provides the following functionality:
  1. A set of I/O routines for most NASA Ames File Format Indices (FFIs).
  2. An implicit checking facility for NASA Ames compliance - i.e. if the file is formatted incorrectly then a python error will be raised. This checking facility will eventually be made explicit to report NASA Ames specific errors.
  3. Methods to interrogate the contents the contents of NASA Ames files (such as: `naFile.getVariable()`, `naFile.getIndependentVariables()`, `naFile.getMissingValue()` etc.).
- 4. A set of  to allow conversion to and from NetCDF (for the most common FFIs) using the Climate Data Analysis Tools (CDAT) package. This functionality is only available on Unix/linux operating systems as CDAT has not been ported to Windows. *Note* that any CDAT-compatible format can potentially be converted to NASA Ames via these libraries.
+ 4. A set of  to allow conversion to and from NetCDF (for the most common FFIs) using the Climate Data Analysis Tools (CDAT) package. This functionality is only available on Unix/linux operating systems as CDAT has not been ported to Windows. *Note* that any CDAT-compatible format can potentially be converted to NASA Ames via these libraries. In order to use this feature your software should have `nappy[cdms_conversion]` in its requirements. 
  5. Some command line utilities for the format conversions in (4).
 
 ### PYTHONPATH and import issues
