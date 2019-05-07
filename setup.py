@@ -50,7 +50,7 @@ setup(
     packages=find_packages(),
     package_data={
         'nappy': [
-            'config'
+            'config/*.ini'
         ]
     },
 
