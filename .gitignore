@@ -100,3 +100,6 @@ setup_env.sh
 
 # mypy
 .mypy_cache/
+
+# Pycharm files
+.idea

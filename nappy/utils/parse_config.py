@@ -7,8 +7,14 @@ Parses config file for nappy.
 """
 
 # Standard library imports
-import ConfigParser
 import os
+
+# Make import python 2/3 compatible
+import sys
+if sys.version_info.major > 2:
+    from configparser import RawConfigParser as ConfigParser
+else:
+    from ConfigParser import ConfigParser
 
 
 # Global variables
@@ -22,7 +28,7 @@ config_dict = None
 annotations_config_dict = None
 attributes_config_dict = None
 
-class MyCasePreservingConfigParser(ConfigParser.ConfigParser):
+class MyCasePreservingConfigParser(ConfigParser):
     optionxform = str
 
 def makeConfigDict(cf=config_file):
@@ -34,10 +40,11 @@ def makeConfigDict(cf=config_file):
     conf = MyCasePreservingConfigParser()
     conf.read(cf)
 
-    # get all sections and content 
+    # get all sections and content
     for section in conf.sections():
         d[section] = {}
         for item in conf.options(section):
+
             value = conf.get(section, item)
             if value.find("__space__") > -1:
                 value = value.replace("__space__", " ")
@@ -125,7 +132,7 @@ def getLocalAttributesConfigDict():
 
 if __name__=="__main__":
 
-    print getConfigDict()
-    print getAnnotationsConfigDict()
-    print getLocalAttributesConfigDict()
+    print(getConfigDict())
+    print(getAnnotationsConfigDict())
+    print(getLocalAttributesConfigDict())
 

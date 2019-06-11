@@ -106,7 +106,7 @@ class NAFile2160(nappy.na_file.na_file_2110.NAFile2110):
         # Start with independent and Auxilliary vars
         # Get character string independent variable
         (x1, datalines) = nappy.utils.text_parser.readItemsFromUnknownLines(datalines, 1, str)
-	self.X.append([])
+        self.X.append([])
         self.X[ivar_count].append(x1[0])
         # Set up list to take second changing independent variable
         self.X[ivar_count].append([])  

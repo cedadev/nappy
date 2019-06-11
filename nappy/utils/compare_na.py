@@ -39,7 +39,7 @@ import re
 import getopt
 
 # Import local modules
-from compare import *
+from nappy.utils.compare import *
 
 equality_threshold = 0.01 # i.e. within 1% of each other
 file_exclusion_patterns = (".*CSV.*", ".*svn.*", "\..*", ".*\.pyc$", ".*~$") 
@@ -49,8 +49,8 @@ letter_match = re.compile("[a-zA-Z]")
 
 def exitNicely(msg):
     "Tidy exit."
-    print __doc__
-    print msg
+    print( __doc__)
+    print( msg)
     sys.exit()
 
 
@@ -137,9 +137,9 @@ def compareSections(l1, l2, number_clever=True, approx_equal=False,
               
         if not same:
             all_same = False
-            print "Line %s:" % (i+1)
-            print ">>>", l1[i]
-            print "<<<", l2[i]
+            print( "Line %s:" % (i+1))
+            print( ">>>", l1[i])
+            print( "<<<", l2[i])
 
     return all_same
 
@@ -159,7 +159,7 @@ def compNAFiles(f1, f2, header=True, body=True, number_clever=True, approx_equal
     # Ignore anything that is in exclusion list
     for excl in file_exclusions:
         if excl.match(name):
-            print "IGNORING EXCLUDED file:", f1
+            print( "IGNORING EXCLUDED file:", f1)
             return
 
     # Check they exist
@@ -185,24 +185,24 @@ def compNAFiles(f1, f2, header=True, body=True, number_clever=True, approx_equal
 
     same = True
     if header:
-        print "Comparing headers:"
-        print ">>> %s header:" % f1
-        print "<<< %s header:" % f2
+        print( "Comparing headers:")
+        print( ">>> %s header:" % f1)
+        print( "<<< %s header:" % f2)
         same = compareSections(header1, header2, number_clever, approx_equal, delimiter_1, delimiter_2) 
         if same:
-            print "HEADERS ARE IDENTICAL."
+            print( "HEADERS ARE IDENTICAL.")
         if len(header1) != len(header2):
-            print "Header lengths differ:\n>>> %s: %s\n<<< %s: %s" % (f1, len(header1), f2, len(header2))
+            print( "Header lengths differ:\n>>> %s: %s\n<<< %s: %s" % (f1, len(header1), f2, len(header2)))
 
     if body:
-        print "Comparing bodies:"
-        print ">>> %s body:" % f1
-        print "<<< %s body:" % f2
+        print( "Comparing bodies:")
+        print( ">>> %s body:" % f1)
+        print( "<<< %s body:" % f2)
         same = compareSections(body1, body2, number_clever, approx_equal, delimiter_1, delimiter_2)
         if same:
-            print "BODIES ARE IDENTICAL."
+            print( "BODIES ARE IDENTICAL.")
         if len(body1) != len(body2):
-            print "Body lengths differ:\n>>> %s: %s\n<<< %s: %s" % (f1, len(body1), f2, len(body2))
+            print( "Body lengths differ:\n>>> %s: %s\n<<< %s: %s" % (f1, len(body1), f2, len(body2)))
        
     return same
 

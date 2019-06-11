@@ -48,10 +48,18 @@ setup(
     # We make the package non-zip_safe so that we don't need to
     # change the way ini files are read too much.
     packages=find_packages(),
+    package_data={
+        'nappy': [
+            'config/*.ini'
+        ]
+    },
 
     include_package_data=True,
     zip_safe=False,
     install_requires=read('requirements.txt').splitlines(),
+    extras_require={
+        'cdms_conversion': ['cdat-lite']
+    },
     tests_require=read('requirements-dev.txt').splitlines(),
     test_suite='nose.collector',
 
