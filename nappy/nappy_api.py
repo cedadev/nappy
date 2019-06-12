@@ -161,7 +161,8 @@ def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
     """
     if mode == "r":
         ffi = readFFI(filename, ignore_header_lines)
-        return apply(getNAFileClass(ffi), (filename, ignore_header_lines, mode))
+        na_class = getNAFileClass(ffi)
+        return na_class(filename, ignore_header_lines, mode)
 
     elif mode == "w":
         if na_dict.has_key('FFI') and type(na_dict['FFI']) == type(3):

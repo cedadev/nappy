@@ -1,1 +1,1 @@
-from na_error import *
+from nappy.na_error import *
