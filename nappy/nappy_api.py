@@ -171,7 +171,9 @@ def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
             ffi = chooseFFI(na_dict)
             na_dict['FFI'] = ffi
             log.info("\nFormat identified as: %s" % ffi)
-        return apply(getNAFileClass(ffi), (filename,), {"mode":mode, "na_dict":na_dict})
+
+        na_class = getNAFileClass(ffi)
+        return na_class(filename, mode=mode, na_dict=na_dict)
     else:
         raise Exception("File mode not recognised '" + mode + "'.")
 
@@ -204,7 +206,7 @@ def convertNAToNC(na_file, nc_file=None, mode="w", variables=None, aux_variables
         del arg_dict[arg_out]
 
     import nappy.nc_interface.na_to_nc
-    convertor = apply(nappy.nc_interface.na_to_nc.NAToNC, [], arg_dict)
+    convertor = nappy.nc_interface.na_to_nc.NAToNC(*[], **arg_dict)
     convertor.convert()
     if nc_file == None:
         nc_file = getFileNameWithNewExtension(na_file, "nc")
@@ -278,7 +280,7 @@ def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override={},
         na_file =  getFileNameWithNewExtension(nc_file, "na")
 
     import nappy.nc_interface.nc_to_na
-    convertor = apply(nappy.nc_interface.nc_to_na.NCToNA, [], arg_dict)
+    convertor = nappy.nc_interface.nc_to_na.NCToNA(*[], **arg_dict)
     convertor.convert()
 
     # If user only wants files then only give them that
@@ -303,7 +305,7 @@ def convertNCToCSV(nc_file, csv_file=None, **arg_dict):
         arg_dict["na_file"] = csv_file
         arg_dict["delimiter"] = ","
   
-    return apply(convertNCToNA, [nc_file], arg_dict)
+    return convertNCToNA(*[nc_file], **arg_dict)
     
 
 def convertCDMSObjectsToNA(cdms_vars, global_attributes, na_file, 
@@ -349,7 +351,7 @@ def convertCDMSObjectsToCSV(cdms_vars, global_attributes, csv_file, **arg_dict):
     writes them to one or more CSV files.
     """
     arg_dict["delimiter"] = ","
-    return apply(convertCDMSObjectsToNA, [cdms_vars, global_attributes, csv_file], arg_dict)
+    return convertCDMSObjectsToNA(*[cdms_vars, global_attributes, csv_file], **arg_dict)
 
 
 def writeNADictToNC(na_dict, nc_file, mode="w"):
