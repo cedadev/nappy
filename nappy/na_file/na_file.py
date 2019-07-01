@@ -76,7 +76,15 @@ class NAFile(nappy.na_file.na_core.NACore):
         else:
             raise "Unknown file mode '%s'." % self.mode
 
-        
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def __del__(self):
+        self.close()
+
     def _open(self, mode):
         "Wrapper to builtin open file function."
         self.file = open(self.filename, mode)
