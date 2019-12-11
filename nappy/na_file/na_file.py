@@ -184,6 +184,9 @@ class NAFile(nappy.na_file.na_core.NACore):
         """
         Reads the header section common to all NASA Ames files.
         """
+        for i in range(self.ignore_header_lines):
+            self.ignored_header_lines.append(nappy.utils.text_parser.readItemFromLine(self.file.readline()))
+        
         self._readTopLine()
         self.ONAME = nappy.utils.text_parser.readItemFromLine(self.file.readline(), str)
         self.ORG = nappy.utils.text_parser.readItemFromLine(self.file.readline(), str)
@@ -192,6 +195,7 @@ class NAFile(nappy.na_file.na_core.NACore):
         (self.IVOL, self.NVOL) = nappy.utils.text_parser.readItemsFromLine(self.file.readline(), 2, int)
         dates = nappy.utils.text_parser.readItemsFromLine(self.file.readline(), 6, int)
         (self.DATE, self.RDATE) = (dates[:3], dates[3:])
+        self.NLHEAD += self.ignore_header_lines
 
     def _writeCommonHeader(self):
         """
