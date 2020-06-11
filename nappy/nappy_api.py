@@ -165,7 +165,7 @@ def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
         return na_class(filename, ignore_header_lines, mode)
 
     elif mode == "w":
-        if na_dict.has_key('FFI') and type(na_dict['FFI']) == type(3):
+        if type(na_dict.get('FFI')) == type(3):
             ffi = na_dict['FFI']
         else:
             ffi = chooseFFI(na_dict)
