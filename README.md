@@ -188,7 +188,7 @@ Grab the normal comments:
 
 ```pydoc
 >>> comm=myfile.naDict["NCOM"]
->>> print comm
+>>> print(comm)
 ['The files included in this data set illustrate each of the 9 NASA Ames file', 
 'format indices (FFI). A detailed description of the NASA Ames format can be', 
 'found on the Web site of the British Atmospheric Data Centre (BADC) at', 
@@ -224,7 +224,7 @@ Read the actual data:
 Inspect the data array ("V") in the NASA Ames dictionary:
 
 ```pydoc
->>> print myfile.naDict["V"}
+>>> print(myfile.naDict["V"})
 [[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 
 4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 
 6.9000000000000004, 12.800000000000001, 14.699999999999999, 20.0, 21.5, 18.0, 

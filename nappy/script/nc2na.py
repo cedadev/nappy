@@ -49,8 +49,8 @@ from nappy.utils.common_utils import makeListFromCommaSepString, makeDictFromCom
 
 def exitNicely(msg=""):
     "Exits nicely!"
-    print __doc__
-    if msg != "": print "ERROR:", msg
+    print(__doc__)
+    if msg != "": print("ERROR:", msg)
     sys.exit()
 
 
@@ -79,7 +79,7 @@ def parseArgs(args):
         (arg_list, dummy) = getopt.getopt(args, "i:o:v:f:d:l:e:", 
                               ["ffi=", "overwrite-metadata=", "names-only",
                                "no-header", "annotated"])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         exitNicely(str(e))
 
     for arg, value in arg_list:
@@ -131,14 +131,14 @@ def nc2na(args=None):
 
     # If user only wants files then only give them that
     if arg_dict["only_return_file_names"]:
-        print "\nExpected file names would be:"
+        print("\nExpected file names would be:")
         for naf in na_files:
-            print "    ", naf
+            print("    ", naf)
 
     else:
-        print "\nSuccessfully wrote: " 
+        print("\nSuccessfully wrote: ")
         for naf in na_files:
-            print "    ", naf
+            print("    ", naf)
 
 
 if __name__ == "__main__":

@@ -60,7 +60,7 @@ def makeUnitTestModule(dr, include_init=False):
         ut_name = "test_%s" % mod_name
         with open(ut_name, "w") as fh:
             ut_file = fh.write(content)
-        print "Wrote:", ut_name
+        print("Wrote:", ut_name)
 
 
 if __name__ == "__main__":

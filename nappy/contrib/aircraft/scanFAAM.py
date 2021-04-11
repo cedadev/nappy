@@ -63,7 +63,7 @@ def scanFAAM(fileName=None, vars=None, nth=4, missingValuesToUse=(-9999., -32767
 
         startList.append(start)
         endList.append(end)
-        print "Start/End index: %s %s:%s" % (id, start, end)
+        print("Start/End index: %s %s:%s" % (id, start, end))
   
     startMin=min(startList)
     endMax=max(endList)
@@ -81,7 +81,7 @@ def findMissing(var, step, missingValuesToUse):
     sh=var.shape
     iend=sh[0]-1
 
-    print var.id, step
+    print(var.id, step)
     for miss in missingValuesToUse:
         for i in range(i0, iend, step):
             if var[i][0]==miss:

@@ -158,7 +158,7 @@ class CDMSToNA:
         """
         # Set up a long list (longer than number of vars)
         if len(variables) > var_limit:
-            raise Exception("Can only handle converting less than " + `var_limit` + " variables in any batch.")
+            raise Exception("Can only handle converting less than " + var_limit + " variables in any batch.")
 
         # Collect up those that are ordered and unordered
         ordered_vars = [None] * var_limit

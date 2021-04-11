@@ -23,7 +23,7 @@ import subprocess
 args = sys.argv[1:]
 
 if len(args) == 0:
-    print "Please provide at least the file arg."
+    print("Please provide at least the file arg.")
     sys.exit()
 
 fname = args[0]
@@ -38,10 +38,10 @@ for count, test in enumerate(tests):
         continue
 
     test = "python " + test
-    print "\n\n\n================================================================================"
-    print "         Test number: %s  " % count
-    print "==================================================================================="
-    print "Running: ", test
+    print("\n\n\n================================================================================")
+    print("         Test number: %s  " % count)
+    print("===================================================================================")
+    print("Running: ", test)
     ret_code = subprocess.check_call(test.split()) 
-    print "Return code: %s" % ret_code
+    print("Return code: %s" % ret_code)
      

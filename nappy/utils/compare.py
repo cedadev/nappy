@@ -30,8 +30,8 @@ dir_exclusions = [re.compile(pattn) for pattn in dir_exclusion_patterns]
 
 def exitNicely(msg):
     "Tidy exit."
-    print( __doc__)
-    print( msg)
+    print(__doc__)
+    print(msg)
     sys.exit()
 
 
@@ -59,7 +59,7 @@ def compDirs(d1, d2):
     # Ignore anything that is in exclusion list
     for excl in dir_exclusions:
         if excl.match(dname):
-            print( "IGNORING EXCLUDED Directory:", d1)
+            print("IGNORING EXCLUDED Directory:", d1)
             return
 
     items = os.listdir(d1)
@@ -70,7 +70,7 @@ def compDirs(d1, d2):
         d2f = os.path.join(d2, item)
 	
         if not os.path.exists(d2f):
-            print( "WARNING: cannot find item:", d2f)
+            print("WARNING: cannot find item:", d2f)
             continue
 
         if os.path.isdir(d1f):
@@ -88,7 +88,7 @@ def compFiles(f1, f2):
     # Ignore anything that is in exclusion list
     for excl in file_exclusions:
         if excl.match(name):
-            print( "IGNORING EXCLUDED file:", f1)
+            print("IGNORING EXCLUDED file:", f1)
             return
 
     # Check they exist
@@ -107,13 +107,13 @@ def compFiles(f1, f2):
     if len(l2) < leng: 
         leng=len(l2)
 
-    print( "\n>>>", f1, "\n<<<", f2)
+    print("\n>>>", f1, "\n<<<", f2)
 
     for i in range(leng):
         if l1[i] != l2[i]:
-            print( "Line %s:" % (i+1))
-            print( ">>>", l1[i])
-            print( "<<<", l2[i])
+            print("Line %s:" % (i+1))
+            print(">>>", l1[i])
+            print("<<<", l2[i])
 
     
 if __name__=="__main__":

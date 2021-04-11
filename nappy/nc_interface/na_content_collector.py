@@ -69,7 +69,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         >>> x = NAContentCollector(["temp", "precip"])
         >>> x.collectNAContent()
         >>> if x.found_na:
-        ...     print x.na_dict, x.var_ids, x.unused_vars 
+        ...     print(x.na_dict, x.var_ids, x.unused_vars)
         """
         self.output_message = []
         self.na_dict = {}
@@ -335,7 +335,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             self.na_dict["VNAME"].append(name)
             miss = cdms_utils.var_utils.getMissingValue(var)
 
-            if type(miss) not in (type(1.2), type(1), type(1L)):  
+            #if type(miss) not in (type(1.2), type(1), type(1L)):  
+            if not isinstance(miss, (float, int, str)):
                 miss = miss[0]
 
             self.na_dict["VMISS"].append(miss)
@@ -452,7 +453,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             name = cdms_utils.var_utils.getBestName(var)
             self.na_dict["ANAME"].append(name)
             miss = cdms_utils.var_utils.getMissingValue(var)
-            if type(miss) not in (type(1.1), type(1), type(1L)):  miss = miss[0]
+            if not isinstance(miss, (float, int, str)): miss = miss[0]
             self.na_dict["AMISS"].append(miss)
             self.na_dict["ASCAL"].append(1)
             # Populate the variable list with the array
