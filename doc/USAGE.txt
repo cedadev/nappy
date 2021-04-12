@@ -87,7 +87,7 @@ Get a dictionary of the file contents in the form of NASA Ames documentation:
 Grab the normal comments:
 
 >>> comm=myfile.naDict["NCOM"]
->>> print comm
+>>> print(comm)
 ['The files included in this data set illustrate each of the 9 NASA Ames file', 'format indices (FFI). A detailed description of the NASA Ames format can be', 'found on the Web site of the British Atmospheric Data Centre (BADC) at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/', 'E-mail contact: badc@rl.ac.uk', 'Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data', 'Exchange, Version 1.3, 1998. This work can be found at', 'http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html', 'and a copy of it at', 'http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html', '']
 >>>
 
@@ -102,7 +102,7 @@ Read the actual data:
 
 Inspect the data array ("V") in the NASA Ames dictionary:
 
->>> print myfile.naDict["V"}
+>>> print(myfile.naDict["V"})
 [[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 6.9000000000000004, 12.800000000000001, 14.699999999999999, 20.0, 21.5, 18.0, 8.1999999999999993], [-29.0, -15.199999999999999, 3.3999999999999999, 28.199999999999999, 41.0, 39.100000000000001, 17.899999999999999, 8.0, 0.10000000000000001], [-10.0, 8.4000000000000004, 31.199999999999999, 59.899999999999999, 78.5, 77.700000000000003, 47.0, 17.600000000000001, 16.0], [200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0, 200.0]]]
 
 [NOTE: We plan to implement a getVariableArray(var_name) to grab a specific variable from the above array.]

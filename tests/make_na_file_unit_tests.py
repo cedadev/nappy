@@ -29,7 +29,7 @@ def makeNAFileTests():
         with open(test_file_name, "w") as fh:
             fh.write(content)
 
-        print "Wrote:", test_file_name
+        print("Wrote:", test_file_name)
 
 
 if __name__ == "__main__":

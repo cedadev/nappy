@@ -179,7 +179,7 @@ class AircraftData:
 
         for fv in missingValuesToTest:
             if fv in MV.ravel(var):
-                print "Setting missing value for '%s' as: %s" % (var.id, fv)
+                print("Setting missing value for '%s' as: %s" % (var.id, fv))
                 varFillValue=fv
         else:
             varFillValue=missingValuesToTest[0]

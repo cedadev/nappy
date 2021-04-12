@@ -72,7 +72,7 @@ def cdms2na(ncfile, na_file_names, naVars={}, variables=None, nFilesOnly="no",
     # VNAME strings - var names.
     outputMessage=[]
     msg="Reading data from: %s\n" % infilename
-    print msg
+    print(msg)
     outputMessage.append(msg)
     cdmsfile=cdms.open(infilename)
     globals=cdmsfile.attributes
@@ -82,38 +82,38 @@ def cdms2na(ncfile, na_file_names, naVars={}, variables=None, nFilesOnly="no",
         variables=cdmsfile.listvariables()
         #for var in cdmsfile.listvariables():
             #vars.append(cdmsfile(var))    
-	    
+
     for variable in variables:
         varObj=cdmsfile(variable)
-	# Deal with singleton variables
-	if not hasattr(varObj, "rank"):
-	        varMetadata=cdmsfile[variable].attributes
-		varValue=varObj
-		#print varMetadata, varValue, varMetadata.keys(), varMetadata._obj_.id
-		varObj=cdms.createVariable(Numeric.array(varObj), id=getBestName(varMetadata).replace(" ", "_"), attributes=varMetadata)
-		#print varObj, dir(varObj); sys.exit()
-		varObj.value=varObj._data[0]
-		#varObj.rank=0
-		
-	#print varObj, varObj.attributes	   		 
+        # Deal with singleton variables
+        if not hasattr(varObj, "rank"):
+            varMetadata=cdmsfile[variable].attributes
+            varValue=varObj
+            #print varMetadata, varValue, varMetadata.keys(), varMetadata._obj_.id
+            varObj=cdms.createVariable(Numeric.array(varObj), id=getBestName(varMetadata).replace(" ", "_"), attributes=varMetadata)
+            #print varObj, dir(varObj); sys.exit()
+            varObj.value=varObj._data[0]
+            #varObj.rank=0
+
+        #print varObj, varObj.attributes
         vars.append(varObj)
-	
+
     # Re-order variables if they have the attribute 'nasa_ames_var_number'
     orderedVars=[None]*1000
     otherVars=[]
     for var in vars:
         varMetadata=cdmsfile[var]
-	if hasattr(varMetadata, "nasa_ames_var_number"):
-	    num=varMetadata.nasa_ames_var_number
-	    orderedVars[num]=var
-	else:
-	    otherVars.append(var)
+        if hasattr(varMetadata, "nasa_ames_var_number"):
+            num=varMetadata.nasa_ames_var_number
+            orderedVars[num]=var
+        else:
+            otherVars.append(var)
     
     vars=[]
     for var in orderedVars:
         if var!=None:
-	    vars.append(var)
-	    
+            vars.append(var)
+
     vars=vars+otherVars
     
     builder=NAContentCollector(vars, globals, rule=rule, cdmsfile=cdmsfile)
@@ -121,13 +121,13 @@ def cdms2na(ncfile, na_file_names, naVars={}, variables=None, nFilesOnly="no",
     builtNADicts=[[builder.na_dict, builder.varIDs]]
     if builder.varIDs==None:
         msg="\nNo files created after variables parsed."
-        print msg
+        print(msg)
         outputMessage.append(msg)
         return outputMessage
 
     while len(builder.varBin)>0:
-	builder=NAContentCollector(builder.varBin, globals, rule=rule, cdmsfile=cdmsfile)
-	outputMessage=outputMessage+builder.outputMessage
+        builder=NAContentCollector(builder.varBin, globals, rule=rule, cdmsfile=cdmsfile)
+        outputMessage=outputMessage+builder.outputMessage
         if builder.varIDs!=None:  builtNADicts.append([builder.na_dict, builder.varIDs])
 
     # Return only filenames if only want to know them now.
@@ -136,51 +136,50 @@ def cdms2na(ncfile, na_file_names, naVars={}, variables=None, nFilesOnly="no",
     if nFilesOnly=="yes": 
         for i in builtNADicts:
             if len(builtNADicts)==1:
-	        suffix=""
-	    else:
-	        suffix="_%s" % ncount
-	    nameparts=outfilenames[0].split(".")    
-	    newname=(".".join(nameparts[:-1]))+suffix+"."+nameparts[-1]
-	    fileNames.append(newname)
+                suffix=""
+            else:
+                suffix="_%s" % ncount
+            nameparts=outfilenames[0].split(".")    
+            newname=(".".join(nameparts[:-1]))+suffix+"."+nameparts[-1]
+            fileNames.append(newname)
         ncount=ncount+1
-	    
+
         return fileNames
-	 	
+
     msg="\n%s files to write" % len(builtNADicts)
-    print msg
+    print(msg)
     outputMessage.append(msg)
 
     count=1
     ncount=1
     for i in builtNADicts:
         if len(outfilenames)==1:
-	    if len(builtNADicts)==1:
-	        suffix=""
-	    else:
-	        suffix="_%s" % ncount
-	    nameparts=outfilenames[0].split(".")    
-	    newname=(".".join(nameparts[:-1]))+suffix+"."+nameparts[-1]
-	else:
-	    newname=outfilenames[count-1]
+            if len(builtNADicts)==1:
+                suffix=""
+            else:
+                suffix="_%s" % ncount
+            nameparts=outfilenames[0].split(".")    
+            newname=(".".join(nameparts[:-1]))+suffix+"."+nameparts[-1]
+        else:
+            newname=outfilenames[count-1]
  
-	msg="\nWriting output NASA Ames file: %s" % newname
-	print msg
-	outputMessage.append(msg)
-	
-	builtNADict=i[0]
-	for key in naVars.keys():
-	    if key in allowedOverwriteMetadata:
-	    
-	        if key in arrayArgs:
-		    newItem=naVars[key].split()		   
-		else:
-	            newItem=naVars[key]
-		    		    
-		if newItem!=builtNADict[key]:
-		    builtNADict[key]=newItem
-		    msg="Metadata overwritten in output file: '%s' is now '%s'" % (key, builtNADict[key])
-		    print msg
-		    outputMessage.append(msg)
+        msg="\nWriting output NASA Ames file: %s" % newname
+        print(msg)
+        outputMessage.append(msg)
+
+        builtNADict=i[0]
+        for key in naVars.keys():
+            if key in allowedOverwriteMetadata:
+                if key in arrayArgs:
+                    newItem=naVars[key].split()
+                else:
+                    newItem=naVars[key]
+
+                if newItem!=builtNADict[key]:
+                    builtNADict[key]=newItem
+                    msg="Metadata overwritten in output file: '%s' is now '%s'" % (key, builtNADict[key])
+                    print(msg)
+                    outputMessage.append(msg)
         
         fileList=[]
         # Cope with size limits if specified and FFI is 1001
@@ -211,44 +210,44 @@ def cdms2na(ncfile, na_file_names, naVars={}, variables=None, nFilesOnly="no",
                 fileList.append(newnamePlusLetter)
                 general.openNAFile(newnamePlusLetter, 'w', NADictCopy, delimiter=delimiter, float_format=float_format)
                 msg="\nOutput files split on size limit: %s\nFilename used: %s" % (sizeLimit, newnamePlusLetter)
-                print msg
+                print(msg)
                 outputMessage.append(msg)
                 letterCount=letterCount+1
                 start=end
 
 
-        else:		
-   	    general.openNAFile(newname, 'w', builtNADict, delimiter=delimiter, float_format=float_format)
+        else:
+            general.openNAFile(newname, 'w', builtNADict, delimiter=delimiter, float_format=float_format)
 
-	msg="\nWrote the following variables:"+"\n\t"+("\n\t".join(i[1][0]))
-	print msg
-	outputMessage.append(msg)
-	
-	if len(i[1][1])>0:
-	    msg="\nWrote the following auxiliary variables:"
-	    msg=msg+"\n\t"+("\n\t".join(i[1][1]))	
-	    
-	if len(i[1][2])>0:
-	    msg="\nWrote the following Singleton variables:"
-	    msg=msg+"\n\t"+("\n\t".join(i[1][2]))
+        msg="\nWrote the following variables:"+"\n\t"+("\n\t".join(i[1][0]))
+        print(msg)
+        outputMessage.append(msg)
+
+        if len(i[1][1])>0:
+            msg="\nWrote the following auxiliary variables:"
+            msg=msg+"\n\t"+("\n\t".join(i[1][1]))
+
+        if len(i[1][2])>0:
+            msg="\nWrote the following Singleton variables:"
+            msg=msg+"\n\t"+("\n\t".join(i[1][2]))
 
         if len(fileList)>0:
             msg=msg+("\n\nNASA Ames files written successfully: \n%s" % "\n".join(fileList))
             count=count+len(fileList)
         else:
-	    msg=msg+"\n\nNASA Ames file written successfully: %s" % newname
+            msg=msg+"\n\nNASA Ames file written successfully: %s" % newname
             count=count+1
         ncount=ncount+1
 
-	print msg
-	outputMessage.append(msg)
-	    
+        print(msg)
+        outputMessage.append(msg)
+
     if (count-1)==1:
         plural=""
     else:
-        plural="s"	      
+        plural="s"     
     msg="\n%s file%s written." % ((count-1), plural)
-    print msg
+    print(msg)
     outputMessage.append(msg)
     return outputMessage
 
@@ -266,24 +265,24 @@ class NAContentCollector(NACore):
         """
         self.rule=rule
         self.cdmsfile=cdmsfile
-	self.outputMessage=[]
+        self.outputMessage=[]
         self.na_dict={}
         self.vars=vars
         self.varIDs=None
-        self.globals=global_attributes	
-	self.rankZeroVars=[]
-	self.rankZeroVarIDs=[]
+        self.globals=global_attributes
+        self.rankZeroVars=[]
+        self.rankZeroVarIDs=[]
         (self.orderedVars, auxVars)=self.analyseVariables()
-	if self.orderedVars==None:
-	    self.varBin=[]
-	else:
-	    #print "NAMELISTS:", [var.id for var in self.orderedVars],[var.id for var in auxVars]
-	    self.varIDs=[[var.id for var in self.orderedVars],[var.id for var in auxVars], self.rankZeroVarIDs]
-	
+        if self.orderedVars==None:
+            self.varBin=[]
+        else:
+            #print "NAMELISTS:", [var.id for var in self.orderedVars],[var.id for var in auxVars]
+            self.varIDs=[[var.id for var in self.orderedVars],[var.id for var in auxVars], self.rankZeroVarIDs]
+
             self.na_dict["NLHEAD"]="-999"
-	
-	    #print [var.id for var in self.orderedVars]
-	    #print [var.rank() for var in self.orderedVars]	
+
+            #print [var.id for var in self.orderedVars]
+            #print [var.rank() for var in self.orderedVars]
             self.defineNAVars(self.orderedVars)
             self.defineNAAuxVars(auxVars)
             self.defineNAGlobals()
@@ -295,25 +294,25 @@ class NAContentCollector(NACore):
 
     def analyseVariables(self):
         """
-	Method to examine the content of CDMS variables to return
-	a tuple of two lists containing variables and auxiliary variables
-	for the NASA Ames file object.
-	Variables not compatible with the first file are binned to be used next.
-	"""
-	# Need to group the variables together in bins
-	self.varBin=[]
-	# Get largest ranked variable as the one we use as standard
-	highrank=-1
+        Method to examine the content of CDMS variables to return
+        a tuple of two lists containing variables and auxiliary variables
+        for the NASA Ames file object.
+        Variables not compatible with the first file are binned to be used next.
+        """
+        # Need to group the variables together in bins
+        self.varBin=[]
+        # Get largest ranked variable as the one we use as standard
+        highrank=-1
         bestVar=None
-	count=0
-	for var in self.vars:
-	    msg="Analysing: %s" % var.id
-	    print msg
-	    self.outputMessage.append(msg)
-	    count=count+1
+        count=0
+        for var in self.vars:
+            msg="Analysing: %s" % var.id
+            print(msg)
+            self.outputMessage.append(msg)
+            count=count+1
 
-	    # get rank
-	    rank=var.rank()
+            # get rank
+            rank=var.rank()
 
             # Deal with specific datasets with special rules
             if self.rule!=None and self.rule[0]=="aircraft":
@@ -323,23 +322,23 @@ class NAContentCollector(NACore):
                 rank=1
 
             # Deal with singleton variables
-	    if rank==0: 
-	        self.rankZeroVars.append(var)
-		self.rankZeroVarIDs.append(var.id)
-		continue
-	    
-	    if rank>highrank:
+            if rank==0: 
+                self.rankZeroVars.append(var)
+                self.rankZeroVarIDs.append(var.id)
+                continue
+
+            if rank>highrank:
                 highrank=rank
-		bestVar=var
-		bestVarIndex=count
+                bestVar=var
+                bestVarIndex=count
             elif rank==highrank:
-	        if len(var.flat)>len(bestVar.flat):
-		    bestVar=var
-		    bestVarIndex=count
-	
-	if len(self.rankZeroVars)==len(self.vars):  return (None, None)
-	if not bestVar:  
-            print "No variables produced"
+                if len(var.flat)>len(bestVar.flat):
+                    bestVar=var
+                    bestVarIndex=count
+
+        if len(self.rankZeroVars)==len(self.vars):  return (None, None)
+        if not bestVar:  
+            print("No variables produced")
             return (None, None)
 
         vars4NA=[bestVar]
@@ -362,8 +361,8 @@ class NAContentCollector(NACore):
         axes=bestVar.getAxisList()
         
         # Get other variable info
-	#print [v.id for v in self.vars], bestVarIndex
-	#print [v.id for v in self.vars[:bestVarIndex-1]+self.vars[bestVarIndex:]]
+        #print [v.id for v in self.vars], bestVarIndex)
+        #print [v.id for v in self.vars[:bestVarIndex-1]+self.vars[bestVarIndex:]])
         for var in self.vars[:bestVarIndex-1]+self.vars[bestVarIndex:]:
             # Deal with specific datasets with special rules
             if self.rule!=None and self.rule[0]=="aircraft":
@@ -371,73 +370,73 @@ class NAContentCollector(NACore):
                     var=self._useLocalRule(var, self.rule)
                     if type(var)==type(None): continue
 
-	    #print self.rankZeroVars
-	    #for rzv in self.rankZeroVars:  
-	    #    if var.id==rzv.id and var[0]==rzv[0]: continue
-	    #print [v.id for v in self.rankZeroVars]
-	    if var.id in self.rankZeroVarIDs: continue
-	    #print var.id, ndims, shape, len(var.shape), var.shape
+            #print self.rankZeroVars
+            #for rzv in self.rankZeroVars:  
+            #    if var.id==rzv.id and var[0]==rzv[0]: continue
+            #print [v.id for v in self.rankZeroVars]
+            if var.id in self.rankZeroVarIDs: continue
+            #print var.id, ndims, shape, len(var.shape), var.shape
             if len(var.shape)!=ndims or var.shape!=shape: 
                 # Could it be an auxiliary variable 
                 if len(var.shape)!=1: 
-		    self.varBin.append(var)
-		    continue
+                    self.varBin.append(var)
+                    continue
                 caxis=var.getAxis(0)
                 if compareAxes(axes[0], caxis)==0: 
-		    self.varBin.append(var)
-		    continue
+                    self.varBin.append(var)
+                    continue
                 # I think it is an auxiliary variable
                 auxVars4NA.append(var) 
-		# Also put it in var bin because auxiliary vars might be useful
-		self.varBin.append(var)
+                # Also put it in var bin because auxiliary vars might be useful
+                self.varBin.append(var)
             else:
                 caxes=var.getAxisList()
-		#print var.id, "here"
+                #print var.id, "here"
                 for i in range(ndims):            
                     if compareAxes(axes[i], caxes[i])==0:
-		        self.varBin.append(var)
+                        self.varBin.append(var)
                         continue
                 # OK, I think they are compatible
                 vars4NA.append(var)
-		
+
         # Re-order if they previously came from NASA Ames files (i.e. including 
-	# the attribute 'nasa_ames_var_number')
-	orderedVars=[None]*1000
-	otherVars=[]
-	for var in vars4NA:
-	    if hasattr(var, "nasa_ames_var_number"):
-	        orderedVars[var.nasa_ames_var_number[0]]=var
+        # the attribute 'nasa_ames_var_number')
+        orderedVars=[None]*1000
+        otherVars=[]
+        for var in vars4NA:
+            if hasattr(var, "nasa_ames_var_number"):
+                orderedVars[var.nasa_ames_var_number[0]]=var
             else:
-	        otherVars.append(var)
-	# Remake vars4NA now in order
-	vars4NA=[]
-	for var in orderedVars:
-	    if var!=None: vars4NA.append(var)
+                otherVars.append(var)
+        # Remake vars4NA now in order
+        vars4NA=[]
+        for var in orderedVars:
+            if var!=None: vars4NA.append(var)
         vars4NA=vars4NA+otherVars
 
         # Now re-order the Auxiliary variables if they previously came from NASA 
-	# Ames files (i.e. including the attribute 'nasa_ames_aux_var_number')
+        # Ames files (i.e. including the attribute 'nasa_ames_aux_var_number')
 
-	orderedAuxVars=[None]*1000
-	otherAuxVars=[]
-	for var in auxVars4NA:
-	    if hasattr(var, "nasa_ames_aux_var_number"):
-	        orderedAuxVars[var.nasa_ames_aux_var_number[0]]=var
+        orderedAuxVars=[None]*1000
+        otherAuxVars=[]
+        for var in auxVars4NA:
+            if hasattr(var, "nasa_ames_aux_var_number"):
+                orderedAuxVars[var.nasa_ames_aux_var_number[0]]=var
             else:
-	        otherAuxVars.append(var)
-	# Remake auxVars4NA now in order
-	auxVars4NA=[]
-	for var in orderedAuxVars:
-	    if var!=None: auxVars4NA.append(var)
-        auxVars4NA=auxVars4NA+otherAuxVars	
+                otherAuxVars.append(var)
+        # Remake auxVars4NA now in order
+        auxVars4NA=[]
+        for var in orderedAuxVars:
+            if var!=None: auxVars4NA.append(var)
+        auxVars4NA=auxVars4NA+otherAuxVars
         return (vars4NA, auxVars4NA)
 
 
     def defineNAVars(self, vars):
         """
-	Method to define NASA Ames file object variables and their
-	associated metadata.
-	"""
+        Method to define NASA Ames file object variables and their
+        associated metadata.
+        """
         self.na_dict["NV"]=len(vars)
         self.na_dict["VNAME"]=[]
         self.na_dict["VMISS"]=[]
@@ -463,7 +462,7 @@ class NAContentCollector(NACore):
                 self.na_dict["NXDEF"]=[]
                 self.na_dict["NX"]=[]
                 # Create independent variable information
-		#print var.id, var.getAxis(0)
+                #print var.id, var.getAxis(0)
                 self.ax0=var.getAxis(0)
                 self.na_dict["X"]=[list(self.ax0._data_)]
                 self.na_dict["XNAME"]=[getBestName(self.ax0)]
@@ -471,9 +470,9 @@ class NAContentCollector(NACore):
                     self.na_dict["DX"]=[0]
                 else:
                     incr=self.ax0[1]-self.ax0[0]
-		    # Set default increment as gap between first two
-		    self.na_dict["DX"]=[incr]
-		    # Now overwrite it as zero if non-uniform interval in axis
+                    # Set default increment as gap between first two
+                    self.na_dict["DX"]=[incr]
+                    # Now overwrite it as zero if non-uniform interval in axis
                     for i in range(1, len(self.ax0)):
                         if (self.ax0[i]-self.ax0[i-1])!=incr:
                             self.na_dict["DX"]=[0]
@@ -486,9 +485,9 @@ class NAContentCollector(NACore):
 
     def defineNAAuxVars(self, auxVars):
         """
-	Method to define NASA Ames file object auxiliary variables and their
-	associated metadata.
-	"""
+        Method to define NASA Ames file object auxiliary variables and their
+        associated metadata.
+        """
         self.na_dict["NAUXV"]=len(auxVars)
         self.na_dict["ANAME"]=[]
         self.na_dict["AMISS"]=[]
@@ -512,11 +511,11 @@ class NAContentCollector(NACore):
 
     def getAxisDefinition(self, axis):
         """
-	Method to create the appropriate NASA Ames file object 
-	items associated with an axis (independent variable in 
-	NASA Ames).
-	"""
-	length=len(axis)
+        Method to create the appropriate NASA Ames file object 
+        items associated with an axis (independent variable in 
+        NASA Ames).
+        """
+        length=len(axis)
         self.na_dict["NX"].append(length)
         self.na_dict["XNAME"].append(getBestName(axis))
         # If only one item in axis values
@@ -534,8 +533,8 @@ class NAContentCollector(NACore):
                 self.na_dict["X"].append(list(axis._data_))
                 break
         else:
-	    maxLength=length
-	    if length>3: maxLength=3
+            maxLength=length
+            if length>3: maxLength=3
             self.na_dict["DX"].append(incr)
             self.na_dict["NXDEF"].append(maxLength)
             self.na_dict["X"].append(axis[:maxLength])
@@ -544,18 +543,18 @@ class NAContentCollector(NACore):
 
     def defineNAGlobals(self):
         """
-	Maps CDMS (NetCDF) global attributes into NASA Ames Header fields.
-	"""
-	# Get the global mapping dictionary
+        Maps CDMS (NetCDF) global attributes into NASA Ames Header fields.
+        """
+        # Get the global mapping dictionary
         globalmap=cdmsMap.toNA
-	# Check if we should add to it with locally set rules
-	locGlobs=localRules.localGlobalAttributes
+        # Check if we should add to it with locally set rules
+        locGlobs=localRules.localGlobalAttributes
         for att in locGlobs.keys():
-	    if not globalmap.has_key(att):
-	        globalmap[key]=locGlobs[key]
+            if not globalmap.has_key(att):
+                globalmap[key]=locGlobs[key]
 
         self.extra_comments=[[],[],[]]  # Normal comments, special comments, other comments
-	conventionOrReferenceComments=[]
+        conventionOrReferenceComments=[]
         for key in self.globals.keys():
             if key!="first_valid_date_of_data" and type(self.globals[key]) not in (str, float, int): continue
             if key in globalmap.keys():
@@ -569,79 +568,79 @@ class NAContentCollector(NACore):
                         self.history.append(h) 
                     
                 elif key=="institution":
-		    # If fields came from NA then extract appropriate fields.
-		    match=re.match(r"(.*)\s+\(ONAME from NASA Ames file\);\s+(.*)\s+\(ORG from NASA Ames file\)\.", self.globals[key])
-		    if match:
-		        self.na_dict["ONAME"]=match.groups()[0]
-			self.na_dict["ORG"]=match.groups()[1]
-		    else:
+                    # If fields came from NA then extract appropriate fields.
+                    match=re.match(r"(.*)\s+\(ONAME from NASA Ames file\);\s+(.*)\s+\(ORG from NASA Ames file\)\.", self.globals[key])
+                    if match:
+                        self.na_dict["ONAME"]=match.groups()[0]
+                        self.na_dict["ORG"]=match.groups()[1]
+                    else:
                         self.na_dict["ONAME"]=self.globals[key]
-                        self.na_dict["ORG"]=self.globals[key]		    
-		    
-		    # NOte: should probably do the following search and replace on all string lines
-		    self.na_dict["ONAME"]=self.na_dict["ONAME"].replace("\n", "  ")
-		    self.na_dict["ORG"]=self.na_dict["ORG"].replace("\n", "  ")
-		    		    
+                        self.na_dict["ORG"]=self.globals[key]
+
+                    # NOte: should probably do the following search and replace on all string lines
+                    self.na_dict["ONAME"]=self.na_dict["ONAME"].replace("\n", "  ")
+                    self.na_dict["ORG"]=self.na_dict["ORG"].replace("\n", "  ")
+
                 elif key=="comment":
-		    # Need to work out if they are actually comments from NASA Ames in the first place
+                    # Need to work out if they are actually comments from NASA Ames in the first place
                     #self.ncom=[self.globals[key]]
-		    comLines=self.globals[key].split("\n")
-		    normComms=[]
-		    normCommFlag=None
-		    specComms=[]
-		    specCommFlag=None
-		    for line in comLines:
-		        if line.find("###NASA Ames Special Comments follow###")>-1:
-			    specCommFlag=1
-			elif line.find("###NASA Ames Special Comments end###")>-1:
-			    specCommFlag=None
-		        elif line.find("###NASA Ames Normal Comments follow###")>-1:
-			    normCommFlag=1
-			elif line.find("###NASA Ames Normal Comments end###")>-1:
-			    normCommFlag=None	
-			elif specCommFlag==1:
-			    specComms.append(line)
-			elif normCommFlag==1:
-			    normComms.append(line)
-			elif line.find("###Data Section begins on the next line###")>-1:
-			    pass
-			else:
-			    normComms.append(line)	    
-		    
-		    self.extra_comments=[specComms, normComms, []]		    
-		   		    
-		elif key=="first_valid_date_of_data":
-		    self.na_dict["DATE"]=self.globals[key]
-		
+                    comLines=self.globals[key].split("\n")
+                    normComms=[]
+                    normCommFlag=None
+                    specComms=[]
+                    specCommFlag=None
+                    for line in comLines:
+                        if line.find("###NASA Ames Special Comments follow###")>-1:
+                            specCommFlag=1
+                        elif line.find("###NASA Ames Special Comments end###")>-1:
+                            specCommFlag=None
+                        elif line.find("###NASA Ames Normal Comments follow###")>-1:
+                            normCommFlag=1
+                        elif line.find("###NASA Ames Normal Comments end###")>-1:
+                            normCommFlag=None
+                        elif specCommFlag==1:
+                            specComms.append(line)
+                        elif normCommFlag==1:
+                            normComms.append(line)
+                        elif line.find("###Data Section begins on the next line###")>-1:
+                            pass
+                        else:
+                            normComms.append(line)
+
+                    self.extra_comments=[specComms, normComms, []]
+
+                elif key=="first_valid_date_of_data":
+                    self.na_dict["DATE"]=self.globals[key]
+
                 elif key in ("Conventions", "references"):
                     #conventionOrReferenceComments.append("%s:   %s" % (key, self.globals[key]))
-		    self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
+                    self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
                 else:
                     self.na_dict[globalmap[key]]=self.globals[key]
             else:
                 self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
-	#self.extra_comments
+        #self.extra_comments
         return
 
 
     def defineNAComments(self, normal_comments=[], special_comments=[]):
         """
-	Defines the Special and Normal comments sections in the NASA Ames file 
-	object - including information gathered from the defineNAGlobals method.
-	"""
-	
+        Defines the Special and Normal comments sections in the NASA Ames file 
+        object - including information gathered from the defineNAGlobals method.
+        """
+
         if hasattr(self, "ncom"):  normal_comments=self.ncom+normal_comments
-	NCOM=[]
+        NCOM=[]
         for ncom in normal_comments:
             NCOM.append(ncom)
         if len(NCOM)>0:   NCOM.append("")
-	
-	if len(self.extra_comments[2])>0:
-	    for excom in self.extra_comments[2]:
-	        NCOM.append(excom)
-	
+
+        if len(self.extra_comments[2])>0:
+            for excom in self.extra_comments[2]:
+                NCOM.append(excom)
+
         if len(self.extra_comments[1])>0:  
-	    NCOM.append("Additional Global Attributes defined in the source file and not translated elsewhere:")
+            NCOM.append("Additional Global Attributes defined in the source file and not translated elsewhere:")
             for excom in self.extra_comments[1]:
                 NCOM.append(excom)
 
@@ -649,42 +648,42 @@ class NAContentCollector(NACore):
             for h in self.history:
                 NCOM.append(h)
         
-	if len(NCOM)>0:
-	    NCOM.insert(0, "###NASA Ames Normal Comments follow###")
-	    NCOM.append("")
-	    NCOM.append("###NASA Ames Normal Comments end###")
+        if len(NCOM)>0:
+            NCOM.insert(0, "###NASA Ames Normal Comments follow###")
+            NCOM.append("")
+            NCOM.append("###NASA Ames Normal Comments end###")
         NCOM.append("###Data Section begins on the next line###")
 
         specCommentsFlag=None
-	SCOM=[]
-	special_comments=self.extra_comments[0]
-	if len(special_comments)>0: 
-	    SCOM=["###NASA Ames Special Comments follow###"]
-	    specCommentsFlag=1
+        SCOM=[]
+        special_comments=self.extra_comments[0]
+        if len(special_comments)>0: 
+            SCOM=["###NASA Ames Special Comments follow###"]
+            specCommentsFlag=1
         for scom in special_comments:
             SCOM.append(scom)
 
 
         #used_var_atts=("name", "long_name", "standard_name", "id", 
-	    #    "missing_value", "fill_value", "units", 
-		#"nasa_ames_var_number", "nasa_ames_aux_var_number")
+        #    "missing_value", "fill_value", "units", 
+        #"nasa_ames_var_number", "nasa_ames_aux_var_number")
         used_var_atts=("id",  "missing_value", "fill_value", "units", 
                    "nasa_ames_var_number", "nasa_ames_aux_var_number")
         varCommentsFlag=None
 
         # Create a string for the Special comments to hold rank-zero vars
-	rankZeroVarsString=[]
-	for var in self.rankZeroVars:
-	    rankZeroVarsString.append("\tVariable %s: %s" % (var.id, getBestName(var)))
-	    for att in var.attributes.keys():
-	        value=var.attributes[att]
-		if type(value) in (str, float, int):
-		    rankZeroVarsString.append("\t\t%s = %s" % (att, var.attributes[att]))
-	    #print "VALUES", dir(var), var._data ; rankZeroVarsString.append("\t\tvalue = %s" % var._data)
-	
-	if len(rankZeroVarsString)>0:
-	    rankZeroVarsString.insert(0, "###Singleton Variables defined in the source file follow###")
-	    rankZeroVarsString.append("###Singleton Variables defined in the source file end###")
+        rankZeroVarsString=[]
+        for var in self.rankZeroVars:
+            rankZeroVarsString.append("\tVariable %s: %s" % (var.id, getBestName(var)))
+            for att in var.attributes.keys():
+                value=var.attributes[att]
+                if type(value) in (str, float, int):
+                    rankZeroVarsString.append("\t\t%s = %s" % (att, var.attributes[att]))
+            #print "VALUES", dir(var), var._data ; rankZeroVarsString.append("\t\tvalue = %s" % var._data)
+
+        if len(rankZeroVarsString)>0:
+            rankZeroVarsString.insert(0, "###Singleton Variables defined in the source file follow###")
+            rankZeroVarsString.append("###Singleton Variables defined in the source file end###")
 
         for var in self.orderedVars:
             varflag="unused"
@@ -696,8 +695,8 @@ class NAContentCollector(NACore):
                     if varflag=="unused":
                         if varCommentsFlag==None:
                             varCommentsFlag=1
-			    if specCommentsFlag==None:
-			        SCOM=["###NASA Ames Special Comments follow###"]+rankZeroVarsString
+                            if specCommentsFlag==None:
+                                SCOM=["###NASA Ames Special Comments follow###"]+rankZeroVarsString
                             SCOM.append("Additional Variable Attributes defined in the source file and not translated elsewhere:")
                             SCOM.append("###Variable attributes from source (NetCDF) file follow###")
                         varflag="using" 
@@ -706,7 +705,7 @@ class NAContentCollector(NACore):
 
         if varCommentsFlag==1:  SCOM.append("###Variable attributes from source (NetCDF) file end###")
         if specCommentsFlag==1:
-	    SCOM.append("###NASA Ames Special Comments end###")
+            SCOM.append("###NASA Ames Special Comments end###")
 
         """used_var_atts=("name", "long_name", "standard_name", "id", "missing_value", "fill_value", "units")
         for var in self.vars:
@@ -716,30 +715,30 @@ class NAContentCollector(NACore):
                     SCOM.append("\t%s: %s - %s" % (name, scom, value))"""
 
         # Strip out empty lines (or returns)
-	NCOM_cleaned=[]
-	SCOM_cleaned=[]
-	#hiddenNewLineCount1=0
-	for c in NCOM:
-	    if c.strip() not in ("", " ", "  "):
-	        #hiddenNewLineCount1=hiddenNewLineCount1+c.count("\n")
-		# Replace new lines within one attribute with a newline and tab so easier to read
-		lines=c.split("\n")
-		for line in lines:
-		    if line!=lines[0]: line="\t"+line
-		    NCOM_cleaned.append(line)
-		
-	#hiddenNewLineCount2=0	
-	for c in SCOM:
-	    if c.strip() not in ("", " ", "  "): 	        
-	        #hiddenNewLineCount2=hiddenNewLineCount2+c.count("\n")
-		# Replace new lines within one attribute with a newline and tab so easier to read
-	        #c=c.replace("\n", "\n\t")
-		#SCOM_cleaned.append(c)
-		lines=c.split("\n")
-		for line in lines:
-		    if line!=lines[0]: line="\t"+line
-		    SCOM_cleaned.append(line)
-		    
+        NCOM_cleaned=[]
+        SCOM_cleaned=[]
+        #hiddenNewLineCount1=0
+        for c in NCOM:
+            if c.strip() not in ("", " ", "  "):
+                #hiddenNewLineCount1=hiddenNewLineCount1+c.count("\n")
+                # Replace new lines within one attribute with a newline and tab so easier to read
+                lines=c.split("\n")
+                for line in lines:
+                    if line!=lines[0]: line="\t"+line
+                    NCOM_cleaned.append(line)
+
+        #hiddenNewLineCount2=0
+        for c in SCOM:
+            if c.strip() not in ("", " ", "  "):
+                #hiddenNewLineCount2=hiddenNewLineCount2+c.count("\n")
+                # Replace new lines within one attribute with a newline and tab so easier to read
+                #c=c.replace("\n", "\n\t")
+                #SCOM_cleaned.append(c)
+                lines=c.split("\n")
+                for line in lines:
+                    if line!=lines[0]: line="\t"+line
+                    SCOM_cleaned.append(line)
+
         self.na_dict["NCOM"]=NCOM_cleaned
         self.na_dict["NNCOML"]=len(self.na_dict["NCOM"])#+hiddenNewLineCount1
         self.na_dict["SCOM"]=SCOM_cleaned
@@ -749,32 +748,32 @@ class NAContentCollector(NACore):
 
     def defineGeneralHeader(self, header_items={}):
         """
-	Defines known header items and overwrites any with header_items 
-	key/value pairs.
-	"""
-	# Check if DATE field previously known in NASA Ames file
-	time_now=time.strftime("%Y %m %d", time.localtime(time.time())).split()
-	if not self.na_dict.has_key("RDATE"):
-	    self.na_dict["RDATE"]=time_now
-	
+        Defines known header items and overwrites any with header_items 
+        key/value pairs.
+        """
+        # Check if DATE field previously known in NASA Ames file
+        time_now=time.strftime("%Y %m %d", time.localtime(time.time())).split()
+        if not self.na_dict.has_key("RDATE"):
+            self.na_dict["RDATE"]=time_now
+
         if self.ax0.isTime():
             # Get first date in list
-	    try:
+            try:
                 (unit, start_date)=re.match("(\w+)\s+?since\s+?(\d+-\d+-\d+)", self.ax0.units).groups()            
                 comptime=cdtime.s2c(start_date)
                 first_day=comptime.add(self.na_dict["X"][0][0], getattr(cdtime, unit.capitalize()))
                 self.na_dict["DATE"]=string.replace(str(first_day).split(" ")[0], "-", " ").split()
-	    except:
-	        msg="Nappy Warning: Could not get the first date in the file. You will need to manually edit the output file."
-		print msg
-		self.outputMessage.append(msg)
-		self.na_dict["DATE"]=("DATE", "NOT", "KNOWN")
+            except:
+                msg="Nappy Warning: Could not get the first date in the file. You will need to manually edit the output file."
+                print(msg)
+                self.outputMessage.append(msg)
+                self.na_dict["DATE"]=("DATE", "NOT", "KNOWN")
         else: 
             if not self.na_dict.has_key("DATE"):
-	        msg="Nappy Warning: Could not get the first date in the file. You will need to manually edit the output file."
-		print msg
-		self.outputMessage.append(msg)
-	        self.na_dict["DATE"]=("DATE", "NOT", "KNOWN")
+                msg="Nappy Warning: Could not get the first date in the file. You will need to manually edit the output file."
+                print(msg)
+                self.outputMessage.append(msg)
+                self.na_dict["DATE"]=("DATE", "NOT", "KNOWN")
         self.na_dict["IVOL"]=1
         self.na_dict["NVOL"]=1
         for key in header_items.keys():
@@ -801,7 +800,7 @@ class NAContentCollector(NACore):
             if rule[2]=="flag":
                 # Only use flag var for processing real variable
                 if var.id.strip()[-4:]=="FLAG": 
-                    print "Ignore flag: %s" % var.id
+                    print("Ignore flag: %s" % var.id)
                     return None 
 
                 flagID=var.id.strip()+"FLAG"
@@ -825,14 +824,14 @@ usenc2nainstead="""if __name__=="__main__":
 
     args=sys.argv[1:]
     if len(args)<4:
-        print helpMessage
-        print "Incorrect number of arguments used."
+        print(helpMessage)
+        print("Incorrect number of arguments used.")
         sys.exit()
-	
+
     for arg in args:
         if arg=="-i":
-	    infile=args[args.index(arg)+1]
-	elif arg=="-o":
-	    outfile=args[args.index(arg)+1]
+            infile=args[args.index(arg)+1]
+        elif arg=="-o":
+            outfile=args[args.index(arg)+1]
 
     cdms2na(infile, outfile) """

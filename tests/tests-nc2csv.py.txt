@@ -11,4 +11,4 @@
 ../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-no-header.csv --no-header
 ../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-annotated.csv --annotated
 ../lib/nappy/script/nc2csv.py -i ../test_outputs/1001.nc --names-only
--c "print 'NOTE: If all tests failed try running the ../lib/nappy/script/na2nc tests first, because they are needed to generate the nc files!'"
+-c "print('NOTE: If all tests failed try running the ../lib/nappy/script/na2nc tests first, because they are needed to generate the nc files!')"

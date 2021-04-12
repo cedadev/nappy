@@ -50,7 +50,7 @@ special_comment_known_strings = (hp["sc_start"], hp["sc_end"], hp["addl_vatts"],
                                   hp["addl_globals"], "\n")
 
 normal_comment_known_strings = (hp["nc_start"], hp["nc_end"], hp["data_next"], 
-			          hp["addl_vatts"], hp["addl_globals"], "\n")
+                      hp["addl_vatts"], hp["addl_globals"], "\n")
 
 time_units_warning_message = """\nWARNING: Could not recognise time units. For true NetCDF compability
 please insert the correct time unit string below in the format:
@@ -80,7 +80,7 @@ class NADictToCdmsObjects:
         """
         Sets up instance variables.
         """
-        self.na_file_obj = na_file_obj	   
+        self.na_file_obj = na_file_obj       
         self.variables = variables
         self.aux_variables = aux_variables
         self.global_attributes = global_attributes
@@ -90,7 +90,7 @@ class NADictToCdmsObjects:
 
         # Check if we have capability to convert this FFI
         if self.na_file_obj.FFI in (2110, 2160, 2310): 
-	        raise Exception("Cannot convert NASA Ames File Format Index (FFI) " + `self.na_file_obj.FFI` + " to CDMS objects. No mapping implemented yet.")
+            raise Exception("Cannot convert NASA Ames File Format Index (FFI) " + self.na_file_obj.FFI + " to CDMS objects. No mapping implemented yet.")
 
         self.output_message = []  # for output displaying message
         self.converted = False
@@ -147,7 +147,7 @@ class NADictToCdmsObjects:
                         comment_line += (hp["sc_start"] + "\n")
 
                         for i in self.na_file_obj.SCOM: 
-			    
+                
                             if i.strip() not in special_comment_known_strings:
                                 comment_line += ("\n" + i)
                             
@@ -249,17 +249,17 @@ class NADictToCdmsObjects:
 
         # Sort units etc
         if units:   var.units=units
-	
+    
         # Add the best variable name
         if len(var_name) < max_id_length:
             var.id=safe_nc_id.sub("_", var_name).lower()
         else:
             var.id="naVariable_%s" % (var_number)
         
-	     # Check if mapping provided for renaming this variable
+         # Check if mapping provided for renaming this variable
         if var_name in self.rename_variables.keys():
             var_name = self.rename_variables[var_name]
-	    
+        
         var.long_name = var.name = var.title = var_name
 
         # Add a NASA Ames variable number (for mapping correctly back to NASA Ames)
@@ -286,7 +286,7 @@ class NADictToCdmsObjects:
                         avar_number = self.na_file_obj.ANAME.index(avar_name)
                         self.cdms_aux_variables.append(self._convertNAAuxToCdmsVariable(avar_number)) 
             else:
-                raise Exception("Auxiliary variable name not known: " + avar_name)	    
+                raise Exception("Auxiliary variable name not known: " + avar_name)        
 
     def _convertNAAuxToCdmsVariable(self, avar_number, attributes={}):
         """
@@ -315,7 +315,7 @@ class NADictToCdmsObjects:
         else:
             var.id = "naAuxVariable_%s" % (avar_number)
 
-	    # Check if mapping provided for renaming this variable
+        # Check if mapping provided for renaming this variable
         if var_name in self.rename_variables.keys():
             var_name = self.rename_variables[var_name]
 
@@ -350,7 +350,7 @@ class NADictToCdmsObjects:
         axis = cdms.createAxis(array)
         axis.id = axis.name = axis.long_name = self.na_file_obj.XNAME[ivar_number]
         (var_name, units) = self.na_file_obj.getIndependentVariable(ivar_number)
-	
+    
         # Sort units etc
         if units:   axis.units = units
         if len(var_name) < max_id_length:
@@ -366,7 +366,7 @@ class NADictToCdmsObjects:
             if re.search(axis_type, var_name, re.IGNORECASE):
                 axis.standard_name = axis.id = axis_type
                 # Designate it CF-style if known axis type (e.g. axis.designateTime() etc..)
-                exec "axis.designate%s()" % axis_type.title()
+                exec("axis.designate%s()" % axis_type.title())
 
         # Check warning for time units pattern
         if axis.isTime() and (not hasattr(axis, "units") or not time_units_pattn.match(axis.units)):
@@ -374,7 +374,7 @@ class NADictToCdmsObjects:
                 time_units_input = "I WON'T MATCH"
 
                 while time_units_input != "" and not time_units_pattn.match(time_units_input):
-                    message = time_units_warning_message			    
+                    message = time_units_warning_message                
                     if self.time_warning:
                         log.debug(message)
                         time_units_input = raw_input("Please insert your time unit string here (or leave blank):").strip()
@@ -384,12 +384,12 @@ class NADictToCdmsObjects:
                 self.output_message.append(message)
                 self.time_units = time_units_input
 
-	    axis.units = self.time_units
-            axis.long_name = axis.name = "time (%s)" % self.time_units
+        axis.units = self.time_units
+        axis.long_name = axis.name = "time (%s)" % self.time_units
 
         if not hasattr(axis, "units") or axis.units == None:  
             if units:
-                axis.units = units	
+                axis.units = units    
             else:
                 axis.units = "Not known"
 

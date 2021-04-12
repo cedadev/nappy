@@ -41,8 +41,8 @@ from nappy.utils.common_utils import makeListFromCommaSepString, makeDictFromCom
 
 def exitNicely(msg=""):
     "Exits nicely!"
-    print __doc__
-    if msg != "": print "ERROR:", msg
+    print(__doc__)
+    if msg != "": print("ERROR:", msg)
     sys.exit()
 
 
@@ -66,7 +66,7 @@ def parseArgs(args):
 
     try:
         (arg_list, dummy) = getopt.getopt(args, "i:o:m:v:a:g:t:nr:")
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         exitNicely(str(e))
     
     for arg, value in arg_list:
@@ -100,7 +100,7 @@ def parseArgs(args):
         fn = a["na_file"]
         if fn[-3:] == ".na": fn = fn[:-3]
         nc_file = fn + ".nc"
-        print "Auto-generating output file name:", nc_file
+        print("Auto-generating output file name:", nc_file)
         a["nc_file"] = nc_file
 
     return a
