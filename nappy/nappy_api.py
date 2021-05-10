@@ -133,7 +133,7 @@ except:
     try:
         import cdms
     except:
-        log.warn("You cannot use nappy NetCDF conversion tools as your system does not have CDMS installed, or it is not in your sys.path.")
+        log.warning("You cannot use nappy NetCDF conversion tools as your system does not have CDMS installed, or it is not in your sys.path.")
         cdms = False
 
 # Import local modules
@@ -165,7 +165,7 @@ def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
         return na_class(filename, ignore_header_lines, mode)
 
     elif mode == "w":
-        if na_dict.has_key('FFI') and type(na_dict['FFI']) == type(3):
+        if 'FFI' in na_dict and type(na_dict['FFI']) == type(3):
             ffi = na_dict['FFI']
         else:
             ffi = chooseFFI(na_dict)

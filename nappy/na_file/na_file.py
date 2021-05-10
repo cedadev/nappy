@@ -17,7 +17,7 @@ for individual FFIs. Each FFI class is held in an individual file.
 import sys
 import time
 import re
-from io import BytesIO
+from io import StringIO
 
 # Imports from nappy package
 import nappy.na_file.na_core
@@ -34,7 +34,6 @@ stripQuotes = nappy.utils.common_utils.stripQuotes
 
 
 class NAFile(nappy.na_file.na_core.NACore):
-
     """
     NAFile class is a sub-class of NACore abstract classes.
     NAFile is also an abstract class and should not be called directly.
@@ -115,7 +114,7 @@ class NAFile(nappy.na_file.na_core.NACore):
    
         # Parse na_dict then write header and data
         self._parseDictionary()
-        self.header = BytesIO()
+        self.header = StringIO()
 
         if not no_header:
             self.writeHeader()
@@ -201,7 +200,7 @@ class NAFile(nappy.na_file.na_core.NACore):
         """
         Writes the header section common to all NASA Ames files.
         """
-        #Line 1 if often overwritten at _fixHeaderLength
+        # Line 1 if often overwritten at _fixHeaderLength
         self.header.write(wrapLine("NLHEAD_FFI", self.annotation, self.delimiter, "%d%s%d\n" % (self.NLHEAD, self.delimiter, self.FFI)))
         self.header.write(getAnnotation("ONAME", self.annotation, delimiter = self.delimiter) + stripQuotes(self.ONAME) + "\n")
         self.header.write(getAnnotation("ORG", self.annotation, delimiter = self.delimiter) + stripQuotes(self.ORG) + "\n")
@@ -295,7 +294,7 @@ class NAFile(nappy.na_file.na_core.NACore):
 
     def _fixHeaderLength(self):
         """
-        Takes the self.header BytesIO object and counts the number of lines
+        Takes the self.header StringIO object and counts the number of lines
         and corrects the NLHEAD value in the header line.
         Resets to start of self.header.
         """
@@ -303,7 +302,7 @@ class NAFile(nappy.na_file.na_core.NACore):
         lines = self.header.readlines()
         headlength = len(lines)
         lines[0] = wrapLine("NLHEAD_FFI", self.annotation, self.delimiter, "%d%s%d\n" % (headlength, self.delimiter, self.FFI))
-        self.header = BytesIO("".join(lines))
+        self.header = StringIO("".join(lines))
         self.header.seek(0) 
 
     def _readSpecialComments(self):

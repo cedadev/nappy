@@ -11,6 +11,7 @@ Functions and classes commonly used in nappy.
 """
 
 # Standard library imports
+from io import StringIO
 import logging
 
 # Imports from local package
@@ -78,10 +79,10 @@ def chooseFFI(na_dict):
             return 2010
 
     elif d["NIV"] == 1:   # 1 independent variable 
-        if not d.has_key("NAUXV"):
+        if "NAUXV" not in d:
             # 1001 - No auxiliary variables
             return 1001
-        elif d.has_key("NVPM"):
+        elif "NVPM" in d:
             # 1020 - Implied values for independent variable
             return 1020
         else:
@@ -225,9 +226,8 @@ def annotateLine(item_name, annotate, delimiter, line, count=None):
     if annotate:
         annotation = getAnnotation(item_name, annotate, delimiter=delimiter, count=count)
         line = "%s%s" % (annotation, line)
-        return line
-    else:
-        return line
+
+    return line
 
 
 def stripQuotes(s):

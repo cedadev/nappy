@@ -9,14 +9,14 @@ NERC Data Grid (NDG) project
 10
 Altitude (km)
 4
-1e+12    1000000.0    10000.0    1.0
+1000000000000.0    1000000.0    10000.0    1.0
 100000000.0    100000000.0    100000000.0    10000.0
 Molecular oxygen concentration (cm-3)
 Ozone concentration (cm-3)
 O(3P) concentration (cm-3)
 O(1D) concentration (cm-3)
 2
-1.0    1e+12
+1.0    1000000000000.0
 10000.0    100000000.0
 Pressure (hPa)
 Air concentration (cm-3)
