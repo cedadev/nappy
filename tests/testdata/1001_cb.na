@@ -1,0 +1,28 @@
+25    1001	{NLHEAD FFI}
+Bryan Lawrence
+Physics and Astronomy, University of Canterbury		{INFO}	
+Data:    NZMS Radiosonde Ascent
+Project: Gravity Wave Processes and their Role in Climate
+       1       1	{IVOL NVOL}
+  2000     9    20  2003     4    10
+      10
+Time in UT Seconds from 0000 hours on the data date
+       3		{NV}
+ 0.1 1.0 0.1
+  -1 -1  -1
+Ascent Rate (m/s)
+Height above MSL (m)
+Pressure (hPa)
+       0                                   {NNCOML}
+       8
+Location : 36.79 S 174.63 E     30 m
+RS-number: 002104615
+Ground check  :    Ref     RS   Corr
+  Pressure    : 1018.0 1017.6    0.4
+  Temperature :   21.6   21.8   -0.2
+  Humidity    :      0      1     -1
+   uts asrat  hght press  
+     s   m/s     m   hPa 
+ 79200     0    30 10176  
+ 79210    44    74 10125  
+ 79220    37   105 10088  

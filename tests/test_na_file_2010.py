@@ -15,8 +15,9 @@ import nappy
 import nappy.utils.compare_na
 
 here = os.path.dirname(__file__)
-data_files = os.path.join(here, '../data_files')
-test_outputs = os.path.join(here, '../test_outputs')
+data_files = os.path.join(here, 'testdata')
+test_outputs = os.path.join(here, './test_outputs')
+
 
 class NAFile2010_TestCase(unittest.TestCase):
 

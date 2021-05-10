@@ -1,0 +1,90 @@
+38,2110
+De Rudder, Anne
+Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837
+Anemometer measurements averaged over longitude
+NERC Data Grid (NDG) project
+9,13
+1969 1 1,2002 10 31
+0.0,10.0
+Latitude (degrees North)
+Altitude (km)
+1
+1.0
+200.0
+Mean zonal wind (m/s)
+2
+1.0,1.0
+100.0,2000.0
+Number of latitude points
+Pressure (hPa)
+6
+Example of FFI 2110.
+This example illustrating NASA Ames file format index 2110 is based on results
+from Murgatroyd (1969) as displayed in Brasseur and Solomon, Aeronomy of the
+Middle Atmosphere, Reidel, 1984 (p.36). It is representative of the mean zonal
+wind distribution in the winter hemisphere as a function of latitude and height.
+The first date on line 7 (1st of January 1969) is fictitious.
+11
+The files incuded in this data set illustrate each of the 9 NASA Ames file
+format indices (FFI). A detailed description of the NASA Ames format can be
+found on the Web site of the British Atmospheric Data Centre (BADC) at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data
+Exchange, Version 1.3, 1998. This work can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html
+and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+
+0.000000,4.000000,1013.300000
+20.000000,-2.300000
+40.000000,4.800000
+60.000000,4.500000
+80.000000,-0.900000
+10.000000,4.000000,265.000000
+30.000000,31.500000
+40.000000,28.000000
+50.000000,21.600000
+60.000000,14.900000
+20.000000,3.000000,55.300000
+40.000000,14.700000
+60.000000,21.500000
+70.000000,18.000000
+30.000000,7.000000,12.000000
+20.000000,-9.300000
+30.000000,-6.800000
+40.000000,15.000000
+50.000000,22.000000
+60.000000,22.700000
+70.000000,18.200000
+80.000000,12.000000
+40.000000,5.000000,2.300000
+0.000000,-29.000000
+20.000000,3.400000
+30.000000,28.200000
+50.000000,39.100000
+80.000000,0.100000
+50.000000,8.000000,0.800000
+0.000000,-21.900000
+10.000000,-4.000000
+20.000000,19.900000
+30.000000,40.800000
+40.000000,55.000000
+50.000000,50.100000
+60.000000,25.000000
+70.000000,8.100000
+60.000000,9.000000,0.220000
+0.000000,-10.000000
+10.000000,8.400000
+20.000000,31.200000
+30.000000,59.900000
+40.000000,78.500000
+50.000000,77.700000
+60.000000,47.000000
+70.000000,17.600000
+80.000000,16.000000
+70.000000,4.000000,0.050000
+0.000000,1.200000
+30.000000,63.300000
+60.000000,61.200000
+70.000000,35.000000

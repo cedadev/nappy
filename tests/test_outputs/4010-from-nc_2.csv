@@ -1,0 +1,85 @@
+59,2010
+De Rudder, Anne
+Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK.
+Imaginary 3-D stratospheric radiative model
+NERC Data Grid (NDG) project
+1,1
+1980 6 21,2021 5 10
+1.0,5.0
+2
+2
+0,1
+bound 
+time  (days since 2008-01-01 00:00:00)
+1
+1
+1e+20
+variable_2
+0
+22
+==== Special Comments follow ====
+Example of FFI 4010.
+This example illustrating NASA Ames file format index 4010 is entirely fictitious.
+Data have been made up for the purpose of illustrating the use of the format. They
+consist in an imaginary calculated temperature distribution over a longitude-lati-
+tude-altitude grid at 6 o'clock and noon on the 21st of June 1980. The grid is
+defined in lines 8, 9, 11, 12 and 13. Longitude ranges from 30 degrees West to 30
+degrees East by intervals of 5 degrees. Latitude ranges from 90 North to 90 South by
+negative intervals of 30 degrees. Altitude takes the two values of 20 and 50 km.
+If the temperature is written as T(lon, lat, alt, time), the record below thus reads,
+for each of the two times t = 6 and t = 12,
+t
+T(-30, 90, 20, t) . . . T(30, 90, 20, t)
+. . .                   . . .
+T(-30, -90, 20, t). . . T(30, -90, 20, t)
+T(-30, 90, 50, t) . . . T(30, 90, 50, t)
+. . .                   . . .
+T(-30, -90, 50, t). . . T(30, -90, 50, t)
+  Variable bounds_longitude: variable_2
+    name = variable_2
+== Variable attributes from source (NetCDF) file end ==
+==== Special Comments end ====
+17
+==== Normal Comments follow ====
+Conventions:   CF-1.0
+=== Additional Global Attributes defined in the source file ===
+The files included in this data set illustrate each of the 9 NASA Ames file format
+indices (FFI). A detailed description of the NASA Ames format can be found on the Web
+site of the British Atmospheric Data Centre (BADC) at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,
+Version 1.3, 1998. This work can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+History:  2021-05-10 15:49:09 - Converted to NASA Ames format using nappy-0.3.0.
+    2002-10-31 - NASA Ames File created/revised.
+  2021-05-10 15:14:45 - Converted to CDMS (NetCDF) format using nappy-0.3.0.
+==== Normal Comments end ====
+=== Data Section begins on the next line ===
+-30
+-32.5,-27.5
+-25
+-27.5,-22.5
+-20
+-22.5,-17.5
+-15
+-17.5,-12.5
+-10
+-12.5,-7.5
+-5
+-7.5,-2.5
+0
+-2.5,2.5
+5
+2.5,7.5
+10
+7.5,12.5
+15
+12.5,17.5
+20
+17.5,22.5
+25
+22.5,27.5
+30
+27.5,32.5

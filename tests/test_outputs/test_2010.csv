@@ -1,0 +1,53 @@
+43,2010
+De Rudder, Anne
+Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837
+Anemometer measurements averaged over longitude
+NERC Data Grid (NDG) project
+7,13
+1969 1 1,2002 10 31
+10.0,20.0
+9
+1
+0.000000
+Latitude (degrees North)
+Altitude (km)
+1
+1.0
+200.0
+Mean zonal wind (m/s)
+1
+1.0
+2000.0
+Pressure (hPa)
+9
+Example of FFI 2010 (b).
+This example illustrating NASA Ames file format index 2010 is based on results
+from Murgatroyd (1969) as displayed in Brasseur and Solomon, Aeronomy of the
+Middle Atmosphere, Reidel, 1984 (p.36). It is representative of the mean zonal
+wind distribution in the winter hemisphere as a function of latitude and height.
+The first date on line 7 (1st of January 1969) is fictitious.
+From line 10 (NXDEF = 1) we know that the latitude points are defined by
+X(i) = X(1) + (i-1)DX1 for i = 1, ..., NX
+with X(1) = 0 deg (line 11), DX1 = 10 deg (line 8) and NX = 9 (line 9).
+11
+The files included in this data set illustrate each of the 9 NASA Ames file
+format indices (FFI). A detailed description of the NASA Ames format can be
+found on the Web site of the British Atmospheric Data Centre (BADC) at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data
+Exchange, Version 1.3, 1998. This work can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html
+and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+
+0.000000,1013.300000
+-3.000000,-2.600000,-2.300000,2.000000,4.800000,4.600000,4.500000,3.000000,-0.900000
+20.000000,55.300000
+-15.100000,-4.200000,6.900000,12.800000,14.700000,20.000000,21.500000,18.000000,8.200000
+40.000000,2.300000
+-29.000000,-15.200000,3.400000,28.200000,41.000000,39.100000,17.900000,8.000000,0.100000
+60.000000,0.220000
+-10.000000,8.400000,31.200000,59.900000,78.500000,77.700000,47.000000,17.600000,16.000000
+80.000000,0.010000
+200.000000,200.000000,200.000000,200.000000,200.000000,200.000000,200.000000,200.000000,200.000000

@@ -1,14 +1,14 @@
-../lib/nappy/script/nc2na.py ../test_outputs/
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc.na
-../lib/nappy/script/nc2na.py -i ../test_outputs/1010.nc -o ../test_outputs/1010-from-nc.na
-../lib/nappy/script/nc2na.py -i ../test_outputs/2010.nc -o ../test_outputs/2010-from-nc.na
-../lib/nappy/script/nc2na.py -i ../test_outputs/3010.nc -o ../test_outputs/3010-from-nc.na
-../lib/nappy/script/nc2na.py -i ../test_outputs/4010.nc -o ../test_outputs/4010-from-nc.na
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-excludes.na -e "Ascent Rate"
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-overwrite.na --overwrite-metadata=ONAME,"See line 2 - my favourite org."
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-as-padded-ints.na -f "%03d"
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-csv.na -d ,
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-no-header.na --no-header
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc -o ../test_outputs/1001-from-nc-annotated.na --annotated
-../lib/nappy/script/nc2na.py -i ../test_outputs/1001.nc --names-only
--c "print('NOTE: If all tests failed try running the ../lib/nappy/script/na2nc tests first, because they are needed to generate the nc files!')"
+nc2na.py test_outputs/
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc.na
+nc2na.py -i test_outputs/1010.nc -o test_outputs/1010-from-nc.na
+nc2na.py -i test_outputs/2010.nc -o test_outputs/2010-from-nc.na
+nc2na.py -i test_outputs/3010.nc -o test_outputs/3010-from-nc.na
+nc2na.py -i test_outputs/4010.nc -o test_outputs/4010-from-nc.na
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-excludes.na -e "Ascent Rate"
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-overwrite.na --overwrite-metadata=ONAME,"See line 2 - my favourite org."
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-as-padded-ints.na -f "%03d"
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-csv.na -d ,
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-no-header.na --no-header
+nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-annotated.na --annotated
+nc2na.py -i test_outputs/1001.nc --names-only
+-c "print('NOTE: If all tests failed try running the na2nc tests first, because they are needed to generate the nc files!')"

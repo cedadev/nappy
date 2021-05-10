@@ -16,6 +16,9 @@ import time
 import re
 import logging
 
+# Third-party imports
+import numpy as np
+
 # Import from nappy package
 from nappy.na_error import na_error
 import nappy.utils
@@ -318,6 +321,17 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             raise Exception("Cannot write this data to FFI '" + str(self.requested_ffi) + "', can only write to: " + str(ffi) + ".")
         return ffi
 
+    def _resolve_float(self, item):
+        """
+        Gets a float from a number of different types of object.
+        """
+        if not isinstance(item, (float, int, str)):
+            if isinstance(item, np.ndarray) and item.shape == ():
+                item = float(item)
+            else:
+                item = item[0]
+
+        return item
 
     def _defineNAVars(self, vars):
         """
@@ -334,10 +348,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             name = cdms_utils.var_utils.getBestName(var)
             self.na_dict["VNAME"].append(name)
             miss = cdms_utils.var_utils.getMissingValue(var)
-
-            #if type(miss) not in (type(1.2), type(1), type(1L)):  
-            if not isinstance(miss, (float, int, str)):
-                miss = miss[0]
+            miss = self._resolve_float(miss)
 
             self.na_dict["VMISS"].append(miss)
             self.na_dict["VSCAL"].append(1)
@@ -453,7 +464,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             name = cdms_utils.var_utils.getBestName(var)
             self.na_dict["ANAME"].append(name)
             miss = cdms_utils.var_utils.getMissingValue(var)
-            if not isinstance(miss, (float, int, str)): miss = miss[0]
+            miss = self._resolve_float(miss)
+
             self.na_dict["AMISS"].append(miss)
             self.na_dict["ASCAL"].append(1)
             # Populate the variable list with the array

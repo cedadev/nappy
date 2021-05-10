@@ -1,0 +1,53 @@
+38  2110
+Mertz, Fred
+Pacific University
+ER-2 Microwave Temperature Profiler (MTP)
+TAHITI OZONE PROJECT
+1  1
+1991  1 16  1991  1 16
+0.0  0.0
+Remote sensing "applicable altitude" (meters)
+Elapsed UT seconds from 0 hours on day given in DATE
+2
+0.1 0.1
+9999 9999
+Brightness temperature (C)
+Potential temperature (K)
+15
+1.0 1.0 1.0 1.0 1.0 0.1 1.0 0.1 0.1 0.01 0.001 0.1 0.1 1.0 1.0
+99 99 99 99 99999 999 999 9999 9999 9999 99999 999 999 999 999
+Number of "applicable altitudes" recorded in subsequent data records
+Hours (UT)
+Minutes (UT)
+Seconds (UT)
+Pressure altitude of ER-2 (ft)
+Aircraft pitch (deg)
+Aircraft roll (deg)
+Horizon brightness temperature (C), ave. of Chan 1 & 2 brightness temp.
+Potential temperature (K) from above horizon temp. and ER-2 press.alt.
+dT/dz (K/km), from Chan 1 & 2 blended Temperature profile
+dTHETA/dp (K/mb); THETA is potential temperature
+dT/dz (K/km) from Chan 1
+dT/dz (K/km) from Chan 2
+Peak downward acceleration (centi-G's)
+Peak upward acceleration (centi-G's)
+0
+3
+The brightness temperatures are approximately equal to air
+temperatures at ER-2 altitudes.
+
+29589  5  8 13  9 44890  24   1 -728 3459
+440   996  49  34  53   9
+14060 -729 3516
+13940 -728 3499
+13810 -731 3474
+13680 -728 3459
+13560 -740 3421
+29603 6  8 13 23 45170  24   2 -712 3500
+-17  -679 -11  -4  56  10
+15030 -721 3688
+14780 -719 3650
+14770 -718 3640
+14760 -717 3630
+14750 -716 3620
+14740 -715 3610

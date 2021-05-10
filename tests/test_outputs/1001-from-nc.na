@@ -1,0 +1,57 @@
+54    1001
+Bryan Lawrence
+Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK.
+Data:    NZMS Radiosonde Ascent
+Project: Gravity Wave Processes and their Role in Climate
+1    1
+999 999 999    2021 5 10
+10.0
+time  (days since 2008-01-01 00:00:00)
+3
+1    1    1
+-1.0    -1.0    -1.0
+Ascent Rate (m/s)
+Height above MSL (m)
+Pressure (hPa)
+20
+==== Special Comments follow ====
+=== Additional Variable Attributes defined in the source file ===
+== Variable attributes from source (NetCDF) file follow ==
+  Variable ascent_rate: Ascent Rate (m/s)
+    name = variable_1
+    title = Ascent Rate
+    long_name = Ascent Rate
+    units = m/s
+  Variable height_above_msl: Height above MSL (m)
+    name = variable_3
+    title = Height above MSL
+    long_name = Height above MSL
+    units = m
+  Variable pressure: Pressure (hPa)
+    name = variable_2
+    title = Pressure
+    long_name = Pressure
+    units = hPa
+== Variable attributes from source (NetCDF) file end ==
+==== Special Comments end ====
+17
+==== Normal Comments follow ====
+Conventions:   CF-1.0
+=== Additional Global Attributes defined in the source file ===
+Location : 36.79 S 174.63 E     30 m
+RS-number: 002104615
+Ground check  :    Ref     RS   Corr
+Pressure    : 1018.0 1017.6    0.4
+Temperature :   21.6   21.8   -0.2
+Humidity    :      0      1     -1
+uts asrat  hght press
+s   m/s     m   hPa
+History:  2021-05-10 15:51:09 - Converted to NASA Ames format using nappy-0.3.0.
+    2003-04-10 - NASA Ames File created/revised.
+  2021-05-10 15:13:29 - Converted to CDMS (NetCDF) format using nappy-0.3.0.
+==== Normal Comments end ====
+=== Data Section begins on the next line ===
+time  (days since 2008-01-01 00:00:00),Ascent Rate (m/s),Height above MSL (m),Pressure (hPa)
+79200    0    30    1017.6
+79210    4.4    74    1012.5
+79220    3.7    105    1008.8

@@ -1,0 +1,101 @@
+82    1001
+De Rudder, Anne
+Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK.
+BISA 1-D atmospheric model
+NERC Data Grid (NDG) project
+1    1
+1976 1 1    2021 5 10
+5.0
+time  (days since 2008-01-01 00:00:00)
+6
+1    1    1    1    1    1
+100000000.0    100000000.0    100000000.0    10000.0    100000000.0    10000.0
+Molecular oxygen concentration (cm-3)
+Ozone concentration (cm-3)
+O(3P) concentration (cm-3)
+O(1D) concentration (cm-3)
+Air concentration (cm-3)
+Pressure (hPa)
+43
+==== Special Comments follow ====
+Example of FFI 1010.
+This example illustrating NASA Ames file format index 1010 combines the US Standard
+Atmosphere 1976 (for the auxiliary variables Pressure and Air Concentration) and some
+results of a 1-D model (for the dependent variables - oxygen compounds concentrations),
+as quoted in G. Brasseur and S. Solomon, Aeronomy of the Middle Atmosphere,
+Reidel, 1984 (pp. 46 & 211). The first date on line 7 (1st of January 1976) is fictitious
+since the parameters are yearly averages. We have signalled the absence of calculated
+value at 30 km by using the "missing value" flags (see line 12). The missing value flag
+is also used to give account for the fact that there is virtually no O(1D) present below
+the altitude of 20 km.
+  Variable molecular_oxygen_concentration: Molecular oxygen concentration (cm-3)
+    name = variable_6
+    title = Molecular oxygen concentration
+    long_name = Molecular oxygen concentration
+    units = cm-3
+  Variable ozone_concentration: Ozone concentration (cm-3)
+    name = variable_1
+    title = Ozone concentration
+    long_name = Ozone concentration
+    units = cm-3
+  Variable o_3p_concentration: O(3P) concentration (cm-3)
+    name = variable_5
+    title = O(3P) concentration
+    long_name = O(3P) concentration
+    units = cm-3
+  Variable o_1d_concentration: O(1D) concentration (cm-3)
+    name = variable_2
+    title = O(1D) concentration
+    long_name = O(1D) concentration
+    units = cm-3
+  Variable air_concentration: Air concentration (cm-3)
+    name = variable_3
+    title = Air concentration
+    long_name = Air concentration
+    units = cm-3
+  Variable pressure: Pressure (hPa)
+    name = variable_4
+    title = Pressure
+    long_name = Pressure
+    units = hPa
+== Variable attributes from source (NetCDF) file end ==
+==== Special Comments end ====
+19
+==== Normal Comments follow ====
+Conventions:   CF-1.0
+=== Additional Global Attributes defined in the source file ===
+The files included in this data set illustrate each of the 9 NASA Ames file format indices
+(FFI). A detailed description of the NASA Ames format can be found on the Web site of the
+British Atmospheric Data Centre (BADC) at http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,
+Version 1.3, 1998. The work referenced above can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+Altitude (km) Pressure (mb)    [M] (cm-3)                 < 2 auxiliary dependent variables >
+O2 (cm-3)     O3 (cm-3)  O(3P) (cm-3)  O(1D) (cm-3)   < 4 primary dependent variables >
+History:  2021-05-10 15:51:11 - Converted to NASA Ames format using nappy-0.3.0.
+    2002-10-30 - NASA Ames File created/revised.
+  2021-05-10 15:13:41 - Converted to CDMS (NetCDF) format using nappy-0.3.0.
+==== Normal Comments end ====
+=== Data Section begins on the next line ===
+time  (days since 2008-01-01 00:00:00),Molecular oxygen concentration (cm-3),Ozone concentration (cm-3),O(3P) concentration (cm-3),O(1D) concentration (cm-3),Air concentration (cm-3),Pressure (hPa)
+10    1.7e+18    1e+12    13000    10000    8.61e+18    265
+15    8.1e+17    1.1e+12    55000    10000    4.04e+18    121.1
+20    3.6e+17    2.9e+12    940000    0.9    1.85e+18    55.3
+25    1.6e+17    3.2e+12    6.7e+06    5    8.33e+17    25.5
+30    1e+20    1e+14    1e+12    10000    3.83e+17    12
+35    3.5e+16    2e+12    2.4e+08    100    1.74e+17    5.7
+40    1.7e+16    1e+12    1.2e+09    330    6.67e+16    2.3
+45    8.9e+15    3.2e+11    3.7e+09    600    4.12e+16    1.5
+50    4.8e+15    1e+11    6.5e+09    610    2.14e+16    0.8
+55    2.6e+15    3.2e+10    8.4e+09    440    1.19e+16    0.43
+60    1.5e+15    1e+09    6.5e+09    260    6.45e+15    0.22
+65    8.2e+14    3.2e+09    5e+09    150    3.42e+15    0.11
+70    4.2e+14    1e+09    4e+09    96    1.71e+15    0.052
+75    2e+14    3.2e+08    3.8e+09    67    8.36e+14    0.024
+80    9e+13    1.4e+08    1.4e+10    70    4.03e+14    0.011
+85    3.7e+13    1e+08    3e+10    120    1.72e+14    0.0045
+90    1.25e+13    1.1e+08    3e+11    420    6.98e+13    0.0018
+95    4.7e+12    1.3e+07    3.3e+11    490    2.93e+13    0.00076
+100    1.9e+12    1.7e+06    3.2e+11    1200    1.19e+13    0.00032

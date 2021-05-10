@@ -1,0 +1,43 @@
+31  2010
+Mertz, Fred
+Pacific University
+NMC analyzed grid data interpolated to DC-8 flight path
+TAHITI OZONE PROJECT
+1  1
+1991 01 16   1991 01 16
+0.0  30.0
+8
+8
+250 200 150 100 70 50 30 10
+Pressure levels (mb)
+Time (UT seconds) from 00 hours on launch date
+3
+1.0   0.1  1.0E-09
+99999 9999 9999999
+Geopotential height (gpm)
+Temperature (K)
+Potential vorticity (K m**2/(kg s))
+2
+1.0 0.1
+99999 9999
+Geopotential height (gpm) of the DC-8
+Temperature (K) at DC-8's position
+0
+5                  
+The geopotential height, temperature, and potential vorticity
+values were interpolated from NMC analyses to a vertical cross-
+section along the DC-8 flight path.
+NOTE: PRELIMINARY data.
+	250mb   200mb   150mb   100mb    70mb    50mb    30mb    10mb
+	3350  1127 2682
+	9994   11395   13219   15762   17970   20000   23016   29411
+	2150    2154    2156    2115    2082    2042    1991    2021
+	4119    7050    8030   11300   16200   23500   50300  386000
+	3380  1289 2671
+	9992   11393   13217   15760   17968   19998   23013   29408
+	2151    2154    2156    2115    2081    2041    1990    2020
+	4128    7050    8040   11300   16200   23500   50400  386000
+	3410  1479 2653
+	9990   11392   13215   15759   17966   19996   23010   29404
+	2151    2154    2156    2115    2081    2041    1990    2020
+	4138    7060    8050   11400   16200   23500   50500  386000

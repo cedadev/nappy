@@ -1,0 +1,80 @@
+47,2160
+De Rudder, Anne
+Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837
+Chemiluminescence NOX analyser. UV absorption API 400 ozone analyser.
+NERC Data Grid (NDG) project
+10,13
+2002 10 10,2002 10 31
+10.0
+13.0
+Time (minutes)
+Site name
+2
+1.0,1.0
+100.0,100.0
+NOX volume mixing ratio (ppbv)
+Ozone volume mixing ratio (ppbv)
+5
+2
+1.0,1.0,1.0
+100.0,1000.0,1000.0
+10,7
+zzzzzzzzzz
+zzzzzzz
+Number of measurements
+Longitude (degrees from Greenwich meridian)
+Latitude (degrees North)
+Date
+Local time at t = 0
+7
+Example of FFI 2160.
+This example illustrating NASA Ames file format index 2160 is entirely fictitious. Data
+have been made up for the purpose of illustrating the use of the format. They consist in
+imaginary simultaneous measurements of tropospheric NOX and ozone mixing ratios at three
+sites. A time series is provided for each site and each species. Measurements are
+supposed to have taken place every 10 minutes. The 4th and 5th auxiliary variables give
+the time of the first measurement of the series.
+10
+The files included in this data set illustrate each of the 9 NASA Ames file format
+indices (FFI). A detailed description of the NASA Ames format can be found on the Web
+site of the British Atmospheric Data Centre (BADC) at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,
+Version 1.3, 1998. This work can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+
+Belbroughton
+7.000000,-2.148000,52.398000
+22-10-2002
+12 h 15
+0.000000,2.200000,35.000000
+10.000000,2.300000,35.000000
+20.000000,4.500000,35.900000
+30.000000,4.800000,100.000000
+40.000000,4.300000,36.000000
+50.000000,4.200000,35.900000
+60.000000,4.000000,35.900000
+Coventry
+4.000000,-1.517000,52.400000
+10-10-2002
+04 h 20
+0.000000,100.000000,34.000000
+10.000000,1.900000,34.100000
+20.000000,2.200000,35.000000
+30.000000,2.800000,35.000000
+Kidderminster
+10.000000,-2.258000,52.364000
+15-10-2002
+16 h 35
+0.000000,3.900000,35.000000
+10.000000,3.800000,35.100000
+20.000000,5.400000,36.000000
+30.000000,5.900000,36.200000
+40.000000,100.000000,36.800000
+50.000000,6.400000,37.000000
+60.000000,6.400000,36.900000
+70.000000,6.000000,37.000000
+80.000000,5.500000,36.800000
+90.000000,5.300000,36.500000

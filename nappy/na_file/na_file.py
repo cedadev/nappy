@@ -17,7 +17,7 @@ for individual FFIs. Each FFI class is held in an individual file.
 import sys
 import time
 import re
-from io import StringIO
+from io import BytesIO
 
 # Imports from nappy package
 import nappy.na_file.na_core
@@ -115,7 +115,7 @@ class NAFile(nappy.na_file.na_core.NACore):
    
         # Parse na_dict then write header and data
         self._parseDictionary()
-        self.header = StringIO()
+        self.header = BytesIO()
 
         if not no_header:
             self.writeHeader()
@@ -295,7 +295,7 @@ class NAFile(nappy.na_file.na_core.NACore):
 
     def _fixHeaderLength(self):
         """
-        Takes the self.header StringIO object and counts the number of lines
+        Takes the self.header BytesIO object and counts the number of lines
         and corrects the NLHEAD value in the header line.
         Resets to start of self.header.
         """
@@ -303,7 +303,7 @@ class NAFile(nappy.na_file.na_core.NACore):
         lines = self.header.readlines()
         headlength = len(lines)
         lines[0] = wrapLine("NLHEAD_FFI", self.annotation, self.delimiter, "%d%s%d\n" % (headlength, self.delimiter, self.FFI))
-        self.header = StringIO("".join(lines))
+        self.header = BytesIO("".join(lines))
         self.header.seek(0) 
 
     def _readSpecialComments(self):

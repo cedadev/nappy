@@ -1,0 +1,53 @@
+Number of header lines; NASA Ames sub-format code,43,2010
+Name of data creator,De Rudder, Anne
+Institute of data creator,Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837
+Instrument or model name,Anemometer measurements averaged over longitude
+Project name,NERC Data Grid (NDG) project
+File number; Total number of files,7,13
+Starting date of data (YYYY MM DD); File creation date (YYYY MM DD),1969 1 1,2002 10 31
+Interval between coordinate variable values (zero if not used),10.0,20.0
+Length of coordinate variables,9
+Number of coordinate variable values explicity defined in header,1
+Values of coordinate variable,0
+Name of coordinate variable (with units) 1,Latitude (degrees North)
+Name of coordinate variable (with units) 2,Altitude (km)
+Number of primary variables defined,1
+Scale factors for each primary variable,1.0
+Missing values for each primary variable,200.0
+Name of primary variable (with units) 1,Mean zonal wind (m/s)
+Number of auxiliary variables,1
+Scale factors for each auxiliary variable,1.0
+Missing values for each auxiliary variable,2000.0
+Name of auxiliary variable (with units) 1,Pressure (hPa)
+Number of lines of special comments,9
+Special comments line 1,Example of FFI 2010 (b).
+Special comments line 2,This example illustrating NASA Ames file format index 2010 is based on results
+Special comments line 3,from Murgatroyd (1969) as displayed in Brasseur and Solomon, Aeronomy of the
+Special comments line 4,Middle Atmosphere, Reidel, 1984 (p.36). It is representative of the mean zonal
+Special comments line 5,wind distribution in the winter hemisphere as a function of latitude and height.
+Special comments line 6,The first date on line 7 (1st of January 1969) is fictitious.
+Special comments line 7,From line 10 (NXDEF = 1) we know that the latitude points are defined by
+Special comments line 8,X(i) = X(1) + (i-1)DX1 for i = 1, ..., NX
+Special comments line 9,with X(1) = 0 deg (line 11), DX1 = 10 deg (line 8) and NX = 9 (line 9).
+Number of lines of normal comments,11
+Normal comments line 1,The files included in this data set illustrate each of the 9 NASA Ames file
+Normal comments line 2,format indices (FFI). A detailed description of the NASA Ames format can be
+Normal comments line 3,found on the Web site of the British Atmospheric Data Centre (BADC) at
+Normal comments line 4,http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+Normal comments line 5,E-mail contact: badc@rl.ac.uk
+Normal comments line 6,Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data
+Normal comments line 7,Exchange, Version 1.3, 1998. This work can be found at
+Normal comments line 8,http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html
+Normal comments line 9,and a copy of it at
+Normal comments line 10,http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+Normal comments line 11,
+Data section,0,1013.3
+Data section,-3,-2.6,-2.3,2,4.8,4.6,4.5,3,-0.9
+Data section,20,55.3
+Data section,-15.1,-4.2,6.9,12.8,14.7,20,21.5,18,8.2
+Data section,40,2.3
+Data section,-29,-15.2,3.4,28.2,41,39.1,17.9,8,0.1
+Data section,60,0.22
+Data section,-10,8.4,31.2,59.9,78.5,77.7,47,17.6,16
+Data section,80,0.01
+Data section,200,200,200,200,200,200,200,200,200
