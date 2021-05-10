@@ -1,0 +1,65 @@
+51,2010
+De Rudder, Anne
+Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK.
+Imaginary 2-D stratospheric radiative model
+NERC Data Grid (NDG) project
+1,1
+1980 6 21,2021 5 10
+1.0,30.0
+2
+2
+0,1
+bound 
+time  (days since 2008-01-01 00:00:00)
+1
+1
+1e+20
+variable_1
+0
+14
+==== Special Comments follow ====
+Example of FFI 3010.
+This example illustrating NASA Ames file format index 3010 is entirely fictitious.
+Data have been made up for the purpose of illustrating the use of the format. They
+consist in an imaginary calculated temperature distribution over a latitude-altitude
+grid at the two solstices (21 June and 21 December). The grid is defined in lines 8,
+9, 11 and 12. Latitude ranges from -90 to +90 degrees by intervals of 30 degrees.
+Altitude ranges from 50 to 20 km by negative increments of 10 km.
+The day number is counted from 1st of January = Day One.
+The year of the first date on line 7 (1980) has no particular meaning.
+  Variable bounds_latitude: variable_1
+    name = variable_1
+== Variable attributes from source (NetCDF) file end ==
+==== Special Comments end ====
+17
+==== Normal Comments follow ====
+Conventions:   CF-1.0
+=== Additional Global Attributes defined in the source file ===
+The files included in this data set illustrate each of the 9 NASA Ames file format
+indices (FFI). A detailed description of the NASA Ames format can be found on the Web
+site of the British Atmospheric Data Centre (BADC) at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,
+Version 1.3, 1998. This work can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+History:  2021-05-10 15:49:06 - Converted to NASA Ames format using nappy-0.3.0.
+    2002-10-31 - NASA Ames File created/revised.
+  2021-05-10 15:14:42 - Converted to CDMS (NetCDF) format using nappy-0.3.0.
+==== Normal Comments end ====
+=== Data Section begins on the next line ===
+-90
+-90,-75
+-60
+-75,-45
+-30
+-45,-15
+0
+-15,15
+30
+15,45
+60
+45,75
+90
+75,90

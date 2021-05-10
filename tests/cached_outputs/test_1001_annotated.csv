@@ -1,0 +1,28 @@
+Number of header lines; NASA Ames sub-format code,25,1001
+Name of data creator,Bryan Lawrence
+Institute of data creator,Physics and Astronomy, University of Canterbury
+Instrument or model name,Data:    NZMS Radiosonde Ascent
+Project name,Project: Gravity Wave Processes and their Role in Climate
+File number; Total number of files,1,1
+Starting date of data (YYYY MM DD); File creation date (YYYY MM DD),2000 9 20,2003 4 10
+Interval between coordinate variable values (zero if not used),10.0
+Name of coordinate variable (with units),Time in UT Seconds from 0000 hours on the data date
+Number of primary variables defined,3
+Scale factors for each primary variable,0.1,1.0,0.1
+Missing values for each primary variable,-1.0,-1.0,-1.0
+Name of primary variable (with units) 1,Ascent Rate (m/s)
+Name of primary variable (with units) 2,Height above MSL (m)
+Name of primary variable (with units) 3,Pressure (hPa)
+Number of lines of special comments,0
+Number of lines of normal comments,8
+Normal comments line 1,Location : 36.79 S 174.63 E     30 m
+Normal comments line 2,RS-number: 002104615
+Normal comments line 3,Ground check  :    Ref     RS   Corr
+Normal comments line 4,Pressure    : 1018.0 1017.6    0.4
+Normal comments line 5,Temperature :   21.6   21.8   -0.2
+Normal comments line 6,Humidity    :      0      1     -1
+Normal comments line 7,uts asrat  hght press
+Normal comments line 8,s   m/s     m   hPa
+Data section,79200,0,30,10176
+Data section,79210,44,74,10125
+Data section,79220,37,105,10088

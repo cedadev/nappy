@@ -1,0 +1,57 @@
+Number of header lines; NASA Ames sub-format code,54,1001
+Name of data creator,Bryan Lawrence
+Institute of data creator,Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK.
+Instrument or model name,Data:    NZMS Radiosonde Ascent
+Project name,Project: Gravity Wave Processes and their Role in Climate
+File number; Total number of files,1,1
+Starting date of data (YYYY MM DD); File creation date (YYYY MM DD),999 999 999,2021 5 10
+Interval between coordinate variable values (zero if not used),10.0
+Name of coordinate variable (with units),time  (days since 2008-01-01 00:00:00)
+Number of primary variables defined,3
+Scale factors for each primary variable,1,1,1
+Missing values for each primary variable,-1.0,-1.0,-1.0
+Name of primary variable (with units) 1,Ascent Rate (m/s)
+Name of primary variable (with units) 2,Height above MSL (m)
+Name of primary variable (with units) 3,Pressure (hPa)
+Number of lines of special comments,20
+Special comments line 1,==== Special Comments follow ====
+Special comments line 2,=== Additional Variable Attributes defined in the source file ===
+Special comments line 3,== Variable attributes from source (NetCDF) file follow ==
+Special comments line 4,  Variable ascent_rate: Ascent Rate (m/s)
+Special comments line 5,    name = variable_1
+Special comments line 6,    title = Ascent Rate
+Special comments line 7,    long_name = Ascent Rate
+Special comments line 8,    units = m/s
+Special comments line 9,  Variable height_above_msl: Height above MSL (m)
+Special comments line 10,    name = variable_3
+Special comments line 11,    title = Height above MSL
+Special comments line 12,    long_name = Height above MSL
+Special comments line 13,    units = m
+Special comments line 14,  Variable pressure: Pressure (hPa)
+Special comments line 15,    name = variable_2
+Special comments line 16,    title = Pressure
+Special comments line 17,    long_name = Pressure
+Special comments line 18,    units = hPa
+Special comments line 19,== Variable attributes from source (NetCDF) file end ==
+Special comments line 20,==== Special Comments end ====
+Number of lines of normal comments,17
+Normal comments line 1,==== Normal Comments follow ====
+Normal comments line 2,Conventions:   CF-1.0
+Normal comments line 3,=== Additional Global Attributes defined in the source file ===
+Normal comments line 4,Location : 36.79 S 174.63 E     30 m
+Normal comments line 5,RS-number: 002104615
+Normal comments line 6,Ground check  :    Ref     RS   Corr
+Normal comments line 7,Pressure    : 1018.0 1017.6    0.4
+Normal comments line 8,Temperature :   21.6   21.8   -0.2
+Normal comments line 9,Humidity    :      0      1     -1
+Normal comments line 10,uts asrat  hght press
+Normal comments line 11,s   m/s     m   hPa
+Normal comments line 12,History:  2021-05-10 15:49:41 - Converted to NASA Ames format using nappy-0.3.0.
+Normal comments line 13,    2003-04-10 - NASA Ames File created/revised.
+Normal comments line 14,  2021-05-10 15:13:29 - Converted to CDMS (NetCDF) format using nappy-0.3.0.
+Normal comments line 15,==== Normal Comments end ====
+Normal comments line 16,=== Data Section begins on the next line ===
+Normal comments line 17,time  (days since 2008-01-01 00:00:00),Ascent Rate (m/s),Height above MSL (m),Pressure (hPa)
+Data section,79200,0,30,1017.6
+Data section,79210,4.4,74,1012.5
+Data section,79220,3.7,105,1008.8

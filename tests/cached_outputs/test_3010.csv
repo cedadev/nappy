@@ -1,0 +1,51 @@
+41,3010
+De Rudder, Anne
+Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837
+Imaginary 2-D stratospheric radiative model
+NERC Data Grid (NDG) project
+12,13
+1980 6 21,2002 10 31
+0.0,-10.0,30.0
+7,4
+1,1
+-90.000000
+50.000000
+Latitude (degrees)
+Altitude (km)
+Day number
+1
+1.0
+1000.0
+Temperature (K)
+0
+9
+Example of FFI 3010.
+This example illustrating NASA Ames file format index 3010 is entirely fictitious.
+Data have been made up for the purpose of illustrating the use of the format. They
+consist in an imaginary calculated temperature distribution over a latitude-altitude
+grid at the two solstices (21 June and 21 December). The grid is defined in lines 8,
+9, 11 and 12. Latitude ranges from -90 to +90 degrees by intervals of 30 degrees.
+Altitude ranges from 50 to 20 km by negative increments of 10 km.
+The day number is counted from 1st of January = Day One.
+The year of the first date on line 7 (1980) has no particular meaning.
+10
+The files included in this data set illustrate each of the 9 NASA Ames file format
+indices (FFI). A detailed description of the NASA Ames format can be found on the Web
+site of the British Atmospheric Data Centre (BADC) at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+E-mail contact: badc@rl.ac.uk
+Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,
+Version 1.3, 1998. This work can be found at
+http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at
+http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+
+172.000000
+193.000000,211.000000,224.000000,229.000000,235.000000,245.000000,270.000000
+221.000000,230.000000,254.000000,272.000000,281.000000,289.000000,300.000000
+220.000000,229.000000,244.000000,253.000000,260.000000,263.000000,278.000000
+195.000000,208.000000,217.000000,219.000000,223.000000,230.000000,240.000000
+355.000000
+270.000000,245.000000,235.000000,229.000000,224.000000,211.000000,193.000000
+300.000000,289.000000,281.000000,272.000000,254.000000,230.000000,221.000000
+278.000000,263.000000,260.000000,253.000000,244.000000,229.000000,220.000000
+240.000000,230.000000,223.000000,219.000000,217.000000,208.000000,195.000000

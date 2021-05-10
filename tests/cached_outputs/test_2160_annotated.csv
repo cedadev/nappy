@@ -1,0 +1,80 @@
+Number of header lines; NASA Ames sub-format code,47,2160
+Name of data creator,De Rudder, Anne
+Institute of data creator,Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837
+Instrument or model name,Chemiluminescence NOX analyser. UV absorption API 400 ozone analyser.
+Project name,NERC Data Grid (NDG) project
+File number; Total number of files,10,13
+Starting date of data (YYYY MM DD); File creation date (YYYY MM DD),2002 10 10,2002 10 31
+Interval between coordinate variable values (zero if not used),10.0
+Number of characters in character-based coordinate variable,13.0
+Name of coordinate variable (with units) 1,Time (minutes)
+Name of coordinate variable (with units) 2,Site name
+Number of primary variables defined,2
+Scale factors for each primary variable,1.0,1.0
+Missing values for each primary variable,100.0,100.0
+Name of primary variable (with units) 1,NOX volume mixing ratio (ppbv)
+Name of primary variable (with units) 2,Ozone volume mixing ratio (ppbv)
+Number of auxiliary variables,5
+Number of character-based auxiliary variables,2
+Scale factors for each auxiliary variable,1.0,1.0,1.0
+Missing values for each auxiliary variable,100.0,1000.0,1000.0
+Number of characters in character-based auxiliary variable,10,7
+Missing values for each auxiliary variable 1,zzzzzzzzzz
+Missing values for each auxiliary variable 2,zzzzzzz
+Name of auxiliary variable (with units) 1,Number of measurements
+Name of auxiliary variable (with units) 2,Longitude (degrees from Greenwich meridian)
+Name of auxiliary variable (with units) 3,Latitude (degrees North)
+Name of auxiliary variable (with units) 4,Date
+Name of auxiliary variable (with units) 5,Local time at t = 0
+Number of lines of special comments,7
+Special comments line 1,Example of FFI 2160.
+Special comments line 2,This example illustrating NASA Ames file format index 2160 is entirely fictitious. Data
+Special comments line 3,have been made up for the purpose of illustrating the use of the format. They consist in
+Special comments line 4,imaginary simultaneous measurements of tropospheric NOX and ozone mixing ratios at three
+Special comments line 5,sites. A time series is provided for each site and each species. Measurements are
+Special comments line 6,supposed to have taken place every 10 minutes. The 4th and 5th auxiliary variables give
+Special comments line 7,the time of the first measurement of the series.
+Number of lines of normal comments,10
+Normal comments line 1,The files included in this data set illustrate each of the 9 NASA Ames file format
+Normal comments line 2,indices (FFI). A detailed description of the NASA Ames format can be found on the Web
+Normal comments line 3,site of the British Atmospheric Data Centre (BADC) at
+Normal comments line 4,http://www.badc.rl.ac.uk/help/formats/NASA-Ames/
+Normal comments line 5,E-mail contact: badc@rl.ac.uk
+Normal comments line 6,Reference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,
+Normal comments line 7,Version 1.3, 1998. This work can be found at
+Normal comments line 8,http://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at
+Normal comments line 9,http://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html
+Normal comments line 10,
+Data section,Belbroughton
+Data section,7,-2.148,52.398
+Data section,22-10-2002
+Data section,12 h 15
+Data section,0,2.2,35
+Data section,10,2.3,35
+Data section,20,4.5,35.9
+Data section,30,4.8,100
+Data section,40,4.3,36
+Data section,50,4.2,35.9
+Data section,60,4,35.9
+Data section,Coventry
+Data section,4,-1.517,52.4
+Data section,10-10-2002
+Data section,04 h 20
+Data section,0,100,34
+Data section,10,1.9,34.1
+Data section,20,2.2,35
+Data section,30,2.8,35
+Data section,Kidderminster
+Data section,10,-2.258,52.364
+Data section,15-10-2002
+Data section,16 h 35
+Data section,0,3.9,35
+Data section,10,3.8,35.1
+Data section,20,5.4,36
+Data section,30,5.9,36.2
+Data section,40,100,36.8
+Data section,50,6.4,37
+Data section,60,6.4,36.9
+Data section,70,6,37
+Data section,80,5.5,36.8
+Data section,90,5.3,36.5
