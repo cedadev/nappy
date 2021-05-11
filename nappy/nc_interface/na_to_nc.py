@@ -13,24 +13,16 @@ Contains the NAToNC class for converting a NASA Ames file to a NetCDF file.
 # Imports from python standard library
 import logging
 
-# Imports from external packages
-try:
-    import cdms2 as cdms
-except:
-    try:
-        import cdms
-    except:
-        raise Exception("Could not import third-party software. Nappy requires the CDMS and Numeric packages to be installed to convert to CDMS and NetCDF.")
-
 
 # Import from nappy package
-import nappy.nc_interface.na_to_cdms
+import nappy.nc_interface.na_to_xarray
 from nappy.na_error import na_error
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-class NAToNC(nappy.nc_interface.na_to_cdms.NADictToCdmsObjects):
+
+class NAToNC(nappy.nc_interface.na_to_xarray.NADictToXarrayObjects):
     """
     Converts a NASA Ames file to a NetCDF file.
     """
@@ -53,7 +45,7 @@ class NAToNC(nappy.nc_interface.na_to_cdms.NADictToCdmsObjects):
         if type(na_file_obj) == type("string"):
             na_file_obj = nappy.openNAFile(na_file_obj)
 
-        nappy.nc_interface.na_to_cdms.NADictToCdmsObjects.__init__(self, na_file_obj, variables=variables, 
+        nappy.nc_interface.na_to_xarray.NADictToXarrayObjects.__init__(self, na_file_obj, variables=variables, 
                  aux_variables=aux_variables,
                  global_attributes=global_attributes,
                  time_units=time_units, time_warning=time_warning, 
@@ -62,22 +54,22 @@ class NAToNC(nappy.nc_interface.na_to_cdms.NADictToCdmsObjects):
 
     def writeNCFile(self, file_name, mode="w"):
         """
-        Writes the NASA Ames content that has been converted into CDMS objects to a
+        Writes the NASA Ames content that has been converted into Xarray objects to a
         NetCDF file of name 'file_name'. Note that mode can be set to append so you 
         can add the data to an existing file.
         """
         if not self.converted:
             self.convert()
 
-        # Create CDMS output file object
-        fout = cdms.open(file_name, mode=mode)
+        # Create Xarray output file object
+        fout = xr.open_dataset(file_name, mode=mode)
 
         # Write main variables
-        for var in self.cdms_variables:
+        for var in self.xr_variables:
             fout.write(var)
 
         # Write aux variables
-        for avar in self.cdms_aux_variables:
+        for avar in self.xr_aux_variables:
             fout.write(avar)
 
         # Write global attributes

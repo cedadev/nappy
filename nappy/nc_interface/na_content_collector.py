@@ -6,7 +6,8 @@
 na_content_collector.py
 =======================
 
-Holds the class NAContentCollector that converts a set of CDMS variables and global attributes to a NASA Ames dictionary.
+Holds the class NAContentCollector that converts a set of Xarray DataArrays and global attributes to 
+a NASA Ames dictionary.
 
 """
 
@@ -18,12 +19,15 @@ import logging
 
 # Third-party imports
 import numpy as np
+import xarray as xr
 
 # Import from nappy package
 from nappy.na_error import na_error
 import nappy.utils
-import cdms_utils.axis_utils
-import cdms_utils.var_utils
+
+import xarray_utils.axis_utils
+import xarray_utils.var_utils
+
 import nappy.utils.common_utils
 import nappy.na_file.na_core
 
@@ -33,30 +37,16 @@ header_partitions = config_dict["header_partitions"]
 hp = header_partitions
 
 version = nappy.utils.getVersion()
-
-# Import external packages (if available)
-if sys.platform.find("win") > -1:
-    raise na_error.NAPlatformError("Windows does not support CDMS. CDMS is required to convert to CDMS objects and NetCDF.")
-try:
-    import cdms2 as cdms
-    import numpy as N
-except:
-    try:
-        import cdms
-        import Numeric as N
-    except:
-        raise Exception("Could not import third-party software. Nappy requires the CDMS and Numeric packages to be installed to convert to CDMS and NetCDF.")
-
-cdms.setAutoBounds("off") 
 DEBUG = nappy.utils.getDebug() 
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
+
 class NAContentCollector(nappy.na_file.na_core.NACore):
     """
     Class to build a NASA Ames File object from a set of 
-    CDMS variables and global attributes (optional).
+    Xarray DataArrays and global attributes (optional).
     """
     
     def __init__(self, variables, global_attributes=[], requested_ffi=None):
@@ -65,7 +55,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         generate sections of NASA Ames file object.
 
         Input arguments are:
-          * variables - list/tuple of actual CDMS variables
+          * variables - list/tuple of actual Xarray variables
           * global_attributes - list of user-defined global (key,value) attributes to include.
 
         Typical usage:
@@ -123,7 +113,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
     def _analyseVariables(self):
         """
-        Method to examine the content of CDMS variables to return
+        Method to examine the content of Xarray variables to return
         a tuple of two lists containing variables and auxiliary variables
         for the NASA Ames file object.
         Variables not compatible with the first file are put in self.unused_vars
@@ -175,7 +165,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if number_of_dims == 2:
             ffis_limited = [2010, 2110]
             axis = best_var.getAxis(1)
-            if cdms_utils.axis_utils.isUniformlySpaced(axis):
+            if xarray_utils.axis_utils.isUniformlySpaced(axis):
                 ffis_limited.append(2310)
 
         # Get the axes for the main variable being used
@@ -197,11 +187,11 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 first_axis = var.getAxis(0)
                 # Check if axis is identical to first axis of main best variable, if so, can be auxiliary var
-                if not cdms_utils.axis_utils.areAxesIdentical(best_var_axes[0], first_axis):
+                if not xarray_utils.axis_utils.areAxesIdentical(best_var_axes[0], first_axis):
 
                     # If not identical, then it might still qualify as an auxiliary every n time points - valid for 1020
                     if len(var.shape) == 1:
-                        nvpm = cdms_utils.axis_utils.isAxisRegularlySpacedSubsetOf(first_axis, best_var_axes[0])
+                        nvpm = xarray_utils.axis_utils.isAxisRegularlySpacedSubsetOf(first_axis, best_var_axes[0])
                         # NVPM is the number of implied values which is equal to (len(ax2)/len(ax1))
                         if nvpm:
                             ffis_limited = [1020]
@@ -225,7 +215,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 # Loop through dimensions
                 for i in range(number_of_dims):            
-                    if not cdms_utils.axis_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]):
+                    if not xarray_utils.axis_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]):
                         self.unused_vars.append(var)
                         break
                 else:
@@ -250,6 +240,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         # THIS SHOULD REALLY BE DONE IN A LOOP
         # First do the main variables
         ordered_vars = [None] * 1000 # Make a long list to put vars in 
+
         # Create a list of other variables to collect up any that are not labelled as nasa ames variables
         other_vars = []
         for var in vars_for_na:
@@ -345,9 +336,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         self.na_dict["V"] = []
 
         for var in vars:
-            name = cdms_utils.var_utils.getBestName(var)
+            name = xarray_utils.var_utils.getBestName(var)
             self.na_dict["VNAME"].append(name)
-            miss = cdms_utils.var_utils.getMissingValue(var)
+            miss = xarray_utils.var_utils.getMissingValue(var)
             miss = self._resolve_float(miss)
 
             self.na_dict["VMISS"].append(miss)
@@ -366,7 +357,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 self.ax0 = var.getAxis(0)
 
                 self.na_dict["X"] = [self.ax0[:].tolist()]
-                self.na_dict["XNAME"] = [cdms_utils.var_utils.getBestName(self.ax0)]
+                self.na_dict["XNAME"] = [xarray_utils.var_utils.getBestName(self.ax0)]
 
                 if len(self.ax0) == 1:
                     self.na_dict["DX"] = [0]
@@ -461,9 +452,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 self.na_dict[item] = [] 
 
         for var in aux_vars:
-            name = cdms_utils.var_utils.getBestName(var)
+            name = xarray_utils.var_utils.getBestName(var)
             self.na_dict["ANAME"].append(name)
-            miss = cdms_utils.var_utils.getMissingValue(var)
+            miss = xarray_utils.var_utils.getMissingValue(var)
             miss = self._resolve_float(miss)
 
             self.na_dict["AMISS"].append(miss)
@@ -482,7 +473,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         length = len(axis)
 
         self.na_dict["NX"].append(length)
-        self.na_dict["XNAME"].append(cdms_utils.var_utils.getBestName(axis))
+        self.na_dict["XNAME"].append(xarray_utils.var_utils.getBestName(axis))
         # If only one item in axis values
         if length < 2:
             self.na_dict["DX"].append(0)
@@ -507,7 +498,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
     def _defineNAGlobals(self):
         """
-        Maps CDMS (NetCDF) global attributes into NASA Ames Header fields.
+        Maps Xarray (NetCDF) global attributes into NASA Ames Header fields.
         """
         # Check if we should add to it with locally set rules
         local_attributes = nappy.utils.getLocalAttributesConfigDict()
@@ -651,7 +642,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         rank_zero_vars_string = []
 
         for var in self.rank_zero_vars:
-            rank_zero_vars_string.append("  Variable %s: %s" % (var.id, cdms_utils.var_utils.getBestName(var)))
+            rank_zero_vars_string.append("  Variable %s: %s" % (var.id, xarray_utils.var_utils.getBestName(var)))
 
             for att in var.attributes.keys():
                 value = var.attributes[att]
@@ -668,7 +659,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             varflag = "unused"
             var_name_written = False
 
-            name = cdms_utils.var_utils.getBestName(var)
+            name = xarray_utils.var_utils.getBestName(var)
 
             for scom,value in var.attributes.items():
                 if type(value) in (type([]), type(N.array([0]))) and len(value) == 1:

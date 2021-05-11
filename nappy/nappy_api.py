@@ -74,20 +74,20 @@ nappy.convertNCToNA("data_files/test1.nc", "test_outputs/test1nc.na",
 nappy.convertNCToCSV("data_files/test1.nc", "test_outputs/test1nc_no_header.csv",
                      no_header=True)
 
-# Let's take some in-memory CDMS objects and write them to one, or more, NASA Ames file(s).
-# We need to give it a list of cdms variables and a global attributes list of tuples/lists.
+# Let's take some in-memory Xarray objects and write them to one, or more, NASA Ames file(s).
+# We need to give it a list of Xarray variables (Data Arrays) and a global attributes list of tuples/lists.
 # We also want to instruct nappy to overwrite the content of its 
 # MNAME (Mission Name) header line with our specific mission name.
 # Also, tell nappy to write the output to NASA Ames file format index (FFI) 2310
 # because we know it is compatible.
-nappy.convertCDMSObjectsToNA([cdms_var_1, cdms_var_2], [("Institute", "British Atmospheric Data Centre")], 
-              na_file="test_outputs/cdms_to_na.na", 
+nappy.convertXarrayObjectsToNA([xr_var_1, xr_var_2], [("Institute", "British Atmospheric Data Centre")], 
+              na_file="test_outputs/xr_to_na.na", 
               na_items_to_override={"MNAME": "Atlantic Divergence Mission 2009"}, 
               requested_ffi=2310)
 
-# Let's take a list of cdms variables and a global attributes list and write
+# Let's take a list of Xarray variables and a global attributes list and write
 # them to a CSV file.
-nappy.convertCDMSObjectsToCSV(cdms_vars, global_atttributes, csv_file)
+nappy.convertXarrayObjectsToCSV(xr_vars, global_atttributes, csv_file)
 
 # Let's take a NASA Ames dictionary object, and write it to a NetCDF file
 nappy.writeNADictToNC(na_dict, nc_file, mode="w")
@@ -96,11 +96,11 @@ nappy.writeNADictToNC(na_dict, nc_file, mode="w")
 nappy.writeNADictToNC(na_dict_2, nc_file, mode="a")
 
 # Now let's read in a NASA Ames file and convert the contents in-memory into
-# CDMS objects so that we can manipulate them with NetCDF-compatible tools
-(cdms_vars_primary, cdms_vars_aux, global_attributes) = nappy.readCDMSObjectsFromNA(na_file)
+# Xarray objects so that we can manipulate them with NetCDF-compatible tools
+(xr_vars_primary, xr_vars_aux, global_attributes) = nappy.readXarrayObjectsFromNA(na_file)
 
 # Actually, I only want to get a single variable from that file, so I'll try
-temp_var = getCDMSVariableFromNA(na_file, "temperature")
+temp_var = getXarrayVariableFromNA(na_file, "temperature")
 
  3. Comparing NASA Ames files (and/or CSV files)
 
@@ -127,14 +127,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 # Import third-party software
-try:
-    import cdms2 as cdms
-except:
-    try:
-        import cdms
-    except:
-        log.warning("You cannot use nappy NetCDF conversion tools as your system does not have CDMS installed, or it is not in your sys.path.")
-        cdms = False
+import xarray as xr
 
 # Import local modules
 import nappy.utils.common_utils
@@ -308,15 +301,15 @@ def convertNCToCSV(nc_file, csv_file=None, **arg_dict):
     return convertNCToNA(*[nc_file], **arg_dict)
     
 
-def convertCDMSObjectsToNA(cdms_vars, global_attributes, na_file, 
+def convertXarrayObjectsToNA(xr_vars, global_attributes, na_file, 
               na_items_to_override={}, requested_ffi=None, delimiter=default_delimiter, 
               float_format=default_float_format, size_limit=None, annotation=False, no_header=False,
               ):
     """
-    Takes a list of cdms variables and a list of global attributes and
+    Takes a list of Xarray variables and a list of global attributes and
     writes them to one or more NASA Ames files. Arguments are:
  
-    cdms_vars - is a list of CDMS variables
+    xr_vars - is a list of Xarray variables
     global_attributes - is a list of (key, value) pairs for header
     na_file - is the name of output file. If multiple files produced then this name will be used
               as the base name.
@@ -335,8 +328,8 @@ def convertCDMSObjectsToNA(cdms_vars, global_attributes, na_file,
                 column describing the contents of each header line.
     no_header - if set to True then only the data blocks are written to file.
     """
-    import nappy.nc_interface.cdms_objs_to_na_file
-    convertor = nappy.nc_interface.cdms_objs_to_na_file.CDMSObjectsToNAFile(cdms_vars, global_attributes=global_attributes, 
+    import nappy.nc_interface.xarray_objs_to_na_file
+    convertor = nappy.nc_interface.xarray_objs_to_na_file.XarrayObjectsToNAFile(xr_vars, global_attributes=global_attributes, 
                         na_items_to_override=na_items_to_override, requested_ffi=requested_ffi,
                         )
     convertor.convert()
@@ -345,13 +338,13 @@ def convertCDMSObjectsToNA(cdms_vars, global_attributes, na_file,
     return convertor.output_files_written 
 
 
-def convertCDMSObjectsToCSV(cdms_vars, global_attributes, csv_file, **arg_dict):
+def convertXarrayObjectsToCSV(xr_vars, global_attributes, csv_file, **arg_dict):
     """
-    Takes a list of cdms variables and a global attributes list and
+    Takes a list of Xarray variables and a global attributes list and
     writes them to one or more CSV files.
     """
     arg_dict["delimiter"] = ","
-    return convertCDMSObjectsToNA(*[cdms_vars, global_attributes, csv_file], **arg_dict)
+    return convertXarrayObjectsToNA(*[xr_vars, global_attributes, csv_file], **arg_dict)
 
 
 def writeNADictToNC(na_dict, nc_file, mode="w"):
@@ -364,16 +357,18 @@ def writeNADictToNC(na_dict, nc_file, mode="w"):
     import nappy.na_file.na_core
     na_file_obj = nappy.na_file.na_core.NACore()
     na_file_obj.setNADict(na_dict)
+
     # Fake up some required methods
     def fakeCaller():pass
     na_file_obj.readData = fakeCaller
-    import nappy.nc_interface.na_to_cdms
-    convertor = nappy.nc_interface.na_to_cdms.NAToCDMS(na_file_obj)
-    (cdms_primary_vars, cdms_aux_vars, global_attributes) = convertor.convert()
+
+    import nappy.nc_interface.na_to_xarray
+    convertor = nappy.nc_interface.na_to_xarray.NAToXarray(na_file_obj)
+    (xr_primary_vars, xr_aux_vars, global_attributes) = convertor.convert()
 
     # Now write them out
-    fout = cdms.open(nc_file, mode=mode)
-    for var in (cdms_primary_vars + cdms_aux_vars):
+    fout = xr.open_dataset(nc_file, mode=mode)
+    for var in (xr_primary_vars + xr_aux_vars):
         fout.write(var)
 
     # Write global attributes
@@ -385,36 +380,37 @@ def writeNADictToNC(na_dict, nc_file, mode="w"):
     return True
 
 
-def readCDMSObjectsFromNA(na_file):
+def readXarrayObjectsFromNA(na_file):
     """
-    Reads the NASA Ames file and converts to CDMS objects.
+    Reads the NASA Ames file and converts to Xarray objects.
     Returns a tuple containing:
-      * a list of primary NASA Ames variables as CDMS variables
-      * a list of auxiliary NASA Ames variables as CDMS variables,
+      * a list of primary NASA Ames variables as Xarray variables
+      * a list of auxiliary NASA Ames variables as Xarray variables,
       * a list of global attributes
     """
-    cdms_var_list = []
+    xr_var_list = []
     global_attributes = {}
 
     # Open the NA file
     na_file_obj = openNAFile(na_file)
-    import nappy.nc_interface.na_to_cdms
-    convertor = nappy.nc_interface.na_to_cdms.NADictToCdmsObjects(na_file_obj)
-    (cdms_vars_primary, cdms_vars_aux, global_attributes) = convertor.convert()
-    return (cdms_vars_primary, cdms_vars_aux, global_attributes)
+
+    import nappy.nc_interface.na_to_xarray
+    convertor = nappy.nc_interface.na_to_xarray.NADictToXarrayObjects(na_file_obj)
+    (xr_vars_primary, xr_vars_aux, global_attributes) = convertor.convert()
+    return (xr_vars_primary, xr_vars_aux, global_attributes)
 
 
-def getCDMSVariableFromNA(na_file, var):
+def getXarrayVariableFromNA(na_file, var):
     """
-    Returns a CDMS variable object (TransientVariable) identified by the var argument which
+    Returns a Xarray variable object (TransientVariable) identified by the var argument which
     can either be an integer index in the list of variables or the name of the variable.
     The variable is created from the variables found in the NASA Ames file na_file.
     """
     na_file_obj = openNAFile(na_file)
-    import nappy.nc_interface.na_to_cdms
-    convertor = nappy.nc_interface.na_to_cdms.NADictToCdmsObjects(na_file_obj, variables=[var])
-    (cdms_primary_vars, cdms_aux_vars, global_attributes) = convertor.convert()
+    import nappy.nc_interface.na_to_xarray
+    convertor = nappy.nc_interface.na_to_xarray.NADictToXarrayObjects(na_file_obj, variables=[var])
+    (xr_primary_vars, xr_aux_vars, global_attributes) = convertor.convert()
     # Must now be a primary var
-    return cdms_primary_vars[0]
+    return xr_primary_vars[0]
 
 

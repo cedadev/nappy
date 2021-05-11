@@ -3,10 +3,10 @@
 #   Q Public License, version 1.0 or later. http://ndg.nerc.ac.uk/public_docs/QPublic_license.txt
 
 """
-cdms_to_na.py
-=============
+xarray_to_na.py
+===============
 
-Holds the class CDMSToNA that converts a set of CDMS variables and global attributes.
+Holds the class XarrayToNA that converts a set of Xarray variables (DataArrays) and global attributes.
 
 """
 
@@ -14,29 +14,20 @@ Holds the class CDMSToNA that converts a set of CDMS variables and global attrib
 import sys
 import logging
 
+import xarray as xr
+import numpy as np
+
 # Import from nappy package
 import nappy
 from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
-import cdms_utils.var_utils
+
+import xarray_utils.var_utils
+
 import nappy.na_file.na_core
 import nappy.nc_interface.na_content_collector
 
-# Import external packages (if available)
-if sys.platform.find("win") > -1:
-    raise na_error.NAPlatformError("Windows does not support CDMS. CDMS is required to convert to CDMS objects and NetCDF.")
-try:
-    import cdms2 as cdms
-    import numpy as N
-except:
-    try:
-        import cdms
-        import Numeric as N
-    except:
-        raise Exception("Could not import third-party software. Nappy requires the CDMS and Numeric packages to be installed to convert to CDMS and NetCDF.")
-
-cdms.setAutoBounds("off") 
 
 # Define global variables
 var_limit = 5000 # surely never going to get this many vars in a file!
@@ -46,18 +37,19 @@ DEBUG = nappy.utils.getDebug()
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-class CDMSToNA:
+
+class XarrayToNA:
     """
-    Converts CDMS objects to NASA Ames file dictionaries.
+    Converts Xarray objects to NASA Ames file dictionaries.
     """
 
-    def __init__(self, cdms_variables, global_attributes=[], na_items_to_override={}, 
+    def __init__(self, xr_variables, global_attributes=[], na_items_to_override={}, 
                  only_return_file_names=False, requested_ffi=None,
                  ):
         """
         Sets up instance variables.      
         """
-        self.cdms_variables = cdms_variables
+        self.xr_variables = xr_variables
         self.global_attributes = global_attributes
         self.na_items_to_override = na_items_to_override
         self.only_return_file_names = only_return_file_names
@@ -68,7 +60,7 @@ class CDMSToNA:
     
     def convert(self):
         """
-        Reads the CDMS objects and convert to a set of dictionaries that
+        Reads the Xarray objects and convert to a set of dictionaries that
         provide the structure for a NA File object.
         Returns [(na_dict, var_ids), (na_dict, var_ids), ....]
         All these na_dict dictionaries can be readily written to a NA File object.
@@ -83,13 +75,13 @@ class CDMSToNA:
         if self.converted:
             return self.na_dict_list
         
-        # Convert any singleton variables to CDMS variables
-        variables = self._convertSingletonVars(self.cdms_variables)
+        # Convert any singleton variables to Xarray variables
+        variables = self._convertSingletonVars(self.xr_variables)
 
         # Re-order variables if they have the attribute "nasa_ames_var_number" which means they came from a NASA Ames file originally
         variables = self._reorderVars(variables)
 
-        # Make first call to collector class that creates NA dict from CDMS variables and global atts list 
+        # Make first call to collector class that creates NA dict from Xarray variables and global atts list 
         collector = nappy.nc_interface.na_content_collector.NAContentCollector(variables, 
                                         self.global_attributes, requested_ffi=self.requested_ffi,
                                         )
@@ -130,20 +122,20 @@ class CDMSToNA:
     def _convertSingletonVars(self, variables):
         """
         Loops through variables to convert singleton variables (i.e. Masked Arrays/Numeric Arrays) 
-        to proper CDMS variables. Then code won't break when asking for rank attribute later.
-        Returns a list of CDMS variable objects
+        to proper Xarray variables. Then code won't break when asking for rank attribute later.
+        Returns a list of Xarray variable objects
         """
         vars = []
 
         for variable in variables:
             var_obj = variable
 
-            # If singleton variable then convert into proper CDMS variables so code doesn't break later
+            # If singleton variable then convert into proper Xarray variables so code doesn't break later
             if not hasattr(var_obj, "rank") or var_obj.rank() == 0:
               
                 var_metadata = var_obj.attributes       
-                var_obj = cdms.createVariable(N.array(var_obj), 
-                                   id = cdms_utils.var_utils.getBestName(var_metadata).replace(" ", "_"), 
+                var_obj = xr.DataArray(np.array(var_obj), 
+                                   id = xarray_utils.var_utils.getBestName(var_metadata).replace(" ", "_"), 
                                    attributes=var_metadata)
                 var_obj.value = float(var_obj._data)
                 

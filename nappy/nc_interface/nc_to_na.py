@@ -6,7 +6,7 @@
 nc_to_na.py
 =============
 
-Holds the class NCToNA (sub-classing CDMSToNA) that converts a NetCDF file to
+Holds the class NCToNA (sub-classing XarrayToNA) that converts a NetCDF file to
 one or more NASA Ames files.
 
 """
@@ -15,29 +15,17 @@ one or more NASA Ames files.
 import sys
 import logging
 
+import xarray as xr
+import numpy as np
+
 # Import from nappy package
 import nappy
 from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
-import nappy.nc_interface.cdms_to_na
+import nappy.nc_interface.xarray_to_na
 import nappy.nc_interface.na_content_collector
 
-# Import external packages (if available)
-if sys.platform.find("win") > -1:
-    raise na_error.NAPlatformError("Windows does not support CDMS. CDMS is required to convert to CDMS objects and NetCDF.")
-
-try:
-    import cdms2 as cdms
-    import numpy
-except:
-    try:
-        import cdms
-        import numpy
-    except:
-        raise Exception("Could not import third-party software. Nappy requires the CDMS and Numeric packages to be installed to convert to CDMS and NetCDF.")
-
-cdms.setAutoBounds("off") 
 
 # Define global variables
 DEBUG = nappy.utils.getDebug() 
@@ -58,7 +46,8 @@ items_as_lists = ["DATE", "RDATE", "ANAME", "VNAME"]
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-class NCToNA(nappy.nc_interface.cdms_to_na.CDMSToNA):
+
+class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
     """
     Converts a NetCDF file to one or more NASA Ames files.
     """
@@ -81,22 +70,22 @@ class NCToNA(nappy.nc_interface.cdms_to_na.CDMSToNA):
         """
         self.nc_file = nc_file
 
-        # Now need to read CDMS file so parent class methods are compatible
-        (cdms_variables, global_attributes) = self._readCDMSFile(var_ids, exclude_vars)
-        nappy.nc_interface.cdms_to_na.CDMSToNA.__init__(self, cdms_variables, global_attributes=global_attributes, 
+        # Now need to read Xarray file so parent class methods are compatible
+        (xr_variables, global_attributes) = self._readXarrayFile(var_ids, exclude_vars)
+        nappy.nc_interface.xarray_to_na.XarrayToNA.__init__(self, xr_variables, global_attributes=global_attributes, 
                                                         na_items_to_override=na_items_to_override, 
                                                         only_return_file_names=only_return_file_names,
                                                         requested_ffi=requested_ffi)
  
 
-    def _readCDMSFile(self, var_ids=None, exclude_vars=[]):
+    def _readXarrayFile(self, var_ids=None, exclude_vars=[]):
         """
-        Reads the file and returns all the CDMS variables in a list as well
-        as the global attributes: (cdms_variable_list, global_atts_list)
+        Reads the file and returns all the Xarray variables in a list as well
+        as the global attributes: (xr_variable_list, global_atts_list)
         If var_ids is defined then only get those.
         """
-        fin = cdms.open(self.nc_file)
-        cdms_variables = []
+        fin = xr.open_dataset(self.nc_file)
+        xr_variables = []
 
         # Make sure var_ids is a list
         if type(var_ids) == type("string"):
@@ -111,12 +100,12 @@ class NCToNA(nappy.nc_interface.cdms_to_na.CDMSToNA):
                     var = fin(var_id)
                    
                     if hasattr(vm, "rank") and vm.rank() == 0:
-                        var = cdms.createVariable(numpy.array(float(fin(var_id))), id=vm.id, attributes=vm.attributes)
+                        var = xr.DataArray(np.array(float(fin(var_id))), id=vm.id, attributes=vm.attributes)
 
-                    cdms_variables.append(var)
+                    xr_variables.append(var)
 
         globals = fin.attributes.items()
-        return (cdms_variables, globals) 
+        return (xr_variables, globals) 
 
     def constructNAFileNames(self, na_file=None):
         """

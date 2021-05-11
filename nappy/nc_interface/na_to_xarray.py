@@ -3,10 +3,10 @@
 #   Q Public License, version 1.0 or later. http://ndg.nerc.ac.uk/public_docs/QPublic_license.txt
 
 """
-na_to_cdms.py
-=============
+na_to_xarray.py
+===============
 
-Container module for class NADictToCdmsObjects that is sub-classed
+Container module for class NADictToXarrayObjects that is sub-classed
 by NAToNC classes.
 
 """
@@ -26,20 +26,6 @@ config_dict = nappy.utils.getConfigDict()
 na_to_nc_map = config_dict["na_to_nc_map"]
 header_partitions = config_dict["header_partitions"]
 hp = header_partitions
-
-# Import external packages (if available)
-if sys.platform.find("win") > -1:
-    raise na_error.NAPlatformError("Windows does not support CDMS. CDMS is required to convert to CDMS objects and NetCDF.")
-
-try:
-    import cdms2 as cdms
-    import numpy as N
-except:
-    try:
-        import cdms
-        import Numeric as N
-    except:
-        raise Exception("Could not import third-party software. Nappy requires the CDMS and Numeric packages to be installed to convert to CDMS and NetCDF.")
 
 
 # Define global variables
@@ -68,9 +54,9 @@ DEBUG = nappy.utils.getDebug()
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-class NADictToCdmsObjects:
+class NADictToXarrayObjects:
     """
-    Converts a NA File instance to a tuple of CDMS objects.
+    Converts a NA File instance to a tuple of Xarray objects.
     """
     
     def __init__(self, na_file_obj, variables="all", aux_variables="all",
@@ -90,20 +76,20 @@ class NADictToCdmsObjects:
 
         # Check if we have capability to convert this FFI
         if self.na_file_obj.FFI in (2110, 2160, 2310): 
-            raise Exception("Cannot convert NASA Ames File Format Index (FFI) " + self.na_file_obj.FFI + " to CDMS objects. No mapping implemented yet.")
+            raise Exception("Cannot convert NASA Ames File Format Index (FFI) " + self.na_file_obj.FFI + " to Xarray objects. No mapping implemented yet.")
 
         self.output_message = []  # for output displaying message
         self.converted = False
 
     def convert(self):
         """
-        Reads the NASA Ames file object and converts to CDMS objects.
+        Reads the NASA Ames file object and converts to Xarray objects.
         Returns (variable_list, aux_variable_list, global_attributes_list).
-        All these can be readily written to a CDMS File object.
+        All these can be readily written to a Xarray File object.
         """
         if self.converted:
-            log.info("Already converted to CDMS objects so not re-doing.")
-            return (self.cdms_variables, self.cdms_aux_variables, self.global_attributes)
+            log.info("Already converted to Xarray objects so not re-doing.")
+            return (self.xr_variables, self.xr_aux_variables, self.global_attributes)
 
         self.na_file_obj.readData()
 
@@ -111,20 +97,23 @@ class NADictToCdmsObjects:
         self._mapNACommentsToGlobalAttributes()
 
         # Convert axes
-        if not hasattr(self, 'cdms_axes'):  self._convertCdmsAxes()
+        if not hasattr(self, 'xr_axes'):
+            self._convertXarrayAxes()
 
         # Convert main variables
-        if not hasattr(self, 'cdms_variables'):  self._convertCdmsVariables()
+        if not hasattr(self, 'xr_variables'):
+            self._convertXarrayVariables()
 
         # Then do auxiliary variables
-        if hasattr(self.na_file_obj, "NAUXV") and (type(self.na_file_obj.NAUXV) == type(1) and self.na_file_obj.NAUXV > 0):   # Are there any auxiliary variables?
-            if not hasattr(self, 'cdms_aux_variables'):  
-                self._convertCdmsAuxVariables()
+        if hasattr(self.na_file_obj, "NAUXV") \
+             and (type(self.na_file_obj.NAUXV) == type(1) and self.na_file_obj.NAUXV > 0):   # Are there any auxiliary variables?
+            if not hasattr(self, 'xr_aux_variables'):  
+                self._convertXarrayAuxVariables()
         else:
-            self.cdms_aux_variables = []
+            self.xr_aux_variables = []
             
         self.converted = True
-        return (self.cdms_variables, self.cdms_aux_variables, self.global_attributes)
+        return (self.xr_variables, self.xr_aux_variables, self.global_attributes)
 
 
     def _mapNACommentsToGlobalAttributes(self):
@@ -169,7 +158,7 @@ class NADictToCdmsObjects:
                     glob_atts["comment"] = comment_line
 
                 elif key == ("ONAME", "ORG"):
-                    # Map the two organisation NA files to the institution field in CDMS (NetCDF)
+                    # Map the two organisation NA files to the institution field in Xarray (NetCDF)
                     institution = "%s (ONAME from NASA Ames file); %s (ORG from NASA Ames file)." % \
                                          (self.na_file_obj.ONAME, self.na_file_obj.ORG)
                     glob_atts["institution"] = institution
@@ -180,14 +169,16 @@ class NADictToCdmsObjects:
                     glob_atts[na_to_nc_map[key]] = item
 
             elif key == "RDATE":
+
                 # RDATE = Revision date - update this and put in history global attribute
                 date_parts = getattr(self.na_file_obj, "RDATE")
                 date_string = "%.4d-%.2d-%.2d" % tuple(date_parts)
                 hist = date_string + " - NASA Ames File created/revised.\n"
                 time_string = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+
                 version = nappy.utils.getVersion()
-                hist = "%s\n%s - Converted to CDMS (NetCDF) format using nappy-%s." % (hist, time_string, version)
-                # self.cdms_file.history = hist
+                hist = "%s\n%s - Converted to Xarray (NetCDF) format using nappy-%s." % (hist, time_string, version)
+
                 log.debug("No history mapping from na so added it here from global attributes.")
                 glob_atts["history"] = hist           
             else:
@@ -207,48 +198,51 @@ class NADictToCdmsObjects:
 
         self.global_attributes = new_atts[:]
 
-    def _convertCdmsVariables(self):
+    def _convertXarrayVariables(self):
         """
-        Creates cdms variable list for writing out.
+        Creates Xarray variable list for writing out.
         """
-        self.cdms_variables = []
+        self.xr_variables = []
 
         if self.variables in (None, "all"):    
             for var_number in range(self.na_file_obj.NV):
-                self.cdms_variables.append(self._convertNAToCdmsVariable(var_number))
+                self.xr_variables.append(self._convertNAToXarrayVariable(var_number))
         else:
             if type(self.variables[0]) == type(1) or re.match("\d+", str(self.variables[0])): # They are integers = indices
                 for var_number in self.variables:
                     vn = int(var_number)
-                    self.cdms_variables.append(self._convertNAToCdmsVariable(vn))   
+                    self.xr_variables.append(self._convertNAToXarrayVariable(vn))   
             elif type(self.variables[0]) == type("string"):  # Vars are strings
                 for var_name in self.variables:
                     if var_name in self.na_file_obj.VNAME:
                         var_number = self.na_file_obj.VNAME.index(var_name)
-                        self.cdms_variables.append(self._convertNAToCdmsVariable(var_number))
+                        self.xr_variables.append(self._convertNAToXarrayVariable(var_number))
                     else:
                         raise Exception("Variable name not known: " + var_name)
 
 
-    def _convertNAToCdmsVariable(self, var_number, attributes={}):
+    def _convertNAToXarrayVariable(self, var_number, attributes={}):
         """
-        Creates a single cdms variable from the variable number provided in the list.
+        Creates a single Xarray variable from the variable number provided in the list.
         """
         (var_name, units, miss, scal) = self.na_file_obj.getVariable(var_number)
         msg = "\nAdding variable: %s" % self.na_file_obj.VNAME[var_number]
         log.debug(msg)
+
         self.output_message.append(msg)
         array = N.array(self.na_file_obj.V[var_number])
         array = array * scal
+
         # Set up axes
-        if not hasattr(self, 'cdms_axes'):
-            self._convertCdmsAxes()
+        if not hasattr(self, 'xr_axes'):
+            self._convertXarrayAxes()
 
         # Set up variable
-        var=cdms.createVariable(array, axes=self.cdms_axes, fill_value=miss, attributes=attributes)
+        var = xr.DataArray(array, axes=self.xr_axes, fill_value=miss, attributes=attributes)
 
         # Sort units etc
-        if units:   var.units=units
+        if units:   
+            var.units=units
     
         # Add the best variable name
         if len(var_name) < max_id_length:
@@ -266,31 +260,31 @@ class NADictToCdmsObjects:
         var.nasa_ames_var_number = var_number
         return var
 
-    def _convertCdmsAuxVariables(self):
+    def _convertXarrayAuxVariables(self):
         """
-        Creates a cdms variable from an auxiliary variable
+        Creates a Xarray variable from an auxiliary variable
         """
-        self.cdms_aux_variables = []
+        self.xr_aux_variables = []
 
         if self.aux_variables in (None, "all"):
             for avar_number in range(self.na_file_obj.NAUXV):
-                self.cdms_aux_variables.append(self._convertNAAuxToCdmsVariable(avar_number))
+                self.xr_aux_variables.append(self._convertNAAuxToXarrayVariable(avar_number))
         else:
             if type(self.aux_variables[0]) == type(1): # They are integers = indices
                 for avar_number in self.aux_variables:
-                    self.cdms_aux_variables.append(self._convertNAAuxToCdmsVariable(avar_number))   
+                    self.xr_aux_variables.append(self._convertNAAuxToXarrayVariable(avar_number))   
 
             elif type(self.aux_variables[0]) == type("string"): # They are strings
                 for avar_name in self.aux_variables:
                     if avar_name in self.na_file_obj.ANAME:
                         avar_number = self.na_file_obj.ANAME.index(avar_name)
-                        self.cdms_aux_variables.append(self._convertNAAuxToCdmsVariable(avar_number)) 
+                        self.xr_aux_variables.append(self._convertNAAuxToXarrayVariable(avar_number)) 
             else:
                 raise Exception("Auxiliary variable name not known: " + avar_name)        
 
-    def _convertNAAuxToCdmsVariable(self, avar_number, attributes={}):
+    def _convertNAAuxToXarrayVariable(self, avar_number, attributes={}):
         """
-        Converts an auxiliary variable to a cdms variable.
+        Converts an auxiliary variable to a Xarray variable.
         """
         (var_name, units, miss, scal) = self.na_file_obj.getAuxVariable(avar_number)
         array = N.array(self.na_file_obj.A[avar_number])
@@ -301,11 +295,12 @@ class NADictToCdmsObjects:
         self.output_message.append(msg)
 
         # Set up axes
-        if not hasattr(self, 'cdms_axes'):
-            self._convertCdmsAxes()
+        if not hasattr(self, 'xr_axes'):
+# UNSURE!
+            self._convertXarrayAxes()
 
         # Set up variable
-        var = cdms.createVariable(array, axes=[self.cdms_axes[0]], fill_value=miss, 
+        var = xr.DataArray(array, axes=[self.xr_axes[0]], fill_value=miss, 
                                   attributes=attributes)
 
         # Sort units etc
@@ -325,20 +320,20 @@ class NADictToCdmsObjects:
         var.nasa_ames_aux_var_number = avar_number
         return var        
 
-    def _convertCdmsAxes(self): 
+    def _convertXarrayAxes(self): 
         """
-        Creates cdms axes from information provided in the NASA Ames dictionary.
+        Creates Xarray axes from information provided in the NASA Ames dictionary.
         """
-        if not hasattr(self, 'cdms_axes'):        
-            self.cdms_axes = []
+        if not hasattr(self, 'xr_axes'):        
+            self.xr_axes = []
 
         for ivar_number in range(self.na_file_obj.NIV):
-            self.cdms_axes.append(self._convertNAIndVarToCdmsAxis(ivar_number))
+            self.xr_axes.append(self._convertNAIndVarToXarrayAxis(ivar_number))
 
 
-    def _convertNAIndVarToCdmsAxis(self, ivar_number):
+    def _convertNAIndVarToXarrayAxis(self, ivar_number):
         """
-        Creates a cdms axis from a NASA Ames independent variable.
+        Creates an Xarray axis from a NASA Ames independent variable.
         """
         if not self.na_file_obj._normalized_X:   self.na_file_obj._normalizeIndVars()
 
@@ -347,9 +342,11 @@ class NADictToCdmsObjects:
         else:
             array = self.na_file_obj.X[ivar_number]
 
-        axis = cdms.createAxis(array)
-        axis.id = axis.name = axis.long_name = self.na_file_obj.XNAME[ivar_number]
+        axis_name = self.na_file_obj.XNAME[ivar_number]
         (var_name, units) = self.na_file_obj.getIndependentVariable(ivar_number)
+        axis = xr.DataArray(array, name=axis_name, attrs={'long_name': axis_name, 'id': axis_name, 'units': units}))
+#        axis.id = axis.name = axis.long_name = self.na_file_obj.XNAME[ivar_number]
+#        (var_name, units) = self.na_file_obj.getIndependentVariable(ivar_number)
     
         # Sort units etc
         if units:   axis.units = units
