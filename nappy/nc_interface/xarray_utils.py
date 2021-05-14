@@ -9,6 +9,7 @@ import re
 
 import numpy as np
 import xarray as xr
+import cf_xarray  # noqa
 
 
 def getBestName(var):
@@ -103,26 +104,24 @@ def areAxesIdentical(ax1, ax2, is_subset=False, check_id=True):
     If check_id == False then don't compare the ids of the axes.
     """
     for axtype in ("time", "level", "latitude", "longitude"):
-        if cdms.axisMatches(ax1, axtype) == 1 and not (cdms.axisMatches(ax2, axtype) == 1):
+        if axtype in ax1.cf and axtype in ax2.cf and ax1.cf[axtype].name != ax2.cf[axtype].name:
             return False
 
     # Check ids
     if check_id:
-        if ax1.id != ax2.id: return False
+        if ax1.name != ax2.name: return False
 
     # Check units
-    if hasattr(ax1, 'units') and hasattr(ax2, 'units'):
-        if ax1.units != ax2.units: 
-            return False
+    if getattr(ax1, 'units', None) != getattr(ax2, 'units', None):
+        return False
 
     # Do different comparisons depending on 'is_subset' argument
     if is_subset == False:
-        # Check lengths and values
-        if (len(ax1) != len(ax2)) or \
-           (ax1.getData()[:].tolist() != ax2.getData()[:].tolist()): 
+        # Check lengths and values only
+        if (len(ax1) != len(ax2)) or all(ax1.data != ax2.data): 
             return False
 
-    elif is_subset == True:
+    else:
         # Check whether values are a subset
         len1 = len(ax1)
         len2 = len(ax2)
@@ -132,15 +131,16 @@ def areAxesIdentical(ax1, ax2, is_subset=False, check_id=True):
             return False
 
         # Now test if it is subset
-        n = len2 / len1
+        n = int(len2 / len1)
 
         for i in range(len(ax1)):
-            ax2_value = ax2[n * i]
+            ax2_value = ax2[n*i]
             test_value = ax1[i]
+
             if ax2_value != test_value:
                 return False
 
-        # If we got here then return len2/len1
+        # If we got here then return len2 / len1
         return n
 
     # OK, I think they are the same axis!
