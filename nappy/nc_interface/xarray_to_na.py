@@ -23,10 +23,10 @@ from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
 
-import xarray_utils.var_utils
+import .xarray_utils
 
 import nappy.na_file.na_core
-import nappy.nc_interface.na_content_collector
+import .na_content_collector
 
 
 # Define global variables
@@ -135,7 +135,7 @@ class XarrayToNA:
               
                 var_metadata = var_obj.attributes       
                 var_obj = xr.DataArray(np.array(var_obj), 
-                                   id = xarray_utils.var_utils.getBestName(var_metadata).replace(" ", "_"), 
+                                   id = xarray_utils.getBestName(var_metadata).replace(" ", "_"), 
                                    attributes=var_metadata)
                 var_obj.value = float(var_obj._data)
                 

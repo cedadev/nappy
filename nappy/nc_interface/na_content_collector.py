@@ -25,8 +25,7 @@ import xarray as xr
 from nappy.na_error import na_error
 import nappy.utils
 
-import xarray_utils.axis_utils
-import xarray_utils.var_utils
+import .xarray_utils
 
 import nappy.utils.common_utils
 import nappy.na_file.na_core
@@ -165,7 +164,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if number_of_dims == 2:
             ffis_limited = [2010, 2110]
             axis = best_var.getAxis(1)
-            if xarray_utils.axis_utils.isUniformlySpaced(axis):
+            if xarray_utils.isUniformlySpaced(axis):
                 ffis_limited.append(2310)
 
         # Get the axes for the main variable being used
@@ -187,11 +186,11 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 first_axis = var.getAxis(0)
                 # Check if axis is identical to first axis of main best variable, if so, can be auxiliary var
-                if not xarray_utils.axis_utils.areAxesIdentical(best_var_axes[0], first_axis):
+                if not xarray_utils.areAxesIdentical(best_var_axes[0], first_axis):
 
                     # If not identical, then it might still qualify as an auxiliary every n time points - valid for 1020
                     if len(var.shape) == 1:
-                        nvpm = xarray_utils.axis_utils.isAxisRegularlySpacedSubsetOf(first_axis, best_var_axes[0])
+                        nvpm = xarray_utils.isAxisRegularlySpacedSubsetOf(first_axis, best_var_axes[0])
                         # NVPM is the number of implied values which is equal to (len(ax2)/len(ax1))
                         if nvpm:
                             ffis_limited = [1020]
@@ -215,7 +214,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 # Loop through dimensions
                 for i in range(number_of_dims):            
-                    if not xarray_utils.axis_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]):
+                    if not xarray_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]):
                         self.unused_vars.append(var)
                         break
                 else:
@@ -336,9 +335,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         self.na_dict["V"] = []
 
         for var in vars:
-            name = xarray_utils.var_utils.getBestName(var)
+            name = xarray_utils.getBestName(var)
             self.na_dict["VNAME"].append(name)
-            miss = xarray_utils.var_utils.getMissingValue(var)
+            miss = xarray_utils.getMissingValue(var)
             miss = self._resolve_float(miss)
 
             self.na_dict["VMISS"].append(miss)
@@ -357,7 +356,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 self.ax0 = var.getAxis(0)
 
                 self.na_dict["X"] = [self.ax0[:].tolist()]
-                self.na_dict["XNAME"] = [xarray_utils.var_utils.getBestName(self.ax0)]
+                self.na_dict["XNAME"] = [xarray_utils.getBestName(self.ax0)]
 
                 if len(self.ax0) == 1:
                     self.na_dict["DX"] = [0]
@@ -452,9 +451,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 self.na_dict[item] = [] 
 
         for var in aux_vars:
-            name = xarray_utils.var_utils.getBestName(var)
+            name = xarray_utils.getBestName(var)
             self.na_dict["ANAME"].append(name)
-            miss = xarray_utils.var_utils.getMissingValue(var)
+            miss = xarray_utils.getMissingValue(var)
             miss = self._resolve_float(miss)
 
             self.na_dict["AMISS"].append(miss)
@@ -473,7 +472,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         length = len(axis)
 
         self.na_dict["NX"].append(length)
-        self.na_dict["XNAME"].append(xarray_utils.var_utils.getBestName(axis))
+        self.na_dict["XNAME"].append(xarray_utils.getBestName(axis))
         # If only one item in axis values
         if length < 2:
             self.na_dict["DX"].append(0)
@@ -642,7 +641,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         rank_zero_vars_string = []
 
         for var in self.rank_zero_vars:
-            rank_zero_vars_string.append("  Variable %s: %s" % (var.id, xarray_utils.var_utils.getBestName(var)))
+            rank_zero_vars_string.append("  Variable %s: %s" % (var.id, xarray_utils.getBestName(var)))
 
             for att in var.attributes.keys():
                 value = var.attributes[att]
@@ -659,7 +658,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             varflag = "unused"
             var_name_written = False
 
-            name = xarray_utils.var_utils.getBestName(var)
+            name = xarray_utils.getBestName(var)
 
             for scom,value in var.attributes.items():
                 if type(value) in (type([]), type(N.array([0]))) and len(value) == 1:
