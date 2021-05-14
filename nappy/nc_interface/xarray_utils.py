@@ -10,6 +10,7 @@ import re
 import numpy as np
 import xarray as xr
 import cf_xarray  # noqa
+import cftime
 
 
 def getBestName(var):
@@ -68,6 +69,13 @@ def getMissingValue(var):
         miss = -1.e20
 
     return miss
+
+
+def getAxisList(var):
+    """
+    Returns a list of coordinates from: var
+    """ 
+    return [var.coords[key] for key in var.coords.keys()]
 
 
 def isUniformlySpaced(array):
@@ -146,4 +154,83 @@ def areAxesIdentical(ax1, ax2, is_subset=False, check_id=True):
     # OK, I think they are the same axis!
     return True
 
+
+def is_latitude(coord):
+    """
+    Determines if a coordinate is latitude.
+
+    :param coord: coordinate of xarray dataset e.g. coord = ds.coords[coord_id]
+    :return: (bool) True if the coordinate is latitude.
+    """
+
+    if "latitude" in coord.cf and coord.cf["latitude"].name == coord.name:
+        return True
+
+    if coord.attrs.get("standard_name", None) == "latitude":
+        return True
+
+    return False
+
+
+def is_longitude(coord):
+    """
+    Determines if a coordinate is longitude.
+
+    :param coord: coordinate of xarray dataset e.g. coord = ds.coords[coord_id]
+    :return: (bool) True if the coordinate is longitude.
+    """
+    if "longitude" in coord.cf and coord.cf["longitude"].name == coord.name:
+        return True
+
+    if coord.attrs.get("standard_name", None) == "longitude":
+        return True
+
+    return False
+
+
+def is_level(coord):
+    """
+    Determines if a coordinate is level.
+
+    :param coord: coordinate of xarray dataset e.g. coord = ds.coords[coord_id]
+    :return: (bool) True if the coordinate is level.
+    """
+    if "vertical" in coord.cf and coord.cf["vertical"].name == coord.name:
+        return True
+
+    if hasattr(coord, "positive"):
+        if coord.attrs.get("positive", None) == "up" or "down":
+            return True
+
+    if hasattr(coord, "axis"):
+        if coord.attrs.get("axis", None) == "Z":
+            return True
+
+    return False
+
+
+def is_time(coord):
+    """
+    Determines if a coordinate is time.
+
+    :param coord: coordinate of xarray dataset e.g. coord = ds.coords[coord_id]
+    :return: (bool) True if the coordinate is time.
+    """
+    if "time" in coord.cf and coord.cf["time"].name == coord.name:
+        return True
+
+    if np.issubdtype(coord.dtype, np.datetime64):
+        return True
+
+    if isinstance(np.atleast_1d(coord.values)[0], cftime.datetime):
+        return True
+
+    if hasattr(coord, "axis"):
+        if coord.axis == "T":
+            return True
+
+    if coord.attrs.get("standard_name", None) == "time":
+        return True
+
+    return False
 

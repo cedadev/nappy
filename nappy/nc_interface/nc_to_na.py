@@ -84,27 +84,26 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
         as the global attributes: (xr_variable_list, global_atts_list)
         If var_ids is defined then only get those.
         """
-        fin = xr.open_dataset(self.nc_file)
+        ds = xr.open_dataset(self.nc_file)
         xr_variables = []
 
         # Make sure var_ids is a list
         if type(var_ids) == type("string"):
             var_ids = [var_ids]
 
-        for var_id in fin.listvariables():
+        for var_id in ds.variables:
             if var_ids == None or var_id in var_ids:
                 if var_id not in exclude_vars:
 
                     # Check whether singleton variable, if so create variable
-                    vm = fin[var_id]
-                    var = fin(var_id)
+                    da = ds[var_id]
                    
-                    if hasattr(vm, "rank") and vm.rank() == 0:
-                        var = xr.DataArray(np.array(float(fin(var_id))), id=vm.id, attributes=vm.attributes)
+                    if hasattr(da, "shape") and da.shape == ():
+                        da = xr.DataArray(np.array(float(da)), attrs=vm.attrs)
 
-                    xr_variables.append(var)
+                    xr_variables.append(da)
 
-        globals = fin.attributes.items()
+        globals = ds.attrs.items()
         return (xr_variables, globals) 
 
     def constructNAFileNames(self, na_file=None):
@@ -206,7 +205,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
                         this_na_dict[key] = comments_list
                         this_na_dict["N%sL" % key] = len(comments_list)
 		    	 
-                    elif not this_na_dict.has_key(key) or new_item != this_na_dict[key]:
+                    elif not key in this_na_dict or new_item != this_na_dict[key]:
                         this_na_dict[key] = new_item
                         msg = "Metadata overwritten in output file: '%s' is now '%s'" % (key, this_na_dict[key])
                         if DEBUG: log.debug(msg)

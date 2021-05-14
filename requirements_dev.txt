@@ -1,5 +1,8 @@
 numpy
 xarray
+cf_xarray
+cftime
+
 # Testing
 pytest
 gitpython

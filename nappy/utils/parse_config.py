@@ -8,18 +8,13 @@ Parses config file for nappy.
 
 # Standard library imports
 import os
-
-# Make import python 2/3 compatible
 import sys
-if sys.version_info.major > 2:
-    from configparser import RawConfigParser as ConfigParser
-else:
-    from ConfigParser import ConfigParser
+from configparser import RawConfigParser as ConfigParser
 
 
 # Global variables
 
-# Defaults are always loaded from <nappy-egg>/nappy/config/nappy.ini
+# Defaults are always loaded from: nappy/config/nappy.ini
 _here = os.path.dirname(__file__)
 base_dir = os.path.join(_here, '../config')
 
@@ -28,8 +23,10 @@ config_dict = None
 annotations_config_dict = None
 attributes_config_dict = None
 
+
 class MyCasePreservingConfigParser(ConfigParser):
     optionxform = str
+
 
 def makeConfigDict(cf=config_file):
     """
@@ -43,16 +40,20 @@ def makeConfigDict(cf=config_file):
     # get all sections and content
     for section in conf.sections():
         d[section] = {}
+
         for item in conf.options(section):
 
             value = conf.get(section, item)
+
             if value.find("__space__") > -1:
                 value = value.replace("__space__", " ")
 
             if item.find("&") > -1:
                 item = tuple(item.split("&"))
+
             if value.find("&") > -1:
                 value = tuple(value.split("&"))
+
             d[section][item] = value
 
     return d
@@ -61,8 +62,10 @@ def makeConfigDict(cf=config_file):
 def getConfigDict(cf=config_file):
     "Checks if already made and only makes if required."
     global config_dict
+
     if config_dict == None:
         config_dict = makeConfigDict(cf)
+
     return config_dict
 
 
@@ -76,6 +79,7 @@ def makeAnnotationsConfigDict(af):
 
     # Load up dict
     for item in conf.options("annotations"):
+
         value = conf.get("annotations", item)
         ad[item] = value
 
@@ -107,8 +111,11 @@ def makeLocalAttributesConfigDict(laf):
 
     # Load up dict
     for sect in ("nc_attributes", "na_attributes"):
+
         lad[sect] = {}
+
         for item in conf.options(sect):
+
             value = conf.get(sect, item)
             lad[sect][item] = value
 
@@ -126,13 +133,7 @@ def getLocalAttributesConfigDict():
 
     if attributes_config_dict == None:
         attributes_config_dict = makeLocalAttributesConfigDict(local_attributes_config_file)
+
     return attributes_config_dict
 
-
-
-if __name__=="__main__":
-
-    print(getConfigDict())
-    print(getAnnotationsConfigDict())
-    print(getLocalAttributesConfigDict())
 

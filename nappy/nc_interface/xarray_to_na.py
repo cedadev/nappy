@@ -23,10 +23,10 @@ from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
 
-import .xarray_utils
+from . import xarray_utils
 
 import nappy.na_file.na_core
-import .na_content_collector
+from . import na_content_collector
 
 
 # Define global variables
@@ -78,7 +78,8 @@ class XarrayToNA:
         # Convert any singleton variables to Xarray variables
         variables = self._convertSingletonVars(self.xr_variables)
 
-        # Re-order variables if they have the attribute "nasa_ames_var_number" which means they came from a NASA Ames file originally
+        # Re-order variables if they have the attribute "nasa_ames_var_number" which means they came
+        # from a NASA Ames file originally
         variables = self._reorderVars(variables)
 
         # Make first call to collector class that creates NA dict from Xarray variables and global atts list 
@@ -131,9 +132,9 @@ class XarrayToNA:
             var_obj = variable
 
             # If singleton variable then convert into proper Xarray variables so code doesn't break later
-            if not hasattr(var_obj, "rank") or var_obj.rank() == 0:
+            if not hasattr(var_obj, "rank") or len(var_obj.shape) == 0:
               
-                var_metadata = var_obj.attributes       
+                var_metadata = var_obj.attrs
                 var_obj = xr.DataArray(np.array(var_obj), 
                                    id = xarray_utils.getBestName(var_metadata).replace(" ", "_"), 
                                    attributes=var_metadata)
@@ -157,7 +158,7 @@ class XarrayToNA:
         unordered_vars = []
 
         for var in variables:
-            var_metadata = var.attributes
+            var_metadata = var.attrs
             if hasattr(var_metadata, "nasa_ames_var_number"):
                 num = var_metadata.nasa_ames_var_number
                 ordered_vars[num] = var

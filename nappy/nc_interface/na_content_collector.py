@@ -25,7 +25,7 @@ import xarray as xr
 from nappy.na_error import na_error
 import nappy.utils
 
-import .xarray_utils
+from . import xarray_utils
 
 import nappy.utils.common_utils
 import nappy.na_file.na_core
@@ -68,7 +68,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         self.vars = variables
 
         # Note that self.var_ids will be a list containing:
-        #    [ordered_vars,  auxiliary_vars,   rank_zero_vars]
+        #    [ordered_vars, auxiliary_vars, rank_zero_vars]
         self.var_ids = None
         self.globals = dict(global_attributes)
         self.requested_ffi = requested_ffi
@@ -90,7 +90,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         """
         log.debug("Call to collectNAContent():\n")
         for v in self.vars: 
-            log.debug("\t%s, %s, %s" % (v.id, v.shape, v.getAxisIds()))
+            log.debug("\t%s, %s, %s" % (v.name, v.shape, list(v.coords.keys())))
  
         (self.ordered_vars, aux_vars) = self._analyseVariables()
      
@@ -98,8 +98,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             log.warn("No NASA Ames content created.")
             self.unused_vars = []
         else:
-            self.var_ids = [[var.id for var in self.ordered_vars],
-                            [var.id for var in aux_vars], 
+            self.var_ids = [[var.name for var in self.ordered_vars],
+                            [var.name for var in aux_vars], 
                             self.rank_zero_var_ids]
             self.na_dict["NLHEAD"] = -999
             self._defineNAVars(self.ordered_vars)
@@ -126,16 +126,16 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         # Need to get highest ranked variable (most dimensions) so that we can work out FFI
         for var in self.vars:
-            msg = "Analysing: %s" % var.id
+            msg = "Analysing: %s" % var.name
             self.output_message.append(msg)
             count = count + 1
             # get rank
-            rank = var.rank()
+            rank = len(var.shape)
 
             # Deal with singleton variables
             if rank == 0: 
                 self.rank_zero_vars.append(var)
-                self.rank_zero_var_ids.append(var.id)
+                self.rank_zero_var_ids.append(var.name)
                 continue
 
             # Update highest if highest found or if equals highest with bigger size
@@ -162,20 +162,22 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         # If 2D then do a quick test to see if 2310 is feasible (i.e. uniformly spaced 2nd axis)
         if number_of_dims == 2:
+
             ffis_limited = [2010, 2110]
             axis = best_var.getAxis(1)
+
             if xarray_utils.isUniformlySpaced(axis):
                 ffis_limited.append(2310)
 
         # Get the axes for the main variable being used
-        best_var_axes = best_var.getAxisList()
+        best_var_axes = xarray_utils.getAxisList(best_var)
         
         # Get other variables into a list and analyse them
         rest_of_the_vars = self.vars[:best_var_index] + self.vars[(best_var_index + 1):]
 
         for var in rest_of_the_vars:
 
-            if var.id in self.rank_zero_var_ids: continue
+            if var.name in self.rank_zero_var_ids: continue
 
             # What to do with variables that have different number of dimensions or different shape
             if len(var.shape) != number_of_dims or var.shape != shape: 
@@ -210,10 +212,11 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                         aux_vars_for_na.append(var) 
 
             else:
-                this_var_axes = var.getAxisList()
+                this_var_axes = xarray_utils.getAxisList(var)
 
                 # Loop through dimensions
                 for i in range(number_of_dims):            
+
                     if not xarray_utils.areAxesIdentical(best_var_axes[i], this_var_axes[i]):
                         self.unused_vars.append(var)
                         break
@@ -238,13 +241,14 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         """
         # THIS SHOULD REALLY BE DONE IN A LOOP
         # First do the main variables
+        import pdb; pdb.set_trace()
         ordered_vars = [None] * 1000 # Make a long list to put vars in 
 
         # Create a list of other variables to collect up any that are not labelled as nasa ames variables
         other_vars = []
         for var in vars_for_na:
             if hasattr(var, "nasa_ames_var_number"):
-                ordered_vars[var.nasa_ames_var_number[0]] = var
+                ordered_vars[var.nasa_ames_var_number] = var
             else:
                 other_vars.append(var)
 
@@ -262,7 +266,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         for var in aux_vars_for_na:
             if hasattr(var, "nasa_ames_aux_var_number"):
-                ordered_aux_vars[var.nasa_ames_aux_var_number[0]] = var
+                ordered_aux_vars[var.nasa_ames_aux_var_number] = var
             else:
                 other_aux_vars.append(var)
 
@@ -286,8 +290,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         """
         # If ffis_limited is set then must use one of those
         if self.requested_ffi and ffis_limited:
+
             if self.requested_ffi not in ffis_limited:
-                raise Exception("Cannot write this data to FFI '" + str(self.requested_ffi) + "', can only write to: " + str(ffis_limited) + ".")
+                raise Exception(f"Cannot write this data to FFI '{self.requested_ffi}', can only write to: {ffis_limited}.")
             else:
                 return self.requested_ffi
 
@@ -302,7 +307,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             else:
                 ffi = 2010
         else:
-            if len(aux_vars_for_na) > 0 or (self.na_dict.has_key("NAUXV") and self.na_dict["NAUXV"] > 0):
+            if len(aux_vars_for_na) > 0 or ("NAUXV" in self.na_dict and self.na_dict["NAUXV"] > 0):
                 ffi = 1010
             else:
                 ffi = 1001
@@ -348,7 +353,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             self.na_dict["V"].append(self._getFilledArrayAsList(var, miss))
 
             # Create independent variable info
-            if not self.na_dict.has_key("X"):
+            if not "X" in self.na_dict:
+
                 # Set up lists ready to populate with values
                 self.na_dict["NXDEF"] = []
                 self.na_dict["NX"] = []
@@ -365,6 +371,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     # Set default increment as gap between first two
                     self.na_dict["DX"] = [incr]
                     # Now overwrite it as zero if non-uniform interval in axis
+
                     for i in range(1, len(self.ax0)):
                         if (self.ax0[i] - self.ax0[i - 1]) != incr:
                             self.na_dict["DX"] = [0]
@@ -380,7 +387,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     self.na_dict["X"] = vals[0:len(vals):self.na_dict["NVPM"]] 
 
                 # Now add the rest of the axes to the self.na_dict objects 
-                for axis in var.getAxisList()[1:]:
+                for axis in xarray_utils.getAxisList(var)[1:]:
                     self._appendAxisDefinition(axis)
 
                 # If FFI is 2110 then need to modify the "NX" and "X" lists to cope with odd shape
@@ -447,7 +454,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         # Initialise aux var itesms as empty lists unless already defined when
         # setting up independent variables
         for item in ("ANAME", "AMISS", "ASCAL", "A"):
-            if not self.na_dict.has_key(item):
+            if not item in self.na_dict:
                 self.na_dict[item] = [] 
 
         for var in aux_vars:
@@ -504,7 +511,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         local_nc_atts = local_attributes["nc_attributes"]
          
         for att, value in local_nc_atts.items():
-            if not nc_to_na_map.has_key(att):
+            if not att in nc_to_na_map:
                 nc_to_na_map[key] = value
 
         self.extra_comments = [[],[],[]]  # Normal comments, special comments, other comments
@@ -547,10 +554,12 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     comment_lines = self.globals[key].split("\n")
                     normal_comments = []
                     normal_comm_flag = None
+
                     special_comments = []
                     special_comm_flag = None
 
                     for line in comment_lines:
+
                         if line.find(hp["sc_start"]) > -1:
                             special_comm_flag = 1
                         elif line.find(hp["sc_end"]) > -1:
@@ -641,14 +650,14 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         rank_zero_vars_string = []
 
         for var in self.rank_zero_vars:
-            rank_zero_vars_string.append("  Variable %s: %s" % (var.id, xarray_utils.getBestName(var)))
+            rank_zero_vars_string.append("  Variable %s: %s" % (var.name, xarray_utils.getBestName(var)))
 
-            for att in var.attributes.keys():
-                value = var.attributes[att]
+            for att in var.attrs.keys():
+                value = var.attrs[att]
 
                 if type(value) in (type("s"), type(1.0), type(1)):
 
-                    rank_zero_vars_string.append("    %s = %s" % (att, var.attributes[att]))
+                    rank_zero_vars_string.append("    %s = %s" % (att, var.attrs[att]))
 
         if len(rank_zero_vars_string) > 0:
             rank_zero_vars_string.insert(0, hp["sing_start"])
@@ -660,7 +669,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
             name = xarray_utils.getBestName(var)
 
-            for scom,value in var.attributes.items():
+            for scom, value in var.attrs.items():
                 if type(value) in (type([]), type(N.array([0]))) and len(value) == 1:
                     value = value[0]
 
@@ -677,7 +686,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                         spec_comm_flag = 1
 
                     if not var_name_written:
-                        SCOM.append("  Variable %s: %s" % (var.id, name))
+                        SCOM.append("  Variable %s: %s" % (var.name, name))
                         var_name_written = True
 
                     SCOM.append("    %s = %s" % (scom, value))
@@ -728,13 +737,13 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         # Check if DATE field previously known in NASA Ames file
         time_now = [int(i) for i in time.strftime("%Y %m %d", time.localtime(time.time())).split()]
 
-        if not self.na_dict.has_key("RDATE"):
+        if not "RDATE" in self.na_dict:
             self.na_dict["RDATE"] = time_now
 
         if self.ax0.isTime():
             # Get first date in list
             try:
-                (unit, start_date) = re.match("(\w+)\s+?since\s+?(\d+-\d+-\d+)", self.ax0.units).groups()            
+                (unit, start_date) = re.match(r"(\w+)\s+?since\s+?(\d+-\d+-\d+)", self.ax0.units).groups()            
                 comptime = cdtime.s2c(start_date)
                 first_day = comptime.add(self.na_dict["X"][0], getattr(cdtime, unit.capitalize()))
                 self.na_dict["DATE"] = [int(i) for i in str(first_day).split(" ")[0].replace("-", " ").split()]
@@ -744,7 +753,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 self.output_message.append(msg)
                 self.na_dict["DATE"] = [999] * 3 
         else: 
-            if not self.na_dict.has_key("DATE"):
+            if not "DATE" in self.na_dict:
                 msg = warning_message
                 log.info(msg)
                 self.output_message.append(msg)

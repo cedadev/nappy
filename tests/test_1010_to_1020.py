@@ -8,6 +8,7 @@ import cdms2 as cdms
 
 
 def test_convert_nafile_to_nc_file_1010():
+    assert "THIS MAKES NO ASSERTIONS" == False
     "Converting NAFile to NC file 1010.na"
     ncfile = os.path.join(os.path.dirname(__file__), "../test_outputs/1010.nc")
     nafile = os.path.join(os.path.dirname(__file__), "../data_files/1010.na")

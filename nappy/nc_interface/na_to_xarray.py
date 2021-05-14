@@ -17,10 +17,16 @@ import re
 import time
 import logging
 
+# Third-party libraries
+import xarray as xr
+
 # Import from nappy package
 from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
+
+from . import xarray_utils
+
 
 config_dict = nappy.utils.getConfigDict()
 na_to_nc_map = config_dict["na_to_nc_map"]
@@ -54,6 +60,7 @@ DEBUG = nappy.utils.getDebug()
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
+
 class NADictToXarrayObjects:
     """
     Converts a NA File instance to a tuple of Xarray objects.
@@ -76,7 +83,9 @@ class NADictToXarrayObjects:
 
         # Check if we have capability to convert this FFI
         if self.na_file_obj.FFI in (2110, 2160, 2310): 
-            raise Exception("Cannot convert NASA Ames File Format Index (FFI) " + self.na_file_obj.FFI + " to Xarray objects. No mapping implemented yet.")
+            raise Exception(("Cannot convert NASA Ames File Format Index (FFI) " + 
+                             self.na_file_obj.FFI + 
+                             " to Xarray objects. No mapping implemented yet."))
 
         self.output_message = []  # for output displaying message
         self.converted = False
@@ -173,6 +182,7 @@ class NADictToXarrayObjects:
                 # RDATE = Revision date - update this and put in history global attribute
                 date_parts = getattr(self.na_file_obj, "RDATE")
                 date_string = "%.4d-%.2d-%.2d" % tuple(date_parts)
+
                 hist = date_string + " - NASA Ames File created/revised.\n"
                 time_string = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 
@@ -181,6 +191,7 @@ class NADictToXarrayObjects:
 
                 log.debug("No history mapping from na so added it here from global attributes.")
                 glob_atts["history"] = hist           
+
             else:
                 # Anything else just needs to be stored as a global attribute
                 glob_atts[na_to_nc_map[key]] = getattr(self.na_file_obj, key)
@@ -190,6 +201,7 @@ class NADictToXarrayObjects:
 
         for key, value in self.global_attributes:
             new_atts.append( (key, glob_atts[key]) )
+
         used_keys = [i[0] for i in new_atts]
 
         for key in glob_atts.keys():
@@ -207,13 +219,17 @@ class NADictToXarrayObjects:
         if self.variables in (None, "all"):    
             for var_number in range(self.na_file_obj.NV):
                 self.xr_variables.append(self._convertNAToXarrayVariable(var_number))
+
         else:
             if type(self.variables[0]) == type(1) or re.match("\d+", str(self.variables[0])): # They are integers = indices
                 for var_number in self.variables:
                     vn = int(var_number)
                     self.xr_variables.append(self._convertNAToXarrayVariable(vn))   
+
             elif type(self.variables[0]) == type("string"):  # Vars are strings
+
                 for var_name in self.variables:
+
                     if var_name in self.na_file_obj.VNAME:
                         var_number = self.na_file_obj.VNAME.index(var_name)
                         self.xr_variables.append(self._convertNAToXarrayVariable(var_number))
@@ -246,9 +262,9 @@ class NADictToXarrayObjects:
     
         # Add the best variable name
         if len(var_name) < max_id_length:
-            var.id=safe_nc_id.sub("_", var_name).lower()
+            var.name = safe_nc_id.sub("_", var_name).lower()
         else:
-            var.id="naVariable_%s" % (var_number)
+            var.name = "naVariable_%s" % (var_number)
         
          # Check if mapping provided for renaming this variable
         if var_name in self.rename_variables.keys():
@@ -267,15 +283,20 @@ class NADictToXarrayObjects:
         self.xr_aux_variables = []
 
         if self.aux_variables in (None, "all"):
+
             for avar_number in range(self.na_file_obj.NAUXV):
                 self.xr_aux_variables.append(self._convertNAAuxToXarrayVariable(avar_number))
+
         else:
             if type(self.aux_variables[0]) == type(1): # They are integers = indices
+
                 for avar_number in self.aux_variables:
                     self.xr_aux_variables.append(self._convertNAAuxToXarrayVariable(avar_number))   
 
             elif type(self.aux_variables[0]) == type("string"): # They are strings
+
                 for avar_name in self.aux_variables:
+
                     if avar_name in self.na_file_obj.ANAME:
                         avar_number = self.na_file_obj.ANAME.index(avar_name)
                         self.xr_aux_variables.append(self._convertNAAuxToXarrayVariable(avar_number)) 
@@ -304,17 +325,19 @@ class NADictToXarrayObjects:
                                   attributes=attributes)
 
         # Sort units etc
-        if units:   var.units = units
+        if units:   
+            var.attrs["units"] = units
+
         if len(var_name) < max_id_length:
-            var.id = safe_nc_id.sub("_", var_name).lower()
+            var.name = safe_nc_id.sub("_", var_name).lower()
         else:
-            var.id = "naAuxVariable_%s" % (avar_number)
+            var.name = f"naAuxVariable_{avar_number}"
 
         # Check if mapping provided for renaming this variable
         if var_name in self.rename_variables.keys():
             var_name = self.rename_variables[var_name]
 
-        var.long_name = var.name = var.title = var_name
+        var.attrs["long_name"] = var.name = var.attrs["title"] = var_name
 
         # Add a NASA Ames auxiliary variable number (for mapping correctly back to NASA Ames)
         var.nasa_ames_aux_var_number = avar_number
@@ -324,7 +347,7 @@ class NADictToXarrayObjects:
         """
         Creates Xarray axes from information provided in the NASA Ames dictionary.
         """
-        if not hasattr(self, 'xr_axes'):        
+        if not hasattr(self, 'xr_axes'):
             self.xr_axes = []
 
         for ivar_number in range(self.na_file_obj.NIV):
@@ -335,7 +358,8 @@ class NADictToXarrayObjects:
         """
         Creates an Xarray axis from a NASA Ames independent variable.
         """
-        if not self.na_file_obj._normalized_X:   self.na_file_obj._normalizeIndVars()
+        if not self.na_file_obj._normalized_X:
+            self.na_file_obj._normalizeIndVars()
 
         if self.na_file_obj.NIV == 1:
             array = self.na_file_obj.X
@@ -343,51 +367,54 @@ class NADictToXarrayObjects:
             array = self.na_file_obj.X[ivar_number]
 
         axis_name = self.na_file_obj.XNAME[ivar_number]
+
         (var_name, units) = self.na_file_obj.getIndependentVariable(ivar_number)
-        axis = xr.DataArray(array, name=axis_name, attrs={'long_name': axis_name, 'id': axis_name, 'units': units}))
-#        axis.id = axis.name = axis.long_name = self.na_file_obj.XNAME[ivar_number]
-#        (var_name, units) = self.na_file_obj.getIndependentVariable(ivar_number)
+        axis = xr.DataArray(array, name=axis_name, attrs={'long_name': axis_name, 'units': units}))
     
-        # Sort units etc
-        if units:   axis.units = units
+        # Sort units, name etc...
+        if units:   
+             axis.attrs["units"] = units
+
         if len(var_name) < max_id_length:
-            axis.id = safe_nc_id.sub("_", var_name).lower()
+            axis.name = safe_nc_id.sub("_", var_name).lower()
         else:
-            axis.id = "naIndVariable_%s" % (ivar_number)
+            axis.name = f"naIndVariable_{ivar_number}"
 
-        if units: axis.units = units
+        axis_types = [("longitude", "X"), ("latitude", "Y"), ("level", "Z"), ("time", "T")]
 
-        axis_types = ("longitude", "latitude", "level", "time")
+        for axis_type, axis_label in axis_types:
 
-        for axis_type in axis_types:
             if re.search(axis_type, var_name, re.IGNORECASE):
-                axis.standard_name = axis.id = axis_type
-                # Designate it CF-style if known axis type (e.g. axis.designateTime() etc..)
-                exec("axis.designate%s()" % axis_type.title())
+
+                axis.attrs["standard_name"] = axis.name = axis_type
+                axis.attrs["axis"] = axis_label
 
         # Check warning for time units pattern
-        if axis.isTime() and (not hasattr(axis, "units") or not time_units_pattn.match(axis.units)):
+        if xarray_utils.is_time(axis) and (not hasattr(axis, "units") or not time_units_pattn.match(axis.units)):
+
             if self.time_units == None:
                 time_units_input = "I WON'T MATCH"
 
                 while time_units_input != "" and not time_units_pattn.match(time_units_input):
                     message = time_units_warning_message                
+
                     if self.time_warning:
                         log.debug(message)
-                        time_units_input = raw_input("Please insert your time unit string here (or leave blank):").strip()
+                        time_units_input = input("Please insert your time unit string here (or leave blank):").strip()
                     else: 
                         time_units_input = ""
 
                 self.output_message.append(message)
                 self.time_units = time_units_input
 
-        axis.units = self.time_units
-        axis.long_name = axis.name = "time (%s)" % self.time_units
+        axis.attrs["units"] = self.time_units
+        axis.attrs["long_name"] = axis.name = f"time ({self.time_units})"
 
-        if not hasattr(axis, "units") or axis.units == None:  
+        if not getattr(axis, "units", None):
             if units:
-                axis.units = units    
+                axis.attrs["units"] = units    
             else:
-                axis.units = "Not known"
+                axis.attrs["units"] = "Not known"
 
         return axis
+

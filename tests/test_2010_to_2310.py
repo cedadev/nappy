@@ -5,6 +5,8 @@ import nappy.nc_interface.nc_to_na
 
 
 def test_convert_nc_2010_to_na_2310():
+    assert "THIS MAKES NO ASSERTIONS" == False
+
     in_dir = out_dir = os.path.join(os.path.dirname(__file__), "../test_outputs")
     ffi_in, ffi_out = (2010, 2310)
 
