@@ -24,11 +24,10 @@ import xarray as xr
 # Import from nappy package
 from nappy.na_error import na_error
 import nappy.utils
-
-from . import xarray_utils
-
 import nappy.utils.common_utils
 import nappy.na_file.na_core
+
+from . import xarray_utils
 
 config_dict = nappy.utils.getConfigDict()
 nc_to_na_map = config_dict["nc_to_na_map"]
@@ -48,7 +47,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
     Xarray DataArrays and global attributes (optional).
     """
     
-    def __init__(self, variables, global_attributes=[], requested_ffi=None):
+    def __init__(self, variables, global_attributes=None, requested_ffi=None):
         """
         Sets up instance variables and calls appropriate methods to
         generate sections of NASA Ames file object.
@@ -63,6 +62,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         >>> if x.found_na:
         ...     print(x.na_dict, x.var_ids, x.unused_vars)
         """
+        if global_attributes == None:
+            global_attributes = []
+
         self.output_message = []
         self.na_dict = {}
         self.vars = variables
@@ -90,17 +92,19 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         """
         log.debug("Call to collectNAContent():\n")
         for v in self.vars: 
-            log.debug("\t%s, %s, %s" % (v.name, v.shape, list(v.coords.keys())))
+            log.debug(f"\t{v.name}, {v.shape}, {v.dims}")
  
         (self.ordered_vars, aux_vars) = self._analyseVariables()
      
         if self.ordered_vars == []:
             log.warn("No NASA Ames content created.")
             self.unused_vars = []
+
         else:
             self.var_ids = [[var.name for var in self.ordered_vars],
                             [var.name for var in aux_vars], 
                             self.rank_zero_var_ids]
+
             self.na_dict["NLHEAD"] = -999
             self._defineNAVars(self.ordered_vars)
             self._defineNAAuxVars(aux_vars)
@@ -108,7 +112,6 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             self._defineNAComments()
             self._defineGeneralHeader()
             self.found_na = True
-
 
     def _analyseVariables(self):
         """
@@ -129,6 +132,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             msg = "Analysing: %s" % var.name
             self.output_message.append(msg)
             count = count + 1
+
             # get rank
             rank = len(var.shape)
 
@@ -140,9 +144,11 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
             # Update highest if highest found or if equals highest with bigger size
             try:
-                var.size = var.size() ; best_var.size = best_var.size()
+                var.size = var.size()
+                best_var.size = best_var.size()
             except:
                 pass
+
             if rank > highest_rank or (rank == highest_rank and var.size > best_var.size):
                 highest_rank = rank
                 best_var = var
@@ -159,12 +165,11 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         number_of_dims = len(shape)
         self.na_dict["NIV"] = number_of_dims
 
-
         # If 2D then do a quick test to see if 2310 is feasible (i.e. uniformly spaced 2nd axis)
         if number_of_dims == 2:
 
             ffis_limited = [2010, 2110]
-            axis = best_var.getAxis(1)
+            axis = xarray_utils.get_coord_by_index(best_var, 1)
 
             if xarray_utils.isUniformlySpaced(axis):
                 ffis_limited.append(2310)
@@ -186,19 +191,21 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     self.unused_vars.append(var)
                     continue
 
-                first_axis = var.getAxis(0)
+                first_axis = xarray_utils.get_coord_by_index(var, 0)
                 # Check if axis is identical to first axis of main best variable, if so, can be auxiliary var
                 if not xarray_utils.areAxesIdentical(best_var_axes[0], first_axis):
 
                     # If not identical, then it might still qualify as an auxiliary every n time points - valid for 1020
                     if len(var.shape) == 1:
                         nvpm = xarray_utils.isAxisRegularlySpacedSubsetOf(first_axis, best_var_axes[0])
+
                         # NVPM is the number of implied values which is equal to (len(ax2)/len(ax1))
                         if nvpm:
                             ffis_limited = [1020]
                             self.na_dict["NVPM"] = nvpm
                         else: # if returned False, i.e. not regular subset axis
                             self.unused_vars.append(var)
+
                     else:
                         self.unused_vars.append(var)
                         continue
@@ -226,12 +233,14 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         # Send vars_for_na AND aux_vars_for_na to a method to check if they have previously been mapped 
         # from NASA Ames. In which case we'll write them back in the order they were initially read from the input file.
-        (vars_for_na, aux_vars_for_na) = self._reorderVarsIfPreviouslyNA(vars_for_na, aux_vars_for_na)
+        (vars_for_na, aux_vars_for_na) = \
+            self._reorderVarsIfPreviouslyNA(vars_for_na, aux_vars_for_na)
 
         # Get the FFI
-        self.na_dict["FFI"] = self._decideFileFormatIndex(number_of_dims, aux_vars_for_na, ffis_limited)
-        return (vars_for_na, aux_vars_for_na)
+        self.na_dict["FFI"] = \
+            self._decideFileFormatIndex(number_of_dims, aux_vars_for_na, ffis_limited)
 
+        return vars_for_na, aux_vars_for_na
 
     def _reorderVarsIfPreviouslyNA(self, vars_for_na, aux_vars_for_na):
         """
@@ -239,9 +248,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         attribute 'nasa_ames_var_number'). Return re-ordered or unchanged pair of
         (vars_for_na, aux_vars_for_na).
         """
-        # THIS SHOULD REALLY BE DONE IN A LOOP
         # First do the main variables
-        import pdb; pdb.set_trace()
         ordered_vars = [None] * 1000 # Make a long list to put vars in 
 
         # Create a list of other variables to collect up any that are not labelled as nasa ames variables
@@ -255,7 +262,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         # Remake vars_for_na now in new order and clean out any that are "None"
         vars_for_na = []
         for var in ordered_vars:
-            if type(var) != type(None): 
+            if var is not None: 
                 vars_for_na.append(var)
 
         vars_for_na = vars_for_na + other_vars
@@ -278,7 +285,6 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         aux_vars_for_na = aux_vars_for_na + other_aux_vars
         return (vars_for_na, aux_vars_for_na)
-
 
     def _decideFileFormatIndex(self, number_of_dims, aux_vars_for_na, ffis_limited=False):
         """
@@ -350,7 +356,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
             # Populate the variable list with the array
             # Make sure missing values are converted to real values using the required missing value
-            self.na_dict["V"].append(self._getFilledArrayAsList(var, miss))
+            self.na_dict["V"].append(xarray_utils.getFilledArrayAsList(var, miss))
 
             # Create independent variable info
             if not "X" in self.na_dict:
@@ -359,9 +365,9 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 self.na_dict["NXDEF"] = []
                 self.na_dict["NX"] = []
 
-                self.ax0 = var.getAxis(0)
+                self.ax0 = xarray_utils.get_coord_by_index(var, 0)
 
-                self.na_dict["X"] = [self.ax0[:].tolist()]
+                self.na_dict["X"] = [self.ax0.data.tolist()]
                 self.na_dict["XNAME"] = [xarray_utils.getBestName(self.ax0)]
 
                 if len(self.ax0) == 1:
@@ -395,7 +401,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 if self.na_dict["FFI"] == 2110:
                     new_x = []
                     new_nx = []
-                    ax2_values = var.getAxis(1)[:].tolist()
+                    ax2_values = xarray_utils.get_coord_by_index(var, 1).data.tolist()
 
                     for i in self.ax0[:]:
                         new_x.append([i, ax2_values])
@@ -418,7 +424,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     new_x = []
                     new_nx = []
                     new_dx = []
-                    ax2_values = var.getAxis(1)[:].tolist()
+                    ax2_values = xarray_utils.get_coord_by_index(var, 1).data.tolist()
                     incr = ax2_values[1] - ax2_values[0]
 
                     for i in self.ax0[:]:
@@ -466,7 +472,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             self.na_dict["AMISS"].append(miss)
             self.na_dict["ASCAL"].append(1)
             # Populate the variable list with the array
-            self.na_dict["A"].append(self._getFilledArrayAsList(var, miss))
+            self.na_dict["A"].append(xarray_utils.getFilledArrayAsList(var, miss))
 
         self.na_dict["NAUXV"] = len(self.na_dict["A"])
 
@@ -484,7 +490,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if length < 2:
             self.na_dict["DX"].append(0)
             self.na_dict["NXDEF"].append(length)
-            self.na_dict["X"].append(axis[:].tolist())        
+            self.na_dict["X"].append(axis.data.tolist())        
             return
    
         incr = axis[1] - axis[0]
@@ -492,7 +498,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             if (axis[i] - axis[i - 1]) != incr:
                 self.na_dict["DX"].append(0)
                 self.na_dict["NXDEF"].append(length)
-                self.na_dict["X"].append(axis[:].tolist())
+                self.na_dict["X"].append(axis.data.tolist())
                 break
         else: # If did not break out of the loop
             max_length = length
@@ -589,16 +595,20 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     self.na_dict[nc_to_na_map[key]] = self.globals[key]
             else:
                 self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
-        return
 
-
-    def _defineNAComments(self, normal_comments=[], special_comments=[]):
+    def _defineNAComments(self, normal_comments=None, special_comments=None):
         """
         Defines the Special and Normal comments sections in the NASA Ames file 
         object - including information gathered from the defineNAGlobals method.
 
         Starts with values provided for normal_comments and special_comments.
         """
+        if normal_comments == None:
+            normal_comments = []
+
+        if special_comments == None:
+            special_comments = []
+
         if hasattr(self, "ncom"):  normal_comments = self.ncom + normal_comments
 
         NCOM = []
@@ -670,7 +680,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             name = xarray_utils.getBestName(var)
 
             for scom, value in var.attrs.items():
-                if type(value) in (type([]), type(N.array([0]))) and len(value) == 1:
+                if type(value) in (type([]), type(np.array([0]))) and len(value) == 1:
                     value = value[0]
 
                 if type(value) in (type("s"), type(1.1), type(1)) and scom not in used_var_atts:
@@ -727,11 +737,14 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         return
 
 
-    def _defineGeneralHeader(self, header_items={}):
+    def _defineGeneralHeader(self, header_items=None):
         """
         Defines known header items and overwrites any with header_items 
         key/value pairs.
         """
+        if header_items == None:
+            header_items = {}
+
         warning_message = "Nappy Warning: Could not get the first date in the file. You will need to manually edit the output file."
 
         # Check if DATE field previously known in NASA Ames file
@@ -740,7 +753,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if not "RDATE" in self.na_dict:
             self.na_dict["RDATE"] = time_now
 
-        if self.ax0.isTime():
+        if xarray_utils.is_time(ax0):
             # Get first date in list
             try:
                 (unit, start_date) = re.match(r"(\w+)\s+?since\s+?(\d+-\d+-\d+)", self.ax0.units).groups()            
@@ -767,15 +780,5 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
              self.na_dict[key] = header_items[key]
 
 
-    def _getFilledArrayAsList(self, arr, missing_value):
-        """
-        Takes an array ``arr`` (either a numpy array or a Masked Array).
-        If the array is a masked array then replace masked values with 
-        ``missing_value`` and convert to a numpy array.
-        Finally convert to a list and return that.
-        """
-        if N.ma.isMaskedArray(arr):
-            arr = arr.filled(missing_value)
 
-        return arr[:].tolist()
 

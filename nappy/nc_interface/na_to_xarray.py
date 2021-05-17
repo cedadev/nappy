@@ -18,6 +18,7 @@ import time
 import logging
 
 # Third-party libraries
+import numpy as np
 import xarray as xr
 
 # Import from nappy package
@@ -237,16 +238,24 @@ class NADictToXarrayObjects:
                         raise Exception("Variable name not known: " + var_name)
 
 
-    def _convertNAToXarrayVariable(self, var_number, attributes={}):
+    def _convertNAToXarrayVariable(self, var_number, attributes=None):
         """
         Creates a single Xarray variable from the variable number provided in the list.
         """
+        if attributes == None:
+            attributes = {}
+
         (var_name, units, miss, scal) = self.na_file_obj.getVariable(var_number)
+
         msg = "\nAdding variable: %s" % self.na_file_obj.VNAME[var_number]
         log.debug(msg)
-
         self.output_message.append(msg)
-        array = N.array(self.na_file_obj.V[var_number])
+
+        array = np.array(self.na_file_obj.V[var_number])
+
+        if miss:
+            array = np.ma.masked_array(array, fill_value=miss)
+
         array = array * scal
 
         # Set up axes
@@ -254,23 +263,23 @@ class NADictToXarrayObjects:
             self._convertXarrayAxes()
 
         # Set up variable
-        var = xr.DataArray(array, axes=self.xr_axes, fill_value=miss, attributes=attributes)
+        var = xarray_utils.create_data_array(array, name=var_name, coords=[self.xr_axes[0]], 
+                                  fill_value=miss, attrs=attributes)
 
         # Sort units etc
         if units:   
             var.units=units
     
-        # Add the best variable name
         if len(var_name) < max_id_length:
             var.name = safe_nc_id.sub("_", var_name).lower()
         else:
             var.name = "naVariable_%s" % (var_number)
         
-         # Check if mapping provided for renaming this variable
+        # Check if mapping provided for renaming this variable
         if var_name in self.rename_variables.keys():
             var_name = self.rename_variables[var_name]
         
-        var.long_name = var.name = var.title = var_name
+        var.attrs["long_name"] = var.name = var.attrs["title"] = var_name
 
         # Add a NASA Ames variable number (for mapping correctly back to NASA Ames)
         var.nasa_ames_var_number = var_number
@@ -303,12 +312,19 @@ class NADictToXarrayObjects:
             else:
                 raise Exception("Auxiliary variable name not known: " + avar_name)        
 
-    def _convertNAAuxToXarrayVariable(self, avar_number, attributes={}):
+    def _convertNAAuxToXarrayVariable(self, avar_number, attributes=None):
         """
         Converts an auxiliary variable to a Xarray variable.
         """
+        if attributes == None:
+            attributes = {}
+             
         (var_name, units, miss, scal) = self.na_file_obj.getAuxVariable(avar_number)
-        array = N.array(self.na_file_obj.A[avar_number])
+
+        array = np.array(self.na_file_obj.A[avar_number])
+        if miss:
+            array = np.ma.masked_array(array, fill_value=miss)
+
         array = array * scal
 
         msg="\nAdding auxiliary variable: %s" % self.na_file_obj.ANAME[avar_number]
@@ -317,12 +333,11 @@ class NADictToXarrayObjects:
 
         # Set up axes
         if not hasattr(self, 'xr_axes'):
-# UNSURE!
             self._convertXarrayAxes()
 
         # Set up variable
-        var = xr.DataArray(array, axes=[self.xr_axes[0]], fill_value=miss, 
-                                  attributes=attributes)
+        var = xarray_utils.create_data_array(array, name=var_name, coords=[self.xr_axes[0]], 
+                                  fill_value=miss, attrs=attributes)
 
         # Sort units etc
         if units:   

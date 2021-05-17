@@ -75,7 +75,7 @@ def getAxisList(var):
     """
     Returns a list of coordinates from: var
     """ 
-    return [var.coords[key] for key in var.coords.keys()]
+    return [var.coords[key] for key in var.dims]
 
 
 def isUniformlySpaced(array):
@@ -234,3 +234,35 @@ def is_time(coord):
 
     return False
 
+
+def get_coord_by_index(da, indx):
+    """
+    Take an Xarray DataArray, return a coordinate by its index in the
+    order of the data structure. E.g. if var is defined on: ('time', 'lat'),
+    indx=0 will return the coordinate labelled as 'time'.
+    """
+    coord_name = da.dims[indx]
+    return da.coords[coord_name]
+
+
+def create_data_array(arr, name, coords, attrs, fill_value):
+    """
+    Create an Xarray DataArray and assign properties as required.
+    """
+    da = xr.DataArray(arr, name=name, coords=coords, attrs=attrs)
+    da.encoding["_FillValue"] = fill_value
+    return da
+
+
+def getFilledArrayAsList(da, missing_value):
+    """
+    Takes a DataArray ``da``.
+    If the array is masked then replace masked values with 
+    ``missing_value``.
+    """
+    arr = da.data
+
+    if any(np.isnan(arr)):
+        arr = da.fillna(missing_value).data
+
+    return arr.tolist()
