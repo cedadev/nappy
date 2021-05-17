@@ -13,6 +13,9 @@ import cf_xarray  # noqa
 import cftime
 
 
+TIME_UNITS_REGEX = re.compile("time \((\w+\s+?since\s+?\d+-\d+-\d+\s+?\d+:\d+:\d+.*)\)")
+
+
 def getBestName(var):
     """
     Returns the most appropriate variable name for a NASA Ames header.
@@ -254,15 +257,36 @@ def create_data_array(arr, name, coords, attrs, fill_value):
     return da
 
 
-def getFilledArrayAsList(da, missing_value):
+def dates_to_nums(da):
+    units = re.match(r"^time \((.+)\)$", da.attrs['name']).groups()[0]
+    arr = cftime.date2num(da.data, units)
+    return arr
+
+
+def get_interval(da, indx1, indx2, handle_datetimes=True):
+    if is_time(da) and handle_datetimes:
+        arr = dates_to_nums(da)
+    else:
+        arr = da.data
+
+    return arr[indx2] - arr[indx1]
+
+
+def getArrayAsList(da, missing_value=None, handle_datetimes=True):
     """
     Takes a DataArray ``da``.
     If the array is masked then replace masked values with 
     ``missing_value``.
+    If ``handle_datetimes`` is True, then ensure that the units and
+    calendar are used to convert datetimes to sensible values.
     """
-    arr = da.data
+    if is_time(da) and handle_datetimes:
+        arr = dates_to_nums(da)
 
-    if any(np.isnan(arr)):
+    elif missing_value is not None and any(np.isnan(da.data)):
         arr = da.fillna(missing_value).data
+
+    else:
+        arr = da.data
 
     return arr.tolist()

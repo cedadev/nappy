@@ -84,7 +84,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
         as the global attributes: (xr_variable_list, global_atts_list)
         If var_ids is defined then only get those.
         """
-        ds = xr.open_dataset(self.nc_file)
+        ds = xr.open_dataset(self.nc_file, use_cftime=True)
         xr_variables = []
 
         # Make sure var_ids is a list

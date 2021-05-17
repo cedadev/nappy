@@ -20,6 +20,7 @@ import logging
 # Third-party imports
 import numpy as np
 import xarray as xr
+import cftime
 
 # Import from nappy package
 from nappy.na_error import na_error
@@ -356,7 +357,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
             # Populate the variable list with the array
             # Make sure missing values are converted to real values using the required missing value
-            self.na_dict["V"].append(xarray_utils.getFilledArrayAsList(var, miss))
+            self.na_dict["V"].append(xarray_utils.getArrayAsList(var, missing_value=miss))
 
             # Create independent variable info
             if not "X" in self.na_dict:
@@ -367,19 +368,20 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 self.ax0 = xarray_utils.get_coord_by_index(var, 0)
 
-                self.na_dict["X"] = [self.ax0.data.tolist()]
+                self.na_dict["X"] = [xarray_utils.getArrayAsList(self.ax0)]
                 self.na_dict["XNAME"] = [xarray_utils.getBestName(self.ax0)]
 
                 if len(self.ax0) == 1:
                     self.na_dict["DX"] = [0]
                 else:
-                    incr = self.ax0[1] - self.ax0[0]
+                    incr = xarray_utils.get_interval(self.ax0, 0, 1)
                     # Set default increment as gap between first two
+
                     self.na_dict["DX"] = [incr]
                     # Now overwrite it as zero if non-uniform interval in axis
 
                     for i in range(1, len(self.ax0)):
-                        if (self.ax0[i] - self.ax0[i - 1]) != incr:
+                        if xarray_utils.get_interval(self.ax0, i-1, i) != incr:
                             self.na_dict["DX"] = [0]
                             break
 
@@ -425,7 +427,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     new_nx = []
                     new_dx = []
                     ax2_values = xarray_utils.get_coord_by_index(var, 1).data.tolist()
-                    incr = ax2_values[1] - ax2_values[0]
+                    incr = xarray_utils.get_interval(ax2_values, 0, 1)
 
                     for i in self.ax0[:]:
                         new_x.append([i, ax2_values])
@@ -443,6 +445,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     self.na_dict["A"].append(self.na_dict["NX"][:])
                     self.na_dict["A"].append([i[1][0] for i in self.na_dict["X"]])
                     self.na_dict["A"].append(self.na_dict["DX"][:])
+
                     ind_var_name = self.na_dict["XNAME"][0]
                     self.na_dict["ANAME"] = ["Number of '%s' values recorded in subsequent data records" % ind_var_name,
                                              "'%s' value for first data point" % ind_var_name,
@@ -472,7 +475,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             self.na_dict["AMISS"].append(miss)
             self.na_dict["ASCAL"].append(1)
             # Populate the variable list with the array
-            self.na_dict["A"].append(xarray_utils.getFilledArrayAsList(var, miss))
+            self.na_dict["A"].append(xarray_utils.getArrayAsList(var, missing_value=miss))
 
         self.na_dict["NAUXV"] = len(self.na_dict["A"])
 
@@ -486,24 +489,28 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         self.na_dict["NX"].append(length)
         self.na_dict["XNAME"].append(xarray_utils.getBestName(axis))
+
         # If only one item in axis values
         if length < 2:
             self.na_dict["DX"].append(0)
             self.na_dict["NXDEF"].append(length)
             self.na_dict["X"].append(axis.data.tolist())        
             return
-   
-        incr = axis[1] - axis[0]
+
+        incr = xarray_utils.get_interval(axis, 0, 1)
+
         for i in range(1, length):
             if (axis[i] - axis[i - 1]) != incr:
                 self.na_dict["DX"].append(0)
                 self.na_dict["NXDEF"].append(length)
                 self.na_dict["X"].append(axis.data.tolist())
                 break
+
         else: # If did not break out of the loop
             max_length = length
             if length > 3: 
                 max_length = 3
+
             self.na_dict["DX"].append(incr)
             self.na_dict["NXDEF"].append(max_length)
             self.na_dict["X"].append(axis[:max_length])
@@ -753,18 +760,25 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if not "RDATE" in self.na_dict:
             self.na_dict["RDATE"] = time_now
 
-        if xarray_utils.is_time(ax0):
+        if xarray_utils.is_time(self.ax0):
             # Get first date in list
-            try:
-                (unit, start_date) = re.match(r"(\w+)\s+?since\s+?(\d+-\d+-\d+)", self.ax0.units).groups()            
-                comptime = cdtime.s2c(start_date)
-                first_day = comptime.add(self.na_dict["X"][0], getattr(cdtime, unit.capitalize()))
-                self.na_dict["DATE"] = [int(i) for i in str(first_day).split(" ")[0].replace("-", " ").split()]
-            except:
+            if 1: #try:
+                units = xarray_utils.TIME_UNITS_REGEX.match(self.ax0.attrs.get('name', '')).groups()[0]
+                #if match:
+                #    (unit, start_date) = match.groups()
+                #comptime = cdtime.s2c(start_date)
+                #first_day = comptime.add(self.na_dict["X"][0], getattr(cdtime, unit.capitalize()))
+                first_day = self.na_dict["X"][0]
+                self.na_dict["DATE"] = \
+                    [getattr(cftime.num2date(first_day, units), attr) for attr in ('year', 'month', 'day')]
+                #.na_dict["DATE"] = [int(i) for i in first_day.split('T')[0].split('-')]
+                
+            else: #:except Exception:
                 msg = warning_message
                 log.info(msg)
                 self.output_message.append(msg)
                 self.na_dict["DATE"] = [999] * 3 
+
         else: 
             if not "DATE" in self.na_dict:
                 msg = warning_message
@@ -776,6 +790,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         self.na_dict["IVOL"] = 1
         self.na_dict["NVOL"] = 1
+
         for key in header_items.keys():
              self.na_dict[key] = header_items[key]
 

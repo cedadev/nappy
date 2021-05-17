@@ -14,7 +14,7 @@ def test_nc_to_na_1001():
     na = NCToNA(infile)
 
     # Writing: outfile
-    na.writeNAFiles(outfile, delimiter=",", float_format="%g")
+    na.writeNAFiles(outfile, float_format="%g")
 
     assert os.path.getsize(outfile) > 100
 
