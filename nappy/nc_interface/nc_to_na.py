@@ -78,26 +78,39 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
                                                         requested_ffi=requested_ffi)
  
 
-    def _readXarrayFile(self, var_ids=None, exclude_vars=[]):
+    def _readXarrayFile(self, var_ids=None, exclude_vars=None, exclude_bounds=True):
         """
         Reads the file and returns all the Xarray variables in a list as well
         as the global attributes: (xr_variable_list, global_atts_list)
         If var_ids is defined then only get those.
+        If exclude_bounds is True: exclude "bounds" variables.
         """
+        if exclude_vars is None:
+            exclude_vars = []
+
         ds = xr.open_dataset(self.nc_file, use_cftime=True)
         xr_variables = []
 
         # Make sure var_ids is a list
-        if type(var_ids) == type("string"):
+        if isinstance(var_ids, str):
             var_ids = [var_ids]
+
+        # Identify bounds variables
+        bounds_vars = {ds[var_id].attrs.get("bounds", None) for var_id in ds.variables}
+        if None in bounds_vars:
+            bounds_vars.remove(None)
 
         for var_id in ds.variables:
             if var_ids == None or var_id in var_ids:
-                if var_id not in exclude_vars:
 
-                    # Check whether singleton variable, if so create variable
+                # Process required variables
+                if (var_id not in exclude_vars):
+                    if exclude_bounds and var_id in bounds_vars:
+                        continue
+
                     da = ds[var_id]
-                   
+
+                    # Check whether singleton variable, if so create variable                   
                     if hasattr(da, "shape") and da.shape == ():
                         da = xr.DataArray(np.array(float(da)), attrs=vm.attrs)
 

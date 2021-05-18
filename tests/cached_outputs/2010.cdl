@@ -1,0 +1,69 @@
+netcdf \2010 {
+dimensions:
+	altitude = 5 ;
+	latitude = 9 ;
+	bound = 2 ;
+variables:
+	double altitude(altitude) ;
+		altitude:units = "km" ;
+		altitude:long_name = "Altitude" ;
+		altitude:name = "Altitude" ;
+	double latitude(latitude) ;
+		latitude:bounds = "bounds_latitude" ;
+		latitude:units = "degrees_north" ;
+		latitude:long_name = "Latitude" ;
+		latitude:standard_name = "latitude" ;
+		latitude:name = "Latitude" ;
+		latitude:axis = "Y" ;
+	double bounds_latitude(latitude, bound) ;
+	double mean_zonal_wind(altitude, latitude) ;
+		mean_zonal_wind:title = "Mean zonal wind" ;
+		mean_zonal_wind:long_name = "Mean zonal wind" ;
+		mean_zonal_wind:units = "m/s" ;
+		mean_zonal_wind:missing_value = 200. ;
+		mean_zonal_wind:nasa_ames_var_number = 0 ;
+	double pressure(altitude) ;
+		pressure:title = "Pressure" ;
+		pressure:nasa_ames_aux_var_number = 0 ;
+		pressure:long_name = "Pressure" ;
+		pressure:units = "hPa" ;
+		pressure:missing_value = 2000. ;
+
+// global attributes:
+		:Conventions = "CF-1.0" ;
+		:comment = "==== Special Comments follow ====\nExample of FFI 2010 (b).\nThis example illustrating NASA Ames file format index 2010 is based on results\nfrom Murgatroyd (1969) as displayed in Brasseur and Solomon, Aeronomy of the\nMiddle Atmosphere, Reidel, 1984 (p.36). It is representative of the mean zonal\nwind distribution in the winter hemisphere as a function of latitude and height.\nThe first date on line 7 (1st of January 1969) is fictitious.\nFrom line 10 (NXDEF = 1) we know that the latitude points are defined by\nX(i) = X(1) + (i-1)DX1 for i = 1, ..., NX\nwith X(1) = 0 deg (line 11), DX1 = 10 deg (line 8) and NX = 9 (line 9).\n==== Special Comments end ====\n==== Normal Comments follow ====\nThe files included in this data set illustrate each of the 9 NASA Ames file\nformat indices (FFI). A detailed description of the NASA Ames format can be\nfound on the Web site of the British Atmospheric Data Centre (BADC) at\nhttp://www.badc.rl.ac.uk/help/formats/NASA-Ames/\nE-mail contact: badc@rl.ac.uk\nReference: S. E. Gaines and R. S. Hipskind, Format Specification for Data\nExchange, Version 1.3, 1998. This work can be found at\nhttp://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html\nand a copy of it at\nhttp://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html\n==== Normal Comments end ====" ;
+		:title = "NERC Data Grid (NDG) project" ;
+		:file_number_in_set = 7 ;
+		:source = "Anemometer measurements averaged over longitude" ;
+		:first_valid_date_of_data = 1969, 1, 1 ;
+		:total_files_in_set = 13 ;
+		:no_of_nasa_ames_header_lines = 43 ;
+		:file_format_index = 2010 ;
+		:institution = "De Rudder, Anne (ONAME from NASA Ames file); Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837 (ORG from NASA Ames file)." ;
+		:history = "2002-10-31 - NASA Ames File created/revised.\n\n2021-05-10 15:14:39 - Converted to CDMS (NetCDF) format using nappy-0.3.0." ;
+data:
+
+ altitude = 0, 20, 40, 60, 80 ;
+
+ latitude = 0, 10, 20, 30, 40, 50, 60, 70, 80 ;
+
+ bounds_latitude =
+  -5, 5,
+  5, 15,
+  15, 25,
+  25, 35,
+  35, 45,
+  45, 55,
+  55, 65,
+  65, 75,
+  75, 85 ;
+
+ mean_zonal_wind =
+  -3, -2.6, -2.3, 2, 4.8, 4.6, 4.5, 3, -0.9,
+  -15.1, -4.2, 6.9, 12.8, 14.7, 20, 21.5, 18, 8.2,
+  -29, -15.2, 3.4, 28.2, 41, 39.1, 17.9, 8, 0.1,
+  -10, 8.4, 31.2, 59.9, 78.5, 77.7, 47, 17.6, 16,
+  200, 200, 200, 200, 200, 200, 200, 200, 200 ;
+
+ pressure = 1013.3, 55.3, 2.3, 0.22, 0.01 ;
+}

@@ -1,0 +1,57 @@
+netcdf \3010 {
+dimensions:
+	day_number = 2 ;
+	altitude = 4 ;
+	latitude = 7 ;
+variables:
+	double day_number(day_number) ;
+		day_number:units = "day" ;
+		day_number:long_name = "Day number" ;
+		day_number:name = "Day number" ;
+	double altitude(altitude) ;
+		altitude:units = "km" ;
+		altitude:long_name = "Altitude (km)" ;
+		altitude:name = "Altitude" ;
+	double latitude(latitude) ;
+		latitude:units = "degrees_north" ;
+		latitude:long_name = "Latitude (degrees_north)" ;
+		latitude:standard_name = "latitude" ;
+		latitude:name = "Latitude" ;
+		latitude:axis = "Y" ;
+	double temperature(day_number, altitude, latitude) ;
+		temperature:title = "Temperature" ;
+		temperature:long_name = "Temperature" ;
+		temperature:units = "K" ;
+		temperature:missing_value = 1000. ;
+		temperature:nasa_ames_var_number = 0 ;
+
+// global attributes:
+		:Conventions = "CF-1.0" ;
+		:comment = "==== Special Comments follow ====\nExample of FFI 3010.\nThis example illustrating NASA Ames file format index 3010 is entirely fictitious.\nData have been made up for the purpose of illustrating the use of the format. They\nconsist in an imaginary calculated temperature distribution over a latitude-altitude\ngrid at the two solstices (21 June and 21 December). The grid is defined in lines 8,\n9, 11 and 12. Latitude ranges from -90 to +90 degrees by intervals of 30 degrees.\nAltitude ranges from 50 to 20 km by negative increments of 10 km.\nThe day number is counted from 1st of January = Day One.\nThe year of the first date on line 7 (1980) has no particular meaning.\n==== Special Comments end ====\n==== Normal Comments follow ====\nThe files included in this data set illustrate each of the 9 NASA Ames file format\nindices (FFI). A detailed description of the NASA Ames format can be found on the Web\nsite of the British Atmospheric Data Centre (BADC) at\nhttp://www.badc.rl.ac.uk/help/formats/NASA-Ames/\nE-mail contact: badc@rl.ac.uk\nReference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,\nVersion 1.3, 1998. This work can be found at\nhttp://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at\nhttp://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html\n==== Normal Comments end ====" ;
+		:title = "NERC Data Grid (NDG) project" ;
+		:file_number_in_set = 12 ;
+		:source = "Imaginary 2-D stratospheric radiative model" ;
+		:first_valid_date_of_data = 1980, 6, 21 ;
+		:total_files_in_set = 13 ;
+		:no_of_nasa_ames_header_lines = 41 ;
+		:file_format_index = 3010 ;
+		:institution = "De Rudder, Anne (ONAME from NASA Ames file); Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837 (ORG from NASA Ames file)." ;
+		:history = "2002-10-31 - NASA Ames File created/revised.\n\n2021-05-10 15:14:42 - Converted to CDMS (NetCDF) format using nappy-0.3.0." ;
+data:
+
+ day_number = 172, 355 ;
+
+ altitude = 50, 40, 30, 20 ;
+
+ latitude = -90, -60, -30, 0, 30, 60, 90 ;
+
+ temperature =
+  193, 211, 224, 229, 235, 245, 270,
+  221, 230, 254, 272, 281, 289, 300,
+  220, 229, 244, 253, 260, 263, 278,
+  195, 208, 217, 219, 223, 230, 240,
+  270, 245, 235, 229, 224, 211, 193,
+  300, 289, 281, 272, 254, 230, 221,
+  278, 263, 260, 253, 244, 229, 220,
+  240, 230, 223, 219, 217, 208, 195 ;
+}

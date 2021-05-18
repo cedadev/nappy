@@ -81,11 +81,14 @@ def getAxisList(var):
     return [var.coords[key] for key in var.dims]
 
 
-def isUniformlySpaced(array):
+def isUniformlySpaced(arr):
     """
     Returns True if array values are uniformaly spaced else returns False.
     """
-    arr = np.array(array)
+    if is_time(arr):
+        arr = datetimes_to_nums(arr)
+    else:
+        arr = np.array(arr)
 
     start = arr[0]
     end = arr[-1]
@@ -129,7 +132,7 @@ def areAxesIdentical(ax1, ax2, is_subset=False, check_id=True):
     # Do different comparisons depending on 'is_subset' argument
     if is_subset == False:
         # Check lengths and values only
-        if (len(ax1) != len(ax2)) or all(ax1.data != ax2.data): 
+        if (len(ax1) != len(ax2)) or all(ax1.data != ax2.data):
             return False
 
     else:
@@ -257,7 +260,7 @@ def create_data_array(arr, name, coords, attrs, fill_value):
     return da
 
 
-def dates_to_nums(da):
+def datetimes_to_nums(da):
     units = re.match(r"^time \((.+)\)$", da.attrs['name']).groups()[0]
     arr = cftime.date2num(da.data, units)
     return arr
@@ -265,7 +268,7 @@ def dates_to_nums(da):
 
 def get_interval(da, indx1, indx2, handle_datetimes=True):
     if is_time(da) and handle_datetimes:
-        arr = dates_to_nums(da)
+        arr = datetimes_to_nums(da)
     else:
         arr = da.data
 
@@ -281,9 +284,9 @@ def getArrayAsList(da, missing_value=None, handle_datetimes=True):
     calendar are used to convert datetimes to sensible values.
     """
     if is_time(da) and handle_datetimes:
-        arr = dates_to_nums(da)
+        arr = datetimes_to_nums(da)
 
-    elif missing_value is not None and any(np.isnan(da.data)):
+    elif missing_value is not None and np.isnan(da.data).any():
         arr = da.fillna(missing_value).data
 
     else:
