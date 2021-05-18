@@ -17,6 +17,7 @@ for accessing metadata within the file.
 import copy
 import re
 
+
 class NACore:
     """
     Abstract class to hold the empty NASA Ames contents and 

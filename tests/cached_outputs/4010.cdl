@@ -6,10 +6,10 @@ dimensions:
 	longitude = 13 ;
 variables:
 	double time(time) ;
-		time:name = "time (days since 2008-01-01 00:00:00)" ;
-		time:long_name = "time (days since 2008-01-01 00:00:00)" ;
+		time:name = "time (hours since 1980-06-01 00:00:00)" ;
+		time:long_name = "time (hours since 1980-06-01 00:00:00)" ;
 		time:standard_name = "time" ;
-		time:units = "days since 2008-01-01 00:00:00" ;
+		time:units = "hours since 1980-06-01 00:00:00" ;
 		time:calendar = "gregorian" ;
 		time:axis = "T" ;
 	double altitude(altitude) ;

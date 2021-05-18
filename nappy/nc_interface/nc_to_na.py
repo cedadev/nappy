@@ -24,8 +24,6 @@ from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
 import nappy.nc_interface.xarray_to_na
-import nappy.nc_interface.na_content_collector
-
 
 # Define global variables
 DEBUG = nappy.utils.getDebug() 

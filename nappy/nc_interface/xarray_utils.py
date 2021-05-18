@@ -251,6 +251,14 @@ def get_coord_by_index(da, indx):
     return da.coords[coord_name]
 
 
+def get_dim_names_for_variables(variables):
+    """
+    Analyses variables to gather a list of dimension (coordinate)
+    names. These are returned as a set of dimension names.
+    """
+    return {dim for v in variables for dim in v.dims}
+
+
 def create_data_array(arr, name, coords, attrs, fill_value):
     """
     Create an Xarray DataArray and assign properties as required.

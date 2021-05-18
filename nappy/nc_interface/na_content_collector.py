@@ -528,7 +528,6 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 nc_to_na_map[key] = value
 
         self.extra_comments = [[],[],[]]  # Normal comments, special comments, other comments
-        convention_or_reference_comments = []
 
         for key in self.globals.keys():
             if key != "first_valid_date_of_data" and type(self.globals[key]) \
@@ -558,6 +557,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     else:
                         self.na_dict["ONAME"] = self.globals[key]
                         self.na_dict["ORG"] = self.globals[key]
+
                     # NOTE: should probably do the following search and replace on all string lines
                     self.na_dict["ONAME"] = self.na_dict["ONAME"].replace("\n", "  ")
                     self.na_dict["ORG"] = self.na_dict["ORG"].replace("\n", "  ")
@@ -596,7 +596,6 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                     self.na_dict["DATE"] = self.globals[key]
 
                 elif key in ("Conventions", "references"):
-                    #convention_or_reference_comments.append("%s:   %s" % (key, self.globals[key]))
                     self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
                 else:
                     self.na_dict[nc_to_na_map[key]] = self.globals[key]
@@ -680,6 +679,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             rank_zero_vars_string.insert(0, hp["sing_start"])
             rank_zero_vars_string.append(hp["sing_end"])
 
+        # Loop through variables and add 
         for var in self.ordered_vars:
             varflag = "unused"
             var_name_written = False
@@ -731,6 +731,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             if c.strip() not in ("", " ", "  "):
                 # Replace new lines within one attribute with a newline and tab so easier to read
                 lines = c.split("\n")
+
                 for line in lines:
                     if line != lines[0]: 
                         line = "  " + line
@@ -741,8 +742,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         self.na_dict["NNCOML"] = len(self.na_dict["NCOM"])
         self.na_dict["SCOM"] = SCOM_cleaned
         self.na_dict["NSCOML"] = len(self.na_dict["SCOM"])
-        return
 
+        return
 
     def _defineGeneralHeader(self, header_items=None):
         """
@@ -764,15 +765,14 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             # Get first date in list
             if 1: #try:
                 units = xarray_utils.TIME_UNITS_REGEX.match(self.ax0.attrs.get('name', '')).groups()[0]
-                #if match:
-                #    (unit, start_date) = match.groups()
-                #comptime = cdtime.s2c(start_date)
-                #first_day = comptime.add(self.na_dict["X"][0], getattr(cdtime, unit.capitalize()))
                 first_day = self.na_dict["X"][0]
+
+                # Cope with "X" being a list or list of lists (for different FFIs)
+                while hasattr(first_day, "__len__"):
+                    first_day = first_day[0]
+
                 self.na_dict["DATE"] = \
-                    [getattr(cftime.num2date(first_day, units), attr) for attr in ('year', 'month', 'day')]
-                #.na_dict["DATE"] = [int(i) for i in first_day.split('T')[0].split('-')]
-                
+                    [getattr(cftime.num2date(first_day, units), attr) for attr in ('year', 'month', 'day')]                
             else: #:except Exception:
                 msg = warning_message
                 log.info(msg)
@@ -793,7 +793,3 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         for key in header_items.keys():
              self.na_dict[key] = header_items[key]
-
-
-
-

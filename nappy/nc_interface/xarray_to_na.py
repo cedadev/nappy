@@ -22,12 +22,10 @@ import nappy
 from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
+import nappy.na_file.na_core
 
 from . import xarray_utils
-
-import nappy.na_file.na_core
 from . import na_content_collector
-
 
 # Define global variables
 var_limit = 5000 # surely never going to get this many vars in a file!
@@ -84,8 +82,7 @@ class XarrayToNA:
 
         # Make first call to collector class that creates NA dict from Xarray variables and global atts list 
         collector = nappy.nc_interface.na_content_collector.NAContentCollector(variables, 
-                                        self.global_attributes, requested_ffi=self.requested_ffi,
-                                        )
+                                        self.global_attributes, requested_ffi=self.requested_ffi)
         collector.collectNAContent()
 
         # Return if no files returned
@@ -157,8 +154,18 @@ class XarrayToNA:
         ordered_vars = [None] * var_limit
         unordered_vars = []
 
+        # Collect up the dimensions (coordinate variables) that can be excluded when writing to NA
+        dim_names = xarray_utils.get_dim_names_for_variables(variables)
+
+        # Set ordered and unordered variables
         for var in variables:
+
+            # Do not define dimensions (coordinate variables) as variables
+            if var.name in dim_names:
+                continue
+
             var_metadata = var.attrs
+
             if hasattr(var_metadata, "nasa_ames_var_number"):
                 num = var_metadata.nasa_ames_var_number
                 ordered_vars[num] = var
@@ -170,8 +177,7 @@ class XarrayToNA:
         # Clear any None values in ordered_vars and place in final vars list
         for var in ordered_vars + unordered_vars:
             # Test for Real var types
-            if type(var) != type(None): 
+            if var is not None: 
                 vars.append(var)
 	     
         return vars
-
