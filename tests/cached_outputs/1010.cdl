@@ -1,0 +1,88 @@
+netcdf \1010 {
+dimensions:
+	altitude = 19 ;
+variables:
+	double altitude(altitude) ;
+		altitude:units = "km" ;
+		altitude:long_name = "Altitude" ;
+		altitude:name = "Altitude" ;
+	double molecular_oxygen_concentration(altitude) ;
+		molecular_oxygen_concentration:title = "Molecular oxygen concentration" ;
+		molecular_oxygen_concentration:long_name = "Molecular oxygen concentration" ;
+		molecular_oxygen_concentration:units = "cm-3" ;
+		molecular_oxygen_concentration:missing_value = 100000000. ;
+		molecular_oxygen_concentration:nasa_ames_var_number = 0 ;
+	double ozone_concentration(altitude) ;
+		ozone_concentration:title = "Ozone concentration" ;
+		ozone_concentration:long_name = "Ozone concentration" ;
+		ozone_concentration:units = "cm-3" ;
+		ozone_concentration:missing_value = 100000000. ;
+		ozone_concentration:nasa_ames_var_number = 1 ;
+	double o_3p_concentration(altitude) ;
+		o_3p_concentration:title = "O(3P) concentration" ;
+		o_3p_concentration:long_name = "O(3P) concentration" ;
+		o_3p_concentration:units = "cm-3" ;
+		o_3p_concentration:missing_value = 100000000. ;
+		o_3p_concentration:nasa_ames_var_number = 2 ;
+	double o_1d_concentration(altitude) ;
+		o_1d_concentration:title = "O(1D) concentration" ;
+		o_1d_concentration:long_name = "O(1D) concentration" ;
+		o_1d_concentration:units = "cm-3" ;
+		o_1d_concentration:missing_value = 10000. ;
+		o_1d_concentration:nasa_ames_var_number = 3 ;
+	double pressure(altitude) ;
+		pressure:title = "Pressure" ;
+		pressure:nasa_ames_aux_var_number = 0 ;
+		pressure:long_name = "Pressure" ;
+		pressure:units = "hPa" ;
+		pressure:missing_value = 10000. ;
+	double air_concentration(altitude) ;
+		air_concentration:title = "Air concentration" ;
+		air_concentration:nasa_ames_aux_var_number = 1 ;
+		air_concentration:long_name = "Air concentration" ;
+		air_concentration:units = "cm-3" ;
+		air_concentration:missing_value = 100000000. ;
+
+// global attributes:
+		:Conventions = "CF-1.0" ;
+		:comment = "==== Special Comments follow ====\nExample of FFI 1010.\nThis example illustrating NASA Ames file format index 1010 combines the US Standard\nAtmosphere 1976 (for the auxiliary variables Pressure and Air Concentration) and some\nresults of a 1-D model (for the dependent variables - oxygen compounds concentrations),\nas quoted in G. Brasseur and S. Solomon, Aeronomy of the Middle Atmosphere,\nReidel, 1984 (pp. 46 & 211). The first date on line 7 (1st of January 1976) is fictitious\nsince the parameters are yearly averages. We have signalled the absence of calculated\nvalue at 30 km by using the \"missing value\" flags (see line 12). The missing value flag\nis also used to give account for the fact that there is virtually no O(1D) present below\nthe altitude of 20 km.\n==== Special Comments end ====\n==== Normal Comments follow ====\nThe files included in this data set illustrate each of the 9 NASA Ames file format indices\n(FFI). A detailed description of the NASA Ames format can be found on the Web site of the\nBritish Atmospheric Data Centre (BADC) at http://www.badc.rl.ac.uk/help/formats/NASA-Ames/\nE-mail contact: badc@rl.ac.uk\nReference: S. E. Gaines and R. S. Hipskind, Format Specification for Data Exchange,\nVersion 1.3, 1998. The work referenced above can be found at\nhttp://cloud1.arc.nasa.gov/solve/archiv/archive.tutorial.html and a copy of it at\nhttp://www.badc.rl.ac.uk/help/formats/NASA-Ames/G-and-H-June-1998.html\nAltitude (km) Pressure (mb)    [M] (cm-3)                 < 2 auxiliary dependent variables >\nO2 (cm-3)     O3 (cm-3)  O(3P) (cm-3)  O(1D) (cm-3)   < 4 primary dependent variables >\n==== Normal Comments end ====" ;
+		:title = "NERC Data Grid (NDG) project" ;
+		:file_number_in_set = 3 ;
+		:source = "BISA 1-D atmospheric model" ;
+		:first_valid_date_of_data = 1976, 1, 1 ;
+		:total_files_in_set = 13 ;
+		:no_of_nasa_ames_header_lines = 45 ;
+		:file_format_index = 1010 ;
+		:institution = "De Rudder, Anne (ONAME from NASA Ames file); Rutherford Appleton Laboratory, Chilton OX11 0QX, UK - Tel.: +44 (0) 1235 445837 (ORG from NASA Ames file)." ;
+		:history = "2002-10-30 - NASA Ames File created/revised.\n\n2021-05-10 15:13:41 - Converted to CDMS (NetCDF) format using nappy-0.3.0." ;
+data:
+
+ altitude = 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 
+    90, 95, 100 ;
+
+ molecular_oxygen_concentration = 1.7e+18, 8.1e+17, 3.6e+17, 1.6e+17, 1e+20, 
+    3.5e+16, 1.7e+16, 8.9e+15, 4.8e+15, 2.6e+15, 1.5e+15, 820000000000000, 
+    420000000000000, 200000000000000, 90000000000000, 37000000000000, 
+    12500000000000, 4700000000000, 1900000000000 ;
+
+ ozone_concentration = 1000000000000, 1100000000000, 2900000000000, 
+    3200000000000, 100000000000000, 2000000000000, 1000000000000, 
+    320000000000, 100000000000, 32000000000, 1000000000, 3200000000, 
+    1000000000, 320000000, 140000000, 100000000, 110000000, 13000000, 1700000 ;
+
+ o_3p_concentration = 13000, 55000, 940000, 6700000, 1000000000000, 
+    240000000, 1200000000, 3700000000, 6500000000, 8400000000, 6500000000, 
+    5000000000, 4000000000, 3800000000, 14000000000, 30000000000, 
+    300000000000, 330000000000, 320000000000 ;
+
+ o_1d_concentration = 10000, 10000, 0.9, 5, 10000, 100, 330, 600, 610, 440, 
+    260, 150, 96, 67, 70, 120, 420, 490, 1200 ;
+
+ pressure = 265, 121.1, 55.3, 25.5, 12, 5.7, 2.3, 1.5, 0.8, 0.43, 0.22, 0.11, 
+    0.052, 0.024, 0.011, 0.0045, 0.0018, 0.00076, 0.00032 ;
+
+ air_concentration = 8.61e+18, 4.04e+18, 1.85e+18, 8.33e+17, 3.83e+17, 
+    1.74e+17, 6.67e+16, 4.12e+16, 2.14e+16, 1.19e+16, 6.45e+15, 3.42e+15, 
+    1.71e+15, 836000000000000, 403000000000000, 172000000000000, 
+    69800000000000, 29300000000000, 11900000000000 ;
+}
