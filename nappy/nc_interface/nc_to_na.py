@@ -50,8 +50,8 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
     Converts a NetCDF file to one or more NASA Ames files.
     """
 
-    def __init__(self, nc_file, var_ids=None, na_items_to_override={}, 
-            only_return_file_names=False, exclude_vars=[],
+    def __init__(self, nc_file, var_ids=None, na_items_to_override=None, 
+            only_return_file_names=False, exclude_vars=None,
             requested_ffi=None,
             ):
         """
@@ -68,8 +68,16 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
         """
         self.nc_file = nc_file
 
+        # Set defaults:
+        if na_items_to_override is None:
+            na_items_to_override = {}
+
+        if exclude_vars is None:
+            exclude_vars = []
+
         # Now need to read Xarray file so parent class methods are compatible
         (xr_variables, global_attributes) = self._readXarrayFile(var_ids, exclude_vars)
+
         nappy.nc_interface.xarray_to_na.XarrayToNA.__init__(self, xr_variables, global_attributes=global_attributes, 
                                                         na_items_to_override=na_items_to_override, 
                                                         only_return_file_names=only_return_file_names,
@@ -102,7 +110,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
             if var_ids == None or var_id in var_ids:
 
                 # Process required variables
-                if (var_id not in exclude_vars):
+                if not nappy.utils.common_utils.fuzzy_contains(var_id, exclude_vars):
                     if exclude_bounds and var_id in bounds_vars:
                         continue
 

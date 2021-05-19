@@ -41,12 +41,17 @@ class XarrayToNA:
     Converts Xarray objects to NASA Ames file dictionaries.
     """
 
-    def __init__(self, xr_variables, global_attributes=[], na_items_to_override={}, 
-                 only_return_file_names=False, requested_ffi=None,
-                 ):
+    def __init__(self, xr_variables, global_attributes=None, na_items_to_override=None, 
+                 only_return_file_names=False, requested_ffi=None):
         """
-        Sets up instance variables.      
+        Sets up instance variables. 
         """
+        if global_attributes is None:
+            global_attributes = []
+        
+        if na_items_to_override is None:
+            na_items_to_override = {}
+
         self.xr_variables = xr_variables
         self.global_attributes = global_attributes
         self.na_items_to_override = na_items_to_override

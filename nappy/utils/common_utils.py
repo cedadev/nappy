@@ -236,3 +236,14 @@ def stripQuotes(s):
     if s[0] in ("'", '"'): s = s[1:]
     if s[-1] in ("'", '"'): s = s[:-1]
     return s
+
+
+def fuzzy_contains(item, seq):
+    """
+    Return whether `item` is in `seq`, having converted all 
+    to lower case and replaced spaces with underscores.
+    """
+    def _fix_string(s): return s.lower().replace(" ", "_")
+
+    lseq = [_fix_string(i) for i in seq]
+    return _fix_string(item) in lseq
