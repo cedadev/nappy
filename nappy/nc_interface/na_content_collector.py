@@ -327,7 +327,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         """
         Gets a float from a number of different types of object.
         """
-        if not isinstance(item, (float, int, str)):
+        if not type(item) in (float, int, str, np.number) and not np.isscalar(item):
             if isinstance(item, np.ndarray) and item.shape == ():
                 item = float(item)
             else:
@@ -764,7 +764,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if xarray_utils.is_time(self.ax0):
             # Get first date in list
             if 1: #try:
-                units = xarray_utils.TIME_UNITS_REGEX.match(self.ax0.attrs.get('name', '')).groups()[0]
+ ###               #units = xarray_utils.TIME_UNITS_REGEX.match(self.ax0.attrs.get('name', '')).groups()[0]
+                units = self.ax0.encoding["units"]
                 first_day = self.na_dict["X"][0]
 
                 # Cope with "X" being a list or list of lists (for different FFIs)

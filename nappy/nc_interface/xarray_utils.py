@@ -13,7 +13,7 @@ import cf_xarray  # noqa
 import cftime
 
 
-TIME_UNITS_REGEX = re.compile("time \((\w+\s+?since\s+?\d+-\d+-\d+\s+?\d+:\d+:\d+.*)\)")
+#TIME_UNITS_REGEX = re.compile("time \((\w+\s+?since\s+?\d+-\d+-\d+\s+?\d+:\d+:\d+.*)\)")
 
 
 def getBestName(var):
@@ -269,8 +269,10 @@ def create_data_array(arr, name, coords, attrs, fill_value):
 
 
 def datetimes_to_nums(da):
-    units = re.match(r"^time \((.+)\)$", da.attrs['name']).groups()[0]
-    arr = cftime.date2num(da.data, units)
+#    units = re.match(r"^time \((.+)\)$", da.attrs['name']).groups()[0]
+    units = da.time.encoding['units']
+    calendar = da.time.encoding.get('calendar', 'standard')
+    arr = cftime.date2num(da.data, units, calendar=calendar)
     return arr
 
 
@@ -294,10 +296,22 @@ def getArrayAsList(da, missing_value=None, handle_datetimes=True):
     if is_time(da) and handle_datetimes:
         arr = datetimes_to_nums(da)
 
-    elif missing_value is not None and np.isnan(da.data).any():
-        arr = da.fillna(missing_value).data
+    elif missing_value is not None:
+        # Need to compute the array if dask array
+        if hasattr(da.data, "compute"):
+            found_nans = np.isnan(da.data.compute()).any()
+        else:
+            found_nans = np.isnan(da.data).any()
+
+        if found_nans:
+            arr = da.fillna(missing_value).data
+        else:
+            arr = da.data
 
     else:
         arr = da.data
+
+    if hasattr(arr, "compute"):
+        arr = arr.compute()
 
     return arr.tolist()
