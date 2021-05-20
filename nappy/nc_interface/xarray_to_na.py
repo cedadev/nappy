@@ -191,15 +191,15 @@ class XarrayToNA:
             else:
                 unordered_vars.append(var)
     
-        vars = []
+        ret_variables = []
 
         # Clear any None values in ordered_vars and place in final vars list
         for var in ordered_vars + unordered_vars:
             # Test for Real var types
             if var is not None: 
-                vars.append(var)
+                ret_variables.append(var)
 	     
-        return vars
+        return ret_variables
 
     def constructNAFileNames(self, na_file=None):
         """
@@ -239,8 +239,6 @@ class XarrayToNA:
         Output file names are based on the self.nc_file name unless specified
         in the na_file_name argument in which case that provides the main name
         that is appended to if multiple output file names are required.
-
-        TODO: no_header is NOT implemented.
         """
         self.convert() # just in case not already called
 
@@ -325,7 +323,9 @@ class XarrayToNA:
             else:		
                 log.info("Output NA file name: %s" % file_name)
                 x = nappy.openNAFile(file_name, 'w', this_na_dict)
-                x.write(delimiter=delimiter, float_format=float_format, annotation=annotation)
+                x.write(delimiter=delimiter, float_format=float_format,
+                        no_header=no_header, annotation=annotation)
+
                 x.close()
                 file_list.append(file_name)
 
@@ -353,10 +353,12 @@ class XarrayToNA:
             self.output_message.append(msg)
 	    
         full_file_count = full_file_counter - 1
+
         if full_file_count == 1:
             plural = ""
         else:
-            plural = "s"	      
+            plural = "s"
+	      
         msg = "\n%s file%s written." % (full_file_count, plural)
     
         if DEBUG: log.debug(msg)
