@@ -238,12 +238,17 @@ def stripQuotes(s):
     return s
 
 
+def safe_name(s):
+    """
+    Replace spaces with underscores and convert to lower case.
+    """
+    return s.lower().replace(" ", "_")
+
+
 def fuzzy_contains(item, seq):
     """
     Return whether `item` is in `seq`, having converted all 
     to lower case and replaced spaces with underscores.
     """
-    def _fix_string(s): return s.lower().replace(" ", "_")
-
-    lseq = [_fix_string(i) for i in seq]
-    return _fix_string(item) in lseq
+    lseq = [safe_name(i) for i in seq]
+    return safe_name(item) in lseq

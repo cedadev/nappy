@@ -263,12 +263,12 @@ class NADictToXarrayObjects:
             self._convertXarrayAxes()
 
         # Set up variable
-        var = xarray_utils.create_data_array(array, name=var_name, coords=[self.xr_axes[0]], 
+        var = xarray_utils.create_data_array(array, name=var_name, coords=self.xr_axes, 
                                   fill_value=miss, attrs=attributes)
 
         # Sort units etc
         if units:   
-            var.units=units
+            var.attrs["units"] =units
     
         if len(var_name) < max_id_length:
             var.name = safe_nc_id.sub("_", var_name).lower()
@@ -279,10 +279,11 @@ class NADictToXarrayObjects:
         if var_name in self.rename_variables.keys():
             var_name = self.rename_variables[var_name]
         
-        var.attrs["long_name"] = var.name = var.attrs["title"] = var_name
+        var.attrs["long_name"] = var.attrs["title"] = var_name
+        var.name = nappy.utils.common_utils.safe_name(var_name)
 
         # Add a NASA Ames variable number (for mapping correctly back to NASA Ames)
-        var.nasa_ames_var_number = var_number
+        var.attrs["nasa_ames_var_number"] = var_number
         return var
 
     def _convertXarrayAuxVariables(self):
@@ -336,7 +337,7 @@ class NADictToXarrayObjects:
             self._convertXarrayAxes()
 
         # Set up variable
-        var = xarray_utils.create_data_array(array, name=var_name, coords=[self.xr_axes[0]], 
+        var = xarray_utils.create_data_array(array, name=var_name, coords=self.xr_axes, 
                                   fill_value=miss, attrs=attributes)
 
         # Sort units etc
@@ -352,7 +353,8 @@ class NADictToXarrayObjects:
         if var_name in self.rename_variables.keys():
             var_name = self.rename_variables[var_name]
 
-        var.attrs["long_name"] = var.name = var.attrs["title"] = var_name
+        var.attrs["long_name"] = var.attrs["title"] = var_name
+        var.name = nappy.utils.common_utils.safe_name(var_name)
 
         # Add a NASA Ames auxiliary variable number (for mapping correctly back to NASA Ames)
         var.nasa_ames_aux_var_number = avar_number
@@ -366,8 +368,8 @@ class NADictToXarrayObjects:
             self.xr_axes = []
 
         for ivar_number in range(self.na_file_obj.NIV):
-            self.xr_axes.append(self._convertNAIndVarToXarrayAxis(ivar_number))
-
+            axis = self._convertNAIndVarToXarrayAxis(ivar_number)
+            self.xr_axes.append(axis) #[[axis.attrs["name"]], axis])
 
     def _convertNAIndVarToXarrayAxis(self, ivar_number):
         """
@@ -384,7 +386,9 @@ class NADictToXarrayObjects:
         axis_name = self.na_file_obj.XNAME[ivar_number]
 
         (var_name, units) = self.na_file_obj.getIndependentVariable(ivar_number)
-        axis = xr.DataArray(array, name=axis_name, attrs={'long_name': axis_name, 'units': units}))
+        axis_xr_name = nappy.utils.common_utils.safe_name(var_name)
+
+        axis = xr.DataArray(array, name=axis_xr_name, attrs={'long_name': axis_name, 'units': units})
     
         # Sort units, name etc...
         if units:   
@@ -392,8 +396,8 @@ class NADictToXarrayObjects:
 
         if len(var_name) < max_id_length:
             axis.name = safe_nc_id.sub("_", var_name).lower()
-        else:
-            axis.name = f"naIndVariable_{ivar_number}"
+#        else:
+#            axis.name = f"naIndVariable_{ivar_number}"
 
         axis_types = [("longitude", "X"), ("latitude", "Y"), ("level", "Z"), ("time", "T")]
 
@@ -404,8 +408,10 @@ class NADictToXarrayObjects:
                 axis.attrs["standard_name"] = axis.name = axis_type
                 axis.attrs["axis"] = axis_label
 
+        import pdb; pdb.set_trace()
         # Check warning for time units pattern
-        if xarray_utils.is_time(axis) and (not hasattr(axis, "units") or not time_units_pattn.match(axis.units)):
+        if xarray_utils.is_time(axis) and getattr(axis, "units") \
+                and not time_units_pattn.match(getattr(axis, "units", "")):
 
             if self.time_units == None:
                 time_units_input = "I WON'T MATCH"
@@ -422,12 +428,18 @@ class NADictToXarrayObjects:
                 self.output_message.append(message)
                 self.time_units = time_units_input
 
-        axis.attrs["units"] = self.time_units
-        axis.attrs["long_name"] = axis.name = f"time ({self.time_units})"
+            axis.attrs["units"] = self.time_units
+            axis.attrs["long_name"] = axis.name = f"time ({self.time_units})"
+
+        axis.attrs["name"] = axis.name
+
+        # Rename dimension of axis
+        dim_name = axis.dims[0]
+        axis = axis.rename({dim_name: axis.name})
 
         if not getattr(axis, "units", None):
             if units:
-                axis.attrs["units"] = units    
+                axis.attrs["units"] = units
             else:
                 axis.attrs["units"] = "Not known"
 

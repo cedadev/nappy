@@ -13,6 +13,8 @@ Contains the NAToNC class for converting a NASA Ames file to a NetCDF file.
 # Imports from python standard library
 import logging
 
+# Third-party imports
+import xarray as xr
 
 # Import from nappy package
 import nappy.nc_interface.na_to_xarray
@@ -28,9 +30,9 @@ class NAToNC(nappy.nc_interface.na_to_xarray.NADictToXarrayObjects):
     """
     
     def __init__(self, na_file, variables=None, aux_variables=None,
-                 global_attributes=[("Conventions","CF-1.0")],
+                 global_attributes=None,
                  time_units=None, time_warning=True, 
-                 rename_variables={}):
+                 rename_variables=None):
         """
         Sets up instance variables. Note that the argument 'na_file' has a relaxes definition
         and can be either a NASA Ames file object or the name of a NASA AMES file.
@@ -40,6 +42,12 @@ class NAToNC(nappy.nc_interface.na_to_xarray.NADictToXarrayObjects):
         >>>    c.convert()
         >>>    c.writeNCFile("new_file.nc")         
         """
+        if global_attributes is None:
+            global_attributes = []
+
+        if not rename_variables:
+            rename_variables = {}
+
         # First open na_file if it is a file rather than an na_file object
         na_file_obj = na_file
         if type(na_file_obj) == type("string"):
@@ -61,21 +69,26 @@ class NAToNC(nappy.nc_interface.na_to_xarray.NADictToXarrayObjects):
         if not self.converted:
             self.convert()
 
-        # Create Xarray output file object
-        fout = xr.open_dataset(file_name, mode=mode)
+        # Build an Xarray Dataset and then write it to NetCDF
+        combined_var_list = self.xr_variables + self.xr_aux_variables
+        variables = {da.name: da for da in combined_var_list}
 
-        # Write main variables
-        for var in self.xr_variables:
-            fout.write(var)
+        ds = xr.Dataset(variables, attrs=dict(self.global_attributes))
+        ds.to_netcdf(file_name)
+        # fout = xr.open_dataset(file_name, mode=mode)
 
-        # Write aux variables
-        for avar in self.xr_aux_variables:
-            fout.write(avar)
+        # # Write main variables
+        # for var in self.xr_variables:
+        #     fout.write(var)
 
-        # Write global attributes
-        for (att, value) in self.global_attributes:
-            setattr(fout, att, value)
+        # # Write aux variables
+        # for avar in self.xr_aux_variables:
+        #     fout.write(avar)
+
+        # # Write global attributes
+        # for (att, value) in self.global_attributes:
+        #     setattr(fout, att, value)
         
-        fout.close()
-        log.info("NetCDF file '%s' written successfully." % file_name)
+        # fout.close()
+        log.info(f"NetCDF file '{file_name}' written successfully.")
         return True
