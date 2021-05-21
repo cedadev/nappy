@@ -37,7 +37,7 @@ hp = header_partitions
 
 # Define global variables
 safe_nc_id = re.compile("[\/\s\[\(\)\]\=\+\-\?\#\~\@\&\$\%\!\*\{\}\^]+")
-time_units_pattn = re.compile("\w+\s+since\s+\d{4}-\d{1,2}-\d{1,2}\s+\d+:\d+:\d+")
+time_units_pattn = re.compile("\w+\s+since\s+\d{1,4}-\d{1,2}-\d{1,2}(\s+\d+:\d+:\d+)?")
 max_id_length = 40
 special_comment_known_strings = (hp["sc_start"], hp["sc_end"], hp["addl_vatts"],
                                   hp["addl_globals"], "\n")
@@ -337,7 +337,7 @@ class NADictToXarrayObjects:
             self._convertXarrayAxes()
 
         # Set up variable
-        var = xarray_utils.create_data_array(array, name=var_name, coords=self.xr_axes, 
+        var = xarray_utils.create_data_array(array, name=var_name, coords=self.xr_axes[:1], 
                                   fill_value=miss, attrs=attributes)
 
         # Sort units etc
@@ -357,7 +357,7 @@ class NADictToXarrayObjects:
         var.name = nappy.utils.common_utils.safe_name(var_name)
 
         # Add a NASA Ames auxiliary variable number (for mapping correctly back to NASA Ames)
-        var.nasa_ames_aux_var_number = avar_number
+        var.attrs["nasa_ames_aux_var_number"] = avar_number
         return var        
 
     def _convertXarrayAxes(self): 
@@ -369,7 +369,7 @@ class NADictToXarrayObjects:
 
         for ivar_number in range(self.na_file_obj.NIV):
             axis = self._convertNAIndVarToXarrayAxis(ivar_number)
-            self.xr_axes.append(axis) #[[axis.attrs["name"]], axis])
+            self.xr_axes.append(axis)
 
     def _convertNAIndVarToXarrayAxis(self, ivar_number):
         """
@@ -408,12 +408,11 @@ class NADictToXarrayObjects:
                 axis.attrs["standard_name"] = axis.name = axis_type
                 axis.attrs["axis"] = axis_label
 
-        import pdb; pdb.set_trace()
         # Check warning for time units pattern
-        if xarray_utils.is_time(axis) and getattr(axis, "units") \
-                and not time_units_pattn.match(getattr(axis, "units", "")):
+        if xarray_utils.is_time(axis) and not time_units_pattn.match(str(getattr(axis, "units"))):
 
-            if self.time_units == None:
+            # Request user input for time units (if interactive)
+            if self.time_units is None:
                 time_units_input = "I WON'T MATCH"
 
                 while time_units_input != "" and not time_units_pattn.match(time_units_input):
@@ -429,7 +428,9 @@ class NADictToXarrayObjects:
                 self.time_units = time_units_input
 
             axis.attrs["units"] = self.time_units
-            axis.attrs["long_name"] = axis.name = f"time ({self.time_units})"
+            axis.encoding["units"] = self.time_units
+            axis.attrs["long_name"] = f"time ({self.time_units})"
+            axis.name = "time"
 
         axis.attrs["name"] = axis.name
 
