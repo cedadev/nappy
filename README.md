@@ -37,7 +37,7 @@ Nappy provides the following functionality:
  1. A set of I/O routines for most NASA Ames File Format Indices (FFIs).
  2. An implicit checking facility for NASA Ames compliance - i.e. if the file is formatted incorrectly then a python error will be raised. This checking facility will eventually be made explicit to report NASA Ames specific errors.
  3. Methods to interrogate the contents the contents of NASA Ames files (such as: `naFile.getVariable()`, `naFile.getIndependentVariables()`, `naFile.getMissingValue()` etc.).
- 4. A set of  to allow conversion to and from NetCDF (for the most common FFIs) using the Climate Data Analysis Tools (CDAT) package. This functionality is only available on Unix/linux operating systems as CDAT has not been ported to Windows. *Note* that any CDAT-compatible format can potentially be converted to NASA Ames via these libraries. In order to use this feature your software should have `nappy[cdms_conversion]` in its requirements. 
+ 4. A set of  to allow conversion to and from NetCDF (for the most common FFIs) using the Xarray library. *Note* that any Xarray-compatible format can potentially be converted to NASA Ames via these libraries. In order to use this feature your software should have `nappy[netcdf_conversion]` in its requirements. 
  5. Some command line utilities for the format conversions in (4).
 
 ### PYTHONPATH and import issues
@@ -67,8 +67,6 @@ You should then be able to import nappy with:
 ```pydoc
 >>> import nappy
 ```
-
-Note that if you have CDAT installed then you must also point to relevant CDAT directories with either the `PYTHONPATH` or `sys.path` variable.
 
 #### Option 3: Installing to a virtualenv
 
@@ -123,8 +121,8 @@ Query the methods on the 'myfile' objects:
 '_readTopLine', '_readVariablesHeaderSection', '_setupArrays', 
 '_writeAuxVariablesHeaderSection', '_writeComments', 
 '_writeCommonHeader', '_writeVariablesHeaderSection', 
-'auxToCdmsVariable', 'close', 'createCdmsAuxVariables', 
-'createCdmsAxes', 'createCdmsVariables', 'file', 'filename', 
+'auxToXarrayVariable', 'close', 'createXarrayAuxVariables', 
+'createXarrayAxes', 'createXarrayVariables', 'file', 'filename', 
 'floatFormat', 'getAuxMissingValue', 'getAuxScaleFactor', 
 'getAuxVariable', 'getAuxVariables', 'getFFI', 'getFileDates', 
 'getIndependentVariable', 'getIndependentVariables', 
@@ -132,7 +130,7 @@ Query the methods on the 'myfile' objects:
 'getNumHeaderLines', 'getOrg', 'getOrganisation', 'getOriginator', 
 'getScaleFactor', 'getSource', 'getSpecialComments', 'getVariable', 
 'getVariables', 'getVolumes', 'naDict', 'pattnBrackets', 'readData', 
-'readHeader', 'delimiter', 'toCdmsAxis', 'toCdmsFile', 'toCdmsVariable', 
+'readHeader', 'delimiter', 'toXarrayAxis', 'toXarrayFile', 'toXarrayVariable', 
 'writeData', 'writeHeader']
 ```
 

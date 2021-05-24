@@ -67,7 +67,7 @@ Query the methods on the 'myfile' objects:
 
 >>> dir(myfile)
 
-['A', 'AMISS', 'ANAME', 'ASCAL', 'DATE', 'DX', 'FFI', 'IVOL', 'LENA', 'LENX', 'MNAME', 'NAUXC', 'NAUXV', 'NCOM', 'NIV', 'NLHEAD', 'NNCOML', 'NSCOML', 'NV', 'NVOL', 'NVPM', 'NX', 'NXDEF', 'ONAME', 'ORG', 'RDATE', 'SCOM', 'SNAME', 'V', 'VMISS', 'VNAME', 'VSCAL', 'X', 'XNAME', '__doc__', '__getitem__', '__init__', '__module__', '_checkForBlankLines', '_normalizeIndVars', '_normalizedX', '_open', '_parseDictionary', '_readAuxVariablesHeaderSection', '_readCharAuxVariablesHeaderSection', '_readComments', '_readCommonHeader', '_readData1', '_readData2', '_readLines', '_readNormalComments', '_readSpecialComments', '_readTopLine', '_readVariablesHeaderSection', '_setupArrays', '_writeAuxVariablesHeaderSection', '_writeComments', '_writeCommonHeader', '_writeVariablesHeaderSection', 'auxToCdmsVariable', 'close', 'createCdmsAuxVariables', 'createCdmsAxes', 'createCdmsVariables', 'file', 'filename', 'floatFormat', 'getAuxMissingValue', 'getAuxScaleFactor', 'getAuxVariable', 'getAuxVariables', 'getFFI', 'getFileDates', 'getIndependentVariable', 'getIndependentVariables', 'getMissingValue', 'getMission', 'getNADict', 'getNormalComments', 'getNumHeaderLines', 'getOrg', 'getOrganisation', 'getOriginator', 'getScaleFactor', 'getSource', 'getSpecialComments', 'getVariable', 'getVariables', 'getVolumes', 'naDict', 'pattnBrackets', 'readData', 'readHeader', 'delimiter', 'toCdmsAxis', 'toCdmsFile', 'toCdmsVariable', 'writeData', 'writeHeader']
+['A', 'AMISS', 'ANAME', 'ASCAL', 'DATE', 'DX', 'FFI', 'IVOL', 'LENA', 'LENX', 'MNAME', 'NAUXC', 'NAUXV', 'NCOM', 'NIV', 'NLHEAD', 'NNCOML', 'NSCOML', 'NV', 'NVOL', 'NVPM', 'NX', 'NXDEF', 'ONAME', 'ORG', 'RDATE', 'SCOM', 'SNAME', 'V', 'VMISS', 'VNAME', 'VSCAL', 'X', 'XNAME', '__doc__', '__getitem__', '__init__', '__module__', '_checkForBlankLines', '_normalizeIndVars', '_normalizedX', '_open', '_parseDictionary', '_readAuxVariablesHeaderSection', '_readCharAuxVariablesHeaderSection', '_readComments', '_readCommonHeader', '_readData1', '_readData2', '_readLines', '_readNormalComments', '_readSpecialComments', '_readTopLine', '_readVariablesHeaderSection', '_setupArrays', '_writeAuxVariablesHeaderSection', '_writeComments', '_writeCommonHeader', '_writeVariablesHeaderSection', 'auxToXarrayVariable', 'close', 'createXarrayAuxVariables', 'createXarrayAxes', 'createXarrayVariables', 'file', 'filename', 'floatFormat', 'getAuxMissingValue', 'getAuxScaleFactor', 'getAuxVariable', 'getAuxVariables', 'getFFI', 'getFileDates', 'getIndependentVariable', 'getIndependentVariables', 'getMissingValue', 'getMission', 'getNADict', 'getNormalComments', 'getNumHeaderLines', 'getOrg', 'getOrganisation', 'getOriginator', 'getScaleFactor', 'getSource', 'getSpecialComments', 'getVariable', 'getVariables', 'getVolumes', 'naDict', 'pattnBrackets', 'readData', 'readHeader', 'delimiter', 'toXarrayAxis', 'toXarrayFile', 'toXarrayVariable', 'writeData', 'writeHeader']
 
 List the variables:
 
@@ -172,20 +172,19 @@ $ nc2na -i my_netcdf_file.nc -o my_nasa_ames_file.na
 
 For help on the command-line utility type:
 
-cdms2na.py
-==========
+nc2na.py
+========
 
-Converts a CdmsFile object into one a NASA Ames file.
+Converts a NetCDF files to one a NASA Ames file.
 
 Usage
 =====
 
-    cdms2na.py [<options>] -i <infilename> -o <outfilename>
+    nc2na.py [<options>] -i <infilename> -o <outfilename>
 
 Where
 -----
 
     infilename  - name of input file (NetCDF).
     outfilename - name of output file (NASA Ames).
-    options     - list of options [NOT YET IMPLEMENTED].
 

@@ -374,8 +374,8 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 if len(self.ax0) == 1:
                     self.na_dict["DX"] = [0]
                 else:
-                    incr = xarray_utils.get_interval(self.ax0, 0, 1)
                     # Set default increment as gap between first two
+                    incr = xarray_utils.get_interval(self.ax0, 0, 1)
 
                     self.na_dict["DX"] = [incr]
                     # Now overwrite it as zero if non-uniform interval in axis
@@ -531,7 +531,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         for key in self.globals.keys():
             if key != "first_valid_date_of_data" and type(self.globals[key]) \
-                                       not in (type("s"), type(1.1), type(1)):
+                                       not in (str, int, float):
                 continue
 
             # Loop through keys of header/comment items to map
@@ -763,8 +763,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         if xarray_utils.is_time(self.ax0):
             # Get first date in list
-            if 1: #try:
- ###               #units = xarray_utils.TIME_UNITS_REGEX.match(self.ax0.attrs.get('name', '')).groups()[0]
+            try:
                 units = self.ax0.encoding["units"]
                 first_day = self.na_dict["X"][0]
 
@@ -774,7 +773,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 self.na_dict["DATE"] = \
                     [getattr(cftime.num2date(first_day, units), attr) for attr in ('year', 'month', 'day')]                
-            else: #:except Exception:
+            except Exception:
                 msg = warning_message
                 log.info(msg)
                 self.output_message.append(msg)

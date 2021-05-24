@@ -107,7 +107,7 @@ def isAxisRegularlySpacedSubsetOf(ax1, ax2):
 
 def areAxesIdentical(ax1, ax2, is_subset=False, check_id=True):
     """
-    Takes 2 CDMS axis objects returning True if they are essentially
+    Takes 2 axis (coord) objects returning True if they are essentially
     the same and False if not.
    
     If is_subset == True then return True if ax1 is same as ax2 except that it is
@@ -269,7 +269,6 @@ def create_data_array(arr, name, coords, attrs, fill_value):
 
 
 def datetimes_to_nums(da):
-#    units = re.match(r"^time \((.+)\)$", da.attrs['name']).groups()[0]
     units = da.time.encoding['units']
     calendar = da.time.encoding.get('calendar', 'standard')
     arr = cftime.date2num(da.data, units, calendar=calendar)
@@ -277,7 +276,9 @@ def datetimes_to_nums(da):
 
 
 def get_interval(da, indx1, indx2, handle_datetimes=True):
-    if is_time(da) and handle_datetimes:
+    if not isinstance(da, xr.DataArray):
+        arr = da
+    elif is_time(da) and handle_datetimes:
         arr = datetimes_to_nums(da)
     else:
         arr = da.data

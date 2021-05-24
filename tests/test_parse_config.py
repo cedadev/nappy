@@ -13,8 +13,9 @@ def test_getAnnotationsConfigDict():
 
 
 def test_getLocalAttributesConfigDict():
+
     lad = getLocalAttributesConfigDict()
-    assert lad["na_attributes"] == {"ORG": 
-        "Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK."}
+    assert lad["na_attributes"]["ORG"] == \
+        "Data held at British Atmospheric Data Centre (BADC), Rutherford Appleton Laboratory, UK."
 
 

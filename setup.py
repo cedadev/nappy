@@ -31,14 +31,14 @@ try:
     import pypandoc
     LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError, OSError):
-    LONG_DESCRIPTION='A python package for reading/writing NASA Ames files, writing NASA Ames-style CSV files and converting to/from NetCDF (if CDMS enabled)'
+    LONG_DESCRIPTION='A python package for reading/writing NASA Ames files, writing NASA Ames-style CSV files and converting to/from NetCDF'
 
 setup(
     name='nappy',
     version=__version__,
     description='NASA Ames Processing in Python',
     long_description=LONG_DESCRIPTION,
-    keywords='Python CSV NASA Ames NetCDF convert CDMS',
+    keywords='Python CSV NASA Ames NetCDF convert xarray',
     author='Ag Stephens',
     author_email='ag.stephens@stfc.ac.uk',
     url='https://github.com/cedadev/nappy',
@@ -58,7 +58,7 @@ setup(
     zip_safe=False,
     install_requires=read('requirements.txt').splitlines(),
     extras_require={
-        'cdms_conversion': ['cdat-lite']
+        'netcdf_conversion': ['xarray']
     },
     tests_require=read('requirements-dev.txt').splitlines(),
     test_suite='nose.collector',

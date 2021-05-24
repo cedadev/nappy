@@ -38,7 +38,7 @@ hp = header_partitions
 # Define global variables
 safe_nc_id = re.compile("[\/\s\[\(\)\]\=\+\-\?\#\~\@\&\$\%\!\*\{\}\^]+")
 time_units_pattn = re.compile("\w+\s+since\s+\d{1,4}-\d{1,2}-\d{1,2}(\s+\d+:\d+:\d+)?")
-max_id_length = 40
+max_id_length = 64
 special_comment_known_strings = (hp["sc_start"], hp["sc_end"], hp["addl_vatts"],
                                   hp["addl_globals"], "\n")
 
@@ -68,19 +68,25 @@ class NADictToXarrayObjects:
     """
     
     def __init__(self, na_file_obj, variables="all", aux_variables="all",
-                 global_attributes=[("Conventions", "CF-1.0")],
+                 global_attributes=None,
                  time_units=None, time_warning=True, 
-                 rename_variables={}):
+                 rename_variables=None):
         """
         Sets up instance variables.
         """
+        if global_attributes is None:
+            global_attributes = []
+
+        if rename_variables is None:
+            rename_variables = {}
+
         self.na_file_obj = na_file_obj       
         self.variables = variables
         self.aux_variables = aux_variables
         self.global_attributes = global_attributes
         self.time_units = time_units
         self.time_warning = time_warning
-        self.rename_variables = rename_variables
+        self.rename_variables = {key.lower(): value for key, value in rename_variables.items()}
 
         # Check if we have capability to convert this FFI
         if self.na_file_obj.FFI in (2110, 2160, 2310): 
@@ -124,7 +130,6 @@ class NADictToXarrayObjects:
             
         self.converted = True
         return (self.xr_variables, self.xr_aux_variables, self.global_attributes)
-
 
     def _mapNACommentsToGlobalAttributes(self):
         """
@@ -222,12 +227,15 @@ class NADictToXarrayObjects:
                 self.xr_variables.append(self._convertNAToXarrayVariable(var_number))
 
         else:
-            if type(self.variables[0]) == type(1) or re.match("\d+", str(self.variables[0])): # They are integers = indices
+            # If integers or numbers: then use as indices for selecting variables
+            if isinstance(self.variables[0], int) or re.match("\d+", str(self.variables[0])):
+
                 for var_number in self.variables:
                     vn = int(var_number)
-                    self.xr_variables.append(self._convertNAToXarrayVariable(vn))   
+                    self.xr_variables.append(self._convertNAToXarrayVariable(vn))
 
-            elif type(self.variables[0]) == type("string"):  # Vars are strings
+            # If string: then use as variable names
+            elif isinstance(self.variables[0], str):
 
                 for var_name in self.variables:
 
@@ -235,8 +243,7 @@ class NADictToXarrayObjects:
                         var_number = self.na_file_obj.VNAME.index(var_name)
                         self.xr_variables.append(self._convertNAToXarrayVariable(var_number))
                     else:
-                        raise Exception("Variable name not known: " + var_name)
-
+                        raise Exception(f"Variable name not known: {var_name}")
 
     def _convertNAToXarrayVariable(self, var_number, attributes=None):
         """
@@ -271,14 +278,14 @@ class NADictToXarrayObjects:
             var.attrs["units"] =units
     
         if len(var_name) < max_id_length:
-            var.name = safe_nc_id.sub("_", var_name).lower()
+            var_name = safe_nc_id.sub("_", var_name).lower()
         else:
-            var.name = "naVariable_%s" % (var_number)
-        
+            var_name = "naVariable_%s" % (var_number)
+
         # Check if mapping provided for renaming this variable
-        if var_name in self.rename_variables.keys():
-            var_name = self.rename_variables[var_name]
-        
+        if var_name.lower() in self.rename_variables.keys():
+            var_name = self.rename_variables[var_name.lower()]
+
         var.attrs["long_name"] = var.attrs["title"] = var_name
         var.name = nappy.utils.common_utils.safe_name(var_name)
 
@@ -345,9 +352,9 @@ class NADictToXarrayObjects:
             var.attrs["units"] = units
 
         if len(var_name) < max_id_length:
-            var.name = safe_nc_id.sub("_", var_name).lower()
+            var_name = safe_nc_id.sub("_", var_name).lower()
         else:
-            var.name = f"naAuxVariable_{avar_number}"
+            var_name = f"naAuxVariable_{avar_number}"
 
         # Check if mapping provided for renaming this variable
         if var_name in self.rename_variables.keys():
@@ -396,14 +403,14 @@ class NADictToXarrayObjects:
 
         if len(var_name) < max_id_length:
             axis.name = safe_nc_id.sub("_", var_name).lower()
-#        else:
-#            axis.name = f"naIndVariable_{ivar_number}"
+        else:
+            axis.name = f"naIndVariable_{ivar_number}"
 
         axis_types = [("longitude", "X"), ("latitude", "Y"), ("level", "Z"), ("time", "T")]
 
         for axis_type, axis_label in axis_types:
 
-            if re.search(axis_type, var_name, re.IGNORECASE):
+            if re.search(axis_type, axis.name, re.IGNORECASE):
 
                 axis.attrs["standard_name"] = axis.name = axis_type
                 axis.attrs["axis"] = axis_label

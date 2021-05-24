@@ -12,9 +12,11 @@ Contains the NAToNC class for converting a NASA Ames file to a NetCDF file.
 
 # Imports from python standard library
 import logging
+from collections.abc import Sequence
 
 # Third-party imports
 import xarray as xr
+import numpy as np
 
 # Import from nappy package
 import nappy.nc_interface.na_to_xarray
@@ -60,6 +62,31 @@ class NAToNC(nappy.nc_interface.na_to_xarray.NADictToXarrayObjects):
                  rename_variables=rename_variables)
 
 
+    def fix_ints(self, dct, key):
+        """
+        Convert integer values in a dict to numpy.int32s - so they just show up as integers in ncdump
+        (rather than 2LL (e.g. long longs)).
+
+        Fixes the those dictionary items: either integers or a sequence of integers, then converts and
+        returns them.
+        """
+        def to_np_int(_value):
+            return np.int32(_value)
+
+        value = dct.get(key)
+
+        if isinstance(value, Sequence) and all([isinstance(v, int) for v in value]):
+            dct[key] = [to_np_int(v) for v in value]
+        elif isinstance(value, int):
+            dct[key] = to_np_int(value)
+
+    def fix_attrs(self, obj):
+        """
+        Check each attr of the object, and fix integer/integer-sequence values.
+        """
+        for key in obj.attrs:
+            self.fix_ints(obj.attrs, key)
+
     def writeNCFile(self, file_name, mode="w"):
         """
         Writes the NASA Ames content that has been converted into Xarray objects to a
@@ -71,24 +98,17 @@ class NAToNC(nappy.nc_interface.na_to_xarray.NADictToXarrayObjects):
 
         # Build an Xarray Dataset and then write it to NetCDF
         combined_var_list = self.xr_variables + self.xr_aux_variables
+
+        # Fix integers in attributes
+        [self.fix_attrs(v) for v in combined_var_list]
+
+        # Create the Datset
         variables = {da.name: da for da in combined_var_list}
-
         ds = xr.Dataset(variables, attrs=dict(self.global_attributes))
+        self.fix_attrs(ds)
+
+        # Write to NetCDF
         ds.to_netcdf(file_name)
-        # fout = xr.open_dataset(file_name, mode=mode)
 
-        # # Write main variables
-        # for var in self.xr_variables:
-        #     fout.write(var)
-
-        # # Write aux variables
-        # for avar in self.xr_aux_variables:
-        #     fout.write(avar)
-
-        # # Write global attributes
-        # for (att, value) in self.global_attributes:
-        #     setattr(fout, att, value)
-        
-        # fout.close()
         log.info(f"NetCDF file '{file_name}' written successfully.")
         return True
