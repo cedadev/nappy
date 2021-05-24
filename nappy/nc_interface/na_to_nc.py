@@ -20,7 +20,6 @@ import numpy as np
 
 # Import from nappy package
 import nappy.nc_interface.na_to_xarray
-from nappy.na_error import na_error
 
 logging.basicConfig()
 log = logging.getLogger(__name__)

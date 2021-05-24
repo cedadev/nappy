@@ -19,7 +19,6 @@ import numpy as np
 
 # Import from nappy package
 import nappy
-from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
 import nappy.na_file.na_core

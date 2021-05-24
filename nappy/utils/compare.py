@@ -22,9 +22,9 @@ import os
 import sys
 import re
 
-file_exclusion_patterns = (".*CSV.*", ".*svn.*", "\..*", ".*\.pyc$", ".*~$") 
+file_exclusion_patterns = (r".*CSV.*", r".*svn.*", r"\..*", r".*\.pyc$", r".*~$") 
 file_exclusions = [re.compile(pattn) for pattn in file_exclusion_patterns]
-dir_exclusion_patterns = (".*CSV.*", ".*svn.*")
+dir_exclusion_patterns = (r".*CSV.*", r".*svn.*")
 dir_exclusions = [re.compile(pattn) for pattn in dir_exclusion_patterns]
 
 

@@ -17,7 +17,6 @@ import logging
 
 # Import from nappy package
 import nappy
-from nappy.na_error import na_error
 import nappy.utils
 import nappy.nc_interface.nc_to_na
 

@@ -42,9 +42,9 @@ import getopt
 from nappy.utils.compare import *
 
 equality_threshold = 0.01 # i.e. within 1% of each other
-file_exclusion_patterns = (".*CSV.*", ".*svn.*", "\..*", ".*\.pyc$", ".*~$") 
+file_exclusion_patterns = (r".*CSV.*", r".*svn.*", r"\..*", r".*\.pyc$", r".*~$") 
 file_exclusions = [re.compile(pattn) for pattn in file_exclusion_patterns]
-letter_match = re.compile("[a-zA-Z]")
+letter_match = re.compile(r"[a-zA-Z]")
 
 
 def exitNicely(msg):

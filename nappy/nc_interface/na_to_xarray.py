@@ -22,7 +22,6 @@ import numpy as np
 import xarray as xr
 
 # Import from nappy package
-from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
 
@@ -36,8 +35,8 @@ hp = header_partitions
 
 
 # Define global variables
-safe_nc_id = re.compile("[\/\s\[\(\)\]\=\+\-\?\#\~\@\&\$\%\!\*\{\}\^]+")
-time_units_pattn = re.compile("\w+\s+since\s+\d{1,4}-\d{1,2}-\d{1,2}(\s+\d+:\d+:\d+)?")
+safe_nc_id = re.compile(r"[\/\s\[\(\)\]\=\+\-\?\#\~\@\&\$\%\!\*\{\}\^]+")
+time_units_pattn = re.compile(r"\w+\s+since\s+\d{1,4}-\d{1,2}-\d{1,2}(\s+\d+:\d+:\d+)?")
 max_id_length = 64
 special_comment_known_strings = (hp["sc_start"], hp["sc_end"], hp["addl_vatts"],
                                   hp["addl_globals"], "\n")
@@ -228,7 +227,7 @@ class NADictToXarrayObjects:
 
         else:
             # If integers or numbers: then use as indices for selecting variables
-            if isinstance(self.variables[0], int) or re.match("\d+", str(self.variables[0])):
+            if isinstance(self.variables[0], int) or re.match(r"\d+", str(self.variables[0])):
 
                 for var_number in self.variables:
                     vn = int(var_number)

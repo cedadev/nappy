@@ -20,7 +20,6 @@ import numpy as np
 
 # Import from nappy package
 import nappy
-from nappy.na_error import na_error
 import nappy.utils
 import nappy.utils.common_utils
 import nappy.nc_interface.xarray_to_na

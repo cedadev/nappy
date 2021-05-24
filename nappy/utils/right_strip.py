@@ -19,7 +19,7 @@ Out: Tout (C)
 
 import re
 
-rstrip_regex = re.compile("^(.+)\{[^{^}]*\}\s*$")
+rstrip_regex = re.compile(r"^(.+)\{[^{^}]*\}\s*$")
 
 
 def rightStripCurlyBraces(line):

@@ -23,7 +23,6 @@ from io import StringIO
 import nappy.na_file.na_core
 import nappy.utils.text_parser
 import nappy.utils.common_utils
-import nappy.na_error
 
 default_delimiter = nappy.utils.getDefault("default_delimiter")
 default_float_format = nappy.utils.getDefault("default_float_format")
