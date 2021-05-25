@@ -126,9 +126,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-# Import third-party software
-import xarray as xr
-
 # Import local modules
 import nappy.utils.common_utils
 import nappy.utils.compare_na
@@ -172,9 +169,9 @@ def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
 
 
 def convertNAToNC(na_file, nc_file=None, mode="w", variables=None, aux_variables=None,
-                 global_attributes=[("Conventions", "CF-1.0")],
+                 global_attributes=None,
                  time_units=None, time_warning=True,
-                 rename_variables={}):
+                 rename_variables=None):
     """
     Takes a NASA Ames file and converts to a NetCDF file. Options are:
 
@@ -194,13 +191,21 @@ def convertNAToNC(na_file, nc_file=None, mode="w", variables=None, aux_variables
               use for time units if there is a valid time axis.
     time_warning - suppresses the time units warning for invalid time units if set to False.
     """
+    if global_attributes == None:
+        global_attributes = []
+
+    if rename_variables is None:
+        rename_variables = {}
+
     arg_dict = vars()
+
     for arg_out in ("nc_file", "mode"):
         del arg_dict[arg_out]
 
     import nappy.nc_interface.na_to_nc
     convertor = nappy.nc_interface.na_to_nc.NAToNC(*[], **arg_dict)
     convertor.convert()
+
     if nc_file == None:
         nc_file = getFileNameWithNewExtension(na_file, "nc")
     convertor.writeNCFile(nc_file, mode)
@@ -232,8 +237,8 @@ def convertNAToCSV(na_file, csv_file=None, annotation=False, no_header=False):
     return True
 
 
-def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override={},
-            only_return_file_names=False, exclude_vars=[],
+def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override=None,
+            only_return_file_names=False, exclude_vars=None,
             requested_ffi=None, delimiter=default_delimiter, float_format=default_float_format, 
             size_limit=None, annotation=False, no_header=False,
             ):
@@ -264,6 +269,12 @@ def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override={},
               describing the contents of each header line.
     no_header - if set to True then only the data blocks are written to file.
     """
+    if na_items_to_override is None:
+        na_items_to_override = {}
+
+    if exclude_vars is None:
+        exclude_vars = []
+
     arg_dict = vars()
     for arg_out in ("na_file", "only_return_file_names", "delimiter", "float_format", 
                     "size_limit", "annotation", "no_header"):
@@ -367,6 +378,8 @@ def writeNADictToNC(na_dict, nc_file, mode="w"):
     (xr_primary_vars, xr_aux_vars, global_attributes) = convertor.convert()
 
     # Now write them out
+    import xarray as xr
+
     fout = xr.open_dataset(nc_file, mode=mode)
     for var in (xr_primary_vars + xr_aux_vars):
         fout.write(var)
@@ -397,6 +410,7 @@ def readXarrayObjectsFromNA(na_file):
     import nappy.nc_interface.na_to_xarray
     convertor = nappy.nc_interface.na_to_xarray.NADictToXarrayObjects(na_file_obj)
     (xr_vars_primary, xr_vars_aux, global_attributes) = convertor.convert()
+
     return (xr_vars_primary, xr_vars_aux, global_attributes)
 
 
@@ -407,9 +421,11 @@ def getXarrayVariableFromNA(na_file, var):
     The variable is created from the variables found in the NASA Ames file na_file.
     """
     na_file_obj = openNAFile(na_file)
+
     import nappy.nc_interface.na_to_xarray
     convertor = nappy.nc_interface.na_to_xarray.NADictToXarrayObjects(na_file_obj, variables=[var])
     (xr_primary_vars, xr_aux_vars, global_attributes) = convertor.convert()
+
     # Must now be a primary var
     return xr_primary_vars[0]
 

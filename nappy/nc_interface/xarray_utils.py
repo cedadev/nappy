@@ -316,3 +316,11 @@ def getArrayAsList(da, missing_value=None, handle_datetimes=True):
         arr = arr.compute()
 
     return arr.tolist()
+
+
+def preprocess_on_open(ds):
+    """
+    General pre-processing function for calls to `xr.open_mfdataset(...)`.
+    """
+    for data_var in ds.data_vars:
+        import pdb; pdb.set_trace() 
