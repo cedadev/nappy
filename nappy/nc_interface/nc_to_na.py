@@ -77,7 +77,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
         if exclude_vars is None:
             exclude_vars = []
 
-        ds = xr.open_dataset(self.nc_file, use_cftime=True)
+        ds = xr.open_dataset(self.nc_file, use_cftime=True, decode_timedelta=False)
         xr_variables = []
 
         # Make sure var_ids is a list
