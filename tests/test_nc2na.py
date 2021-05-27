@@ -1,12 +1,15 @@
 import os
 
 import xarray as xr
+import numpy as np
 
 from nappy.nappy_api import openNAFile
 from nappy.nc_interface.nc_to_na import NCToNA
 import nappy.utils
 
-from .common import data_files, test_outputs, cached_outputs
+from .common import data_files, test_outputs, cached_outputs, MINI_BADC_DIR
+wet_nc = os.path.join(MINI_BADC_DIR, "cru/data/cru_ts/cru_ts_4.04/data/wet/cru_ts4.04.1901.2019.wet.dat.nc")
+
 
 DELIMITER = nappy.utils.getDefault("default_delimiter") 
 EXTENSION = "na"
@@ -123,3 +126,22 @@ def test_nc_to_na_1001_names_only():
     na = NCToNA(infile, only_return_file_names=True)
     file_names = na.constructNAFileNames()
     assert os.path.basename(file_names[0]) == "1001.na"
+
+
+def test_nc_to_na_convert_cru_ts_wet(load_ceda_test_data):
+    """
+    The "wet" variable has units "days". Unless `xr.open_dataset` uses `decode_timedelta=False` the 
+    variable will be decoded into datatype `np.timedelta[ns]` - which we do not want.
+    This test checks the nasa ames converted version is correctly converted. 
+    """
+    infile, outfile = wet_nc, os.path.join(test_outputs, "1001-cru-ts-wet.nc.na")
+
+    na = NCToNA(infile)
+    na.writeNAFiles(outfile, float_format="%g", delimiter=",")
+
+    # Now test the max value has been correctly cast to the NA array
+    na_dict = na.na_dict_list[0][0]
+    arr = np.ma.masked_values(na_dict['V'][0], na_dict['VMISS'][0])
+    
+    assert np.isclose(np.ma.max(arr), 26.579, atol=0.01)
+ 
