@@ -323,8 +323,7 @@ class NADictToXarrayObjects:
         """
         Converts an auxiliary variable to a Xarray variable.
         """
-        if attributes == None:
-            attributes = {}
+        attributes = attributes or {}
              
         (var_name, units, miss, scal) = self.na_file_obj.getAuxVariable(avar_number)
 

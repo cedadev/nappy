@@ -52,7 +52,7 @@ class NAFile(nappy.na_file.na_core.NACore):
     the user forgets to close it.
     """
 
-    def __init__(self, filename, ignore_header_lines=0, mode="r", na_dict={}): 
+    def __init__(self, filename, ignore_header_lines=0, mode="r", na_dict=None): 
         """
         Initialization of class, decides if user wishes to read or write
         NASA Ames file.
@@ -60,10 +60,11 @@ class NAFile(nappy.na_file.na_core.NACore):
         nappy.na_file.na_core.NACore.__init__(self)
         self.filename = filename
         self._open(mode)
+
         self.mode = mode
         self.ignore_header_lines = ignore_header_lines
         self.ignored_header_lines = []
-        self.na_dict = na_dict
+        self.na_dict = na_dict or {}
 
         if self.mode == "r":
             self._normalized_X = True

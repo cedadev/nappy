@@ -36,7 +36,7 @@ class XarrayObjectsToNAFile(nappy.nc_interface.nc_to_na.NCToNA):
     Converts a set of Xarray Objects to one or more NASA Ames files.
     """
 
-    def __init__(self, xr_variables, global_attributes=[], na_items_to_override={},
+    def __init__(self, xr_variables, global_attributes=None, na_items_to_override=None,
                  only_return_file_names=False,
                  requested_ffi=None,
                  ):
@@ -49,8 +49,8 @@ class XarrayObjectsToNAFile(nappy.nc_interface.nc_to_na.NCToNA):
         >>>    c.writeNAFiles("new_file.na", delimiter=",")
         """
         self.xr_variables = xr_variables
-        self.global_attributes = global_attributes
-        self.na_items_to_override = na_items_to_override
+        self.global_attributes = global_attributes or []
+        self.na_items_to_override = na_items_to_override or {}
         self.only_return_file_names = only_return_file_names
         self.requested_ffi = requested_ffi
 

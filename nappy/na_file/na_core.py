@@ -50,10 +50,12 @@ class NACore:
         for key in NACore.na_dictionary_keys:
             dct[key] = getattr(self, key)
 
-        self.na_dict={}
-        for i in dct.keys():
-            if dct[i] != None:
-                self.na_dict[i] = dct[i]
+        self.na_dict = {}
+
+        for key in dct:
+            if dct[key] != None:
+                self.na_dict[key] = dct[key]
+
         return self.na_dict
 
     def setNADict(self, na_dict):
@@ -125,18 +127,22 @@ class NACore:
         """
         Returns metadata for all main (non-auxiliary or independent) variables.
         """
-        vars=[]
+        vars = []
+
         for i in range(self.NV):
             vars.append(self.getVariable(i))
+
         return vars
 
     def getIndependentVariables(self):
         """
         Returns metadata for all independent variables.
         """
-        ivars=[]
+        ivars = []
+
         for i in range(self.NIV):
             ivars.append(self.getIndependentVariable(i))
+
         return ivars
 
     def getAuxVariables(self):
@@ -144,11 +150,11 @@ class NACore:
         Returns metadata for all auxiliary variables.
         """
         avars = []
+
         if not hasattr(self, "NAUXV"):
             for i in range(self.NAUXV):
                 avars.append(self.getAuxVariable(i))
-        else:
-            avars = []
+
         return avars
 
     def getMissingValue(self, var_number):

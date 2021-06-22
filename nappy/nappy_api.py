@@ -191,11 +191,8 @@ def convertNAToNC(na_file, nc_file=None, mode="w", variables=None, aux_variables
               use for time units if there is a valid time axis.
     time_warning - suppresses the time units warning for invalid time units if set to False.
     """
-    if global_attributes == None:
-        global_attributes = []
-
-    if rename_variables is None:
-        rename_variables = {}
+    global_attributes = global_attributes or []
+    rename_variables = rename_variables or {}
 
     arg_dict = vars()
 
@@ -208,6 +205,7 @@ def convertNAToNC(na_file, nc_file=None, mode="w", variables=None, aux_variables
 
     if nc_file == None:
         nc_file = getFileNameWithNewExtension(na_file, "nc")
+
     convertor.writeNCFile(nc_file, mode)
     return nc_file   
   
@@ -269,11 +267,8 @@ def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override=None
               describing the contents of each header line.
     no_header - if set to True then only the data blocks are written to file.
     """
-    if na_items_to_override is None:
-        na_items_to_override = {}
-
-    if exclude_vars is None:
-        exclude_vars = []
+    na_items_to_override = na_items_to_override or {}
+    exclude_vars = exclude_vars or []
 
     arg_dict = vars()
     for arg_out in ("na_file", "only_return_file_names", "delimiter", "float_format", 
@@ -313,7 +308,7 @@ def convertNCToCSV(nc_file, csv_file=None, **arg_dict):
     
 
 def convertXarrayObjectsToNA(xr_vars, global_attributes, na_file, 
-              na_items_to_override={}, requested_ffi=None, delimiter=default_delimiter, 
+              na_items_to_override=None, requested_ffi=None, delimiter=default_delimiter, 
               float_format=default_float_format, size_limit=None, annotation=False, no_header=False,
               ):
     """
@@ -339,13 +334,17 @@ def convertXarrayObjectsToNA(xr_vars, global_attributes, na_file,
                 column describing the contents of each header line.
     no_header - if set to True then only the data blocks are written to file.
     """
+    na_items_to_override = na_items_to_override or {}
+
     import nappy.nc_interface.xarray_objs_to_na_file
     convertor = nappy.nc_interface.xarray_objs_to_na_file.XarrayObjectsToNAFile(xr_vars, global_attributes=global_attributes, 
                         na_items_to_override=na_items_to_override, requested_ffi=requested_ffi,
                         )
     convertor.convert()
+
     na_files = convertor.writeNAFiles(na_file, delimiter=delimiter, float_format=float_format, 
-                                      annotation=annotation, no_header=no_header) 
+                                      annotation=annotation, no_header=no_header)
+
     return convertor.output_files_written 
 
 
@@ -428,5 +427,3 @@ def getXarrayVariableFromNA(na_file, var):
 
     # Must now be a primary var
     return xr_primary_vars[0]
-
-

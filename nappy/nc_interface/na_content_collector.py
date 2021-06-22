@@ -62,8 +62,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         >>> if x.found_na:
         ...     print(x.na_dict, x.var_ids, x.unused_vars)
         """
-        if global_attributes == None:
-            global_attributes = []
+        global_attributes = global_attributes or []
 
         self.output_message = []
         self.na_dict = {}
@@ -81,7 +80,6 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         # Create a flag to check if anything found
         self.found_na = False
 
-
     def collectNAContent(self):
         """
         Collect NASA Ames content. Save the contents to the following instance
@@ -91,6 +89,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
          * self.unused_vars
         """
         log.debug("Call to collectNAContent():\n")
+
         for v in self.vars: 
             log.debug(f"\t{v.name}, {v.shape}, {v.dims}")
  
@@ -99,7 +98,6 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         if self.ordered_vars == []:
             log.warn("No NASA Ames content created.")
             self.unused_vars = []
-
         else:
             self.var_ids = [[var.name for var in self.ordered_vars],
                             [var.name for var in aux_vars], 
@@ -129,7 +127,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         # Need to get highest ranked variable (most dimensions) so that we can work out FFI
         for var in self.vars:
-            msg = "Analysing: %s" % var.name
+            msg = f"Analysing: {var.name}"
             self.output_message.append(msg)
             count = count + 1
 
@@ -521,26 +519,28 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         # Check if we should add to it with locally set rules
         local_attributes = nappy.utils.getLocalAttributesConfigDict()
         local_nc_atts = local_attributes["nc_attributes"]
-         
+        local_nc_to_na_map = nc_to_na_map.copy()
+
         for att, value in local_nc_atts.items():
-            if not att in nc_to_na_map:
-                nc_to_na_map[key] = value
+            if att not in local_nc_to_na_map:
+                local_nc_to_na_map[key] = value
 
-        self.extra_comments = [[],[],[]]  # Normal comments, special comments, other comments
+        self.extra_comments = [[], [], []]  # Normal comments, special comments, other comments
 
-        for key in self.globals.keys():
-            if key != "first_valid_date_of_data" and type(self.globals[key]) \
-                                       not in (str, int, float):
+        for key, value in self.globals.items():
+            if key != "first_valid_date_of_data" and \
+                    type(value) not in (str, int, float):
                 continue
 
             # Loop through keys of header/comment items to map
-            if key in nc_to_na_map.keys():
+            if key in local_nc_to_na_map:
                 if key == "history":
                     time_string = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
                     history = "History:  %s - Converted to NASA Ames format using nappy-%s.\n  %s" % \
-                                                 (time_string, version, self.globals[key])
+                                                 (time_string, version, value)
                     history = history.split("\n") 
                     self.history = []
+
                     for h in history:
                         if h[:8] != "History:" and h[:1] != "  ": 
                             h = "  " + h
@@ -549,13 +549,13 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                 elif key == "institution":
                     # If fields came from NA then extract appropriate fields.
                     match = re.match(r"(.*)\s+\(ONAME from NASA Ames file\);\s+(.*)\s+\(ORG from NASA Ames file\)\.", 
-                             self.globals[key])
+                             value)
                     if match:
                         self.na_dict["ONAME"] = match.groups()[0]
                         self.na_dict["ORG"] = match.groups()[1]
                     else:
-                        self.na_dict["ONAME"] = self.globals[key]
-                        self.na_dict["ORG"] = self.globals[key]
+                        self.na_dict["ONAME"] = value
+                        self.na_dict["ORG"] = value
 
                     # NOTE: should probably do the following search and replace on all string lines
                     self.na_dict["ONAME"] = self.na_dict["ONAME"].replace("\n", "  ")
@@ -563,7 +563,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
                 elif key == "comment":
                     # Need to work out if they are actually comments from NASA Ames in the first place
-                    comment_lines = self.globals[key].split("\n")
+                    comment_lines = value.split("\n")
                     normal_comments = []
                     normal_comm_flag = None
 
@@ -587,19 +587,27 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
                         elif line.find(hp["data_next"]) > -1:
                             pass
                         else:
-                            normal_comments.append(line)    
+                            normal_comments.append(line)
 
-                    self.extra_comments = [special_comments, normal_comments, []]    
+                    # Carefully merge any comments with other metadata found.
+                    other_special_comments, other_normal_comments, other_extra_comments = \
+                         [comms[:] for comms in self.extra_comments]
+
+                    self.extra_comments = [
+                        other_special_comments + special_comments, 
+                        other_normal_comments + normal_comments, 
+                        other_extra_comments
+                    ]  
 
                 elif key == "first_valid_date_of_data":
-                    self.na_dict["DATE"] = self.globals[key]
+                    self.na_dict["DATE"] = value
 
                 elif key in ("Conventions", "references"):
-                    self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
+                    self.extra_comments[2].append(f"{key}:   {value}")
                 else:
-                    self.na_dict[nc_to_na_map[key]] = self.globals[key]
+                    self.na_dict[local_nc_to_na_map[key]] = value
             else:
-                self.extra_comments[2].append("%s:   %s" % (key, self.globals[key]))
+                self.extra_comments[2].append(f"{key}:   {value}")
 
     def _defineNAComments(self, normal_comments=None, special_comments=None):
         """
@@ -608,19 +616,17 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
         Starts with values provided for normal_comments and special_comments.
         """
-        if normal_comments == None:
-            normal_comments = []
+        normal_comments = normal_comments or []
+        special_comments = special_comments or []
 
-        if special_comments == None:
-            special_comments = []
-
-        if hasattr(self, "ncom"):  normal_comments = self.ncom + normal_comments
+        if hasattr(self, "NCOM"):  normal_comments = getattr(self, "NCOM") + normal_comments
 
         NCOM = []
         for ncom in normal_comments:
             NCOM.append(ncom)
 
-        if len(NCOM) > 0:   NCOM.append("")
+        if len(NCOM) > 0:
+            NCOM.append("")
 
         # Use third item in self.extra_comments and adds to NCOM
         if len(self.extra_comments[2]) > 0:
@@ -670,8 +676,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             for att in var.attrs.keys():
                 value = var.attrs[att]
 
-                if type(value) in (type("s"), type(1.0), type(1)):
-
+                if isinstance(value, str) or np.isscalar(value):
                     rank_zero_vars_string.append("    %s = %s" % (att, var.attrs[att]))
 
         if len(rank_zero_vars_string) > 0:
@@ -686,10 +691,10 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
             name = xarray_utils.getBestName(var)
 
             for scom, value in var.attrs.items():
-                if type(value) in (type([]), type(np.array([0]))) and len(value) == 1:
+                if hasattr(value, "__len__") and len(value) == 1:
                     value = value[0]
 
-                if type(value) in (type("s"), type(1.1), type(1)) and scom not in used_var_atts:
+                if isinstance(value, str) or np.isscalar(value) and scom not in used_var_atts:
                     if varflag == "unused":
                         if var_comm_flag == None:
                             var_comm_flag = 1
@@ -791,4 +796,4 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
         self.na_dict["NVOL"] = 1
 
         for key in header_items.keys():
-             self.na_dict[key] = header_items[key]
+            self.na_dict[key] = header_items[key]
