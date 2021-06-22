@@ -59,19 +59,14 @@ class XarrayToNA:
         """
         Sets up instance variables. 
         """
-        if global_attributes is None:
-            global_attributes = []
-        
-        if na_items_to_override is None:
-            na_items_to_override = {}
-
         self.xr_variables = xr_variables
-        self.global_attributes = global_attributes
-        self.na_items_to_override = na_items_to_override
+        self.global_attributes = global_attributes or []
+        self.na_items_to_override = na_items_to_override or {}
         self.only_return_file_names = only_return_file_names
         self.requested_ffi = requested_ffi
 
         self.converted = False
+        self.na_dict_list = []
         self.output_message = []
     
     def convert(self):
@@ -108,17 +103,16 @@ class XarrayToNA:
             msg = "\nNo files created after variables parsed."
             if DEBUG: log.debug(msg)
             self.output_message.append(msg)
-            return
+            return None
 
         # NOTE: collector has attributes: na_dict, var_ids, unused_vars
 
         # Set up a list to collect multiple calls to content collector
-        na_dict_list = []
-        na_dict_list.append((collector.na_dict, collector.var_ids))
+        na_dict_list = [(collector.na_dict, collector.var_ids)]
 
         # If there are variables that were not captured (i.e. unused) by NAContentCollector then loop through these
         # in attempt to convert all to a set of na_dicts
-        log.debug("\nUnused_vars: %s" % collector.unused_vars)
+        log.debug(f"\nUnused_vars: {collector.unused_vars}")
         while len(collector.unused_vars) > 0:
             collector = nappy.nc_interface.na_content_collector.NAContentCollector(collector.unused_vars, 
                                         self.global_attributes, requested_ffi=self.requested_ffi,
@@ -205,29 +199,27 @@ class XarrayToNA:
         Works out what the file names of the output NA files will be and 
         returns a list of them.
         """
-        self.convert()
+        if not self.converted:
+            self.convert()
 
-        file_names = []
         # create file name if not given
         if na_file == None:
             base_name = self.nc_file
+
             if base_name[-3:] == ".nc":
                 base_name = base_name[:-3]
             na_file = base_name + ".na"
 
-        file_counter = 1
-        # Now, create some valid file names
-        for this_na_dict in self.na_dict_list:
-            if len(self.na_dict_list) == 1:
-                suffix = ""
-            else:
-                suffix = "_%s" % file_counter
+        name_parts = na_file.split(".")
 
-            # Create file name
-            name_parts = na_file.split(".")    
-            new_name = (".".join(name_parts[:-1])) + suffix + "." + name_parts[-1]
-            file_names.append(new_name)
-            file_counter += 1
+        # Now, create some valid file names
+        if len(self.na_dict_list) == 1:
+            file_names = [na_file]
+        else:
+            for file_counter in range(1, len(self.na_dict_list) + 1):
+                suffix = f"_{file_counter}"
+                new_name = (".".join(name_parts[:-1])) + suffix + "." + name_parts[-1]
+                file_names.append(new_name)
 	    
         return file_names
 
@@ -239,7 +231,8 @@ class XarrayToNA:
         in the na_file_name argument in which case that provides the main name
         that is appended to if multiple output file names are required.
         """
-        self.convert() # just in case not already called
+        if not self.converted: 
+            self.convert()
 
         # Gets a list of NA file_names that will be produced.
         file_names = self.constructNAFileNames(na_file)
@@ -256,7 +249,9 @@ class XarrayToNA:
         local_na_atts = local_attributes["na_attributes"]
 
         # define final override list by using defaults then locally provided changes
-        overriders = local_na_atts
+        # (Take a copy - to avoid changing the config dict - which will persist)
+        overriders = local_na_atts.copy()
+
         for (okey, ovalue) in self.na_items_to_override.items():
             overriders[okey] = ovalue
 
@@ -272,7 +267,7 @@ class XarrayToNA:
             (this_na_dict, vars_to_write) = na_dict_and_var_ids
 
             # Override content of NASA Ames if they are permitted
-            for key in overriders.keys():
+            for key in overriders:
 
                 if key in permitted_overwrite_metadata:    
                     if key in items_as_lists:
@@ -298,11 +293,11 @@ class XarrayToNA:
                             raise Exception(f"Did not recognise comment_override_rule: {str(comment_override_rule)}")
 
                         this_na_dict[key] = comments_list
-                        this_na_dict["N%sL" % key] = len(comments_list)
+                        this_na_dict[f"N{key}L"] = len(comments_list)
 		    	 
-                    elif not key in this_na_dict or new_item != this_na_dict[key]:
+                    elif key not in this_na_dict or new_item != this_na_dict[key]:
                         this_na_dict[key] = new_item
-                        msg = "Metadata overwritten in output file: '%s' is now '%s'" % (key, this_na_dict[key])
+                        msg = f"Metadata overwritten in output file: '{key}' is now '{this_na_dict[key]}'"
                         if DEBUG: log.debug(msg)
                         self.output_message.append(msg)
 
@@ -358,7 +353,7 @@ class XarrayToNA:
         else:
             plural = "s"
 	      
-        msg = "\n%s file%s written." % (full_file_count, plural)
+        msg = f"\n{full_file_count} file{plural} written."
     
         if DEBUG: log.debug(msg)
         self.output_message.append(msg)
@@ -403,8 +398,8 @@ class XarrayToNA:
             na_dict_copy = nappy.utils.common_utils.modifyNADictCopy(this_na_dict, current_block, 
                                                                       start, end, ivol, nvol)
             # Append a letter to the file name for writing this block to
-            file_name_plus_letter = "%s-%.3d.na" % (file_name[:-3], ivol)
-            file_list.append(file_name_plus_letter)
+            file_name_plus_letter = f"{file_name[:-3]}-{ivol:03d}.na"
+            file_names.append(file_name_plus_letter)
 
             # Write data to output file
             x = nappy.openNAFile(file_name_plus_letter, 'w', na_dict_copy)
@@ -440,7 +435,7 @@ class XarrayToNA:
         compatible_ffis = (1001, 1010, 2110)
 
         if ffi not in compatible_ffis or na_dict["NAUXV"] > 0:
-            log.debug("Column Headers are not written for FFIs other than: %s" % str(compatible_ffis))
+            log.debug(f"Column Headers are not written for FFIs other than: {compatible_ffis}")
             return
 
         if ffi in (1001, 2110):
@@ -462,8 +457,11 @@ class XarrayToNA:
         or "extend" (existing_comments first).
         Returns a new list of combined_comments.
         """
-        if existing_comments == []:   return new_comments
-        if new_comments == []:        return existing_comments
+        if not existing_comments:   
+            return new_comments
+
+        if not new_comments:        
+            return existing_comments
 
         # Strip start header if used
         c1 = key[0].lower()
@@ -509,20 +507,15 @@ class XarrayDatasetToNA(XarrayToNA):
     """
     Converts an Xarray Dataset to NASA Ames file dictionaries.
     """
-
     def __init__(self, xr_dset, na_items_to_override=None, 
                  only_return_file_names=False, requested_ffi=None):
         """
-        Sets up instance variables. 
-        """      
-        if na_items_to_override is None:
-            na_items_to_override = {}
+        Sets up instance variables and call parent class.
+        """
+        xr_variables = [da for da in iter(xr_dset.values())]
+        global_attributes = xr_dset.attrs.copy()
 
-        self.xr_variables = [da for da in iter(xr_dset.values())]
-        self.global_attributes = dict(xr_dset)
-        self.na_items_to_override = na_items_to_override
-        self.only_return_file_names = only_return_file_names
-        self.requested_ffi = requested_ffi
-
-        self.converted = False
-        self.output_message = []
+        super().__init__(xr_variables, global_attributes=global_attributes,
+                         na_items_to_override=na_items_to_override,
+                         only_return_file_names=only_return_file_names,
+                         requested_ffi=requested_ffi)

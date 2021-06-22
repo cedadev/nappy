@@ -66,7 +66,7 @@ def getConfigDict(cf=config_file):
     if config_dict == None:
         config_dict = makeConfigDict(cf)
 
-    return config_dict
+    return config_dict.copy()
 
 
 def makeAnnotationsConfigDict(af):
@@ -98,7 +98,7 @@ def getAnnotationsConfigDict():
     if annotations_config_dict == None:
         annotations_config_dict = makeAnnotationsConfigDict(annotations_config_file)
 
-    return annotations_config_dict
+    return annotations_config_dict.copy()
 
 
 def makeLocalAttributesConfigDict(laf):
@@ -134,6 +134,6 @@ def getLocalAttributesConfigDict():
     if attributes_config_dict == None:
         attributes_config_dict = makeLocalAttributesConfigDict(local_attributes_config_file)
 
-    return attributes_config_dict
+    return attributes_config_dict.copy()
 
 

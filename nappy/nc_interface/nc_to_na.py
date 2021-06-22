@@ -51,20 +51,13 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
         """
         self.nc_file = nc_file
 
-        # Set defaults:
-        if na_items_to_override is None:
-            na_items_to_override = {}
-
-        if exclude_vars is None:
-            exclude_vars = []
-
         # Now need to read Xarray file so parent class methods are compatible
         xr_variables, global_attributes = self._readXarrayFile(var_ids, exclude_vars)
 
-        nappy.nc_interface.xarray_to_na.XarrayToNA.__init__(self, xr_variables, global_attributes=global_attributes, 
-                                                        na_items_to_override=na_items_to_override, 
-                                                        only_return_file_names=only_return_file_names,
-                                                        requested_ffi=requested_ffi)
+        super().__init__(xr_variables, global_attributes=global_attributes, 
+                         na_items_to_override=na_items_to_override, 
+                         only_return_file_names=only_return_file_names,
+                         requested_ffi=requested_ffi)
  
 
     def _readXarrayFile(self, var_ids=None, exclude_vars=None, exclude_bounds=True):
@@ -74,8 +67,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
         If var_ids is defined then only get those.
         If exclude_bounds is True: exclude "bounds" variables.
         """
-        if exclude_vars is None:
-            exclude_vars = []
+        exclude_vars = exclude_vars or []
 
         ds = xr.open_dataset(self.nc_file, use_cftime=True, decode_timedelta=False)
         xr_variables = []
@@ -107,4 +99,3 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
 
         global_attrs = ds.attrs.items()
         return (xr_variables, global_attrs)
-

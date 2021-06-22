@@ -82,7 +82,8 @@ def test_nc_to_na_1001_overwrite_metadata():
     # nc2na.py -i test_outputs/1001.nc -o test_outputs/1001-from-nc-overwrite.na --overwrite-metadata=ONAME,"See line 2 - my favourite org."
     infile, outfile = _get_paths(1001, label="overwrite-metadata")
 
-    na = NCToNA(infile, na_items_to_override={"ONAME": "See line 2 - my favourite org."})
+    override = {"ONAME": "See line 2 - my favourite org."}
+    na = NCToNA(infile, na_items_to_override=override)
     na.writeNAFiles(outfile, float_format="%g", delimiter=DELIMITER)
 
     n = openNAFile(outfile)
@@ -145,3 +146,38 @@ def test_nc_to_na_convert_cru_ts_wet(load_ceda_test_data):
     
     assert np.isclose(np.ma.max(arr), 26.579, atol=0.01)
  
+
+def test_nc_to_na_all_global_attributes_correct(load_ceda_test_data):
+    """
+    Checks that the resulting NA files has all the right stuff in
+    the right places.
+    """
+    infile = wet_nc
+    na_output_file = os.path.join(test_outputs, "cru-ts-wet-from-nc.na")
+
+    converter = NCToNA(infile, na_items_to_override={})  #{"ONAME": "Data held at British Atmospheric Data Centre, RAL, UK."})
+    converter.writeNAFiles(na_output_file, float_format="%g")
+
+    # Re-open the file and check the outputs
+    na = nappy.openNAFile(na_output_file)
+    na.readData()
+
+    # Check global attributes match NASA Ames content
+    assert na.ONAME == "Data held at British Atmospheric Data Centre, RAL, UK."
+    assert na.MNAME == "CRU TS4.04 Rain Days"
+    assert na.SNAME == "Run ID = 2004151855. Data generated from:wet.2004011744.dtb, pre.2004011744.dtb"
+
+    assert "Conventions:   CF-1.4" in na.NCOM
+    assert "references:   Information on the data is available at http://badc.nerc.ac.uk/data/cru/" in na.NCOM
+    assert "contact:   support@ceda.ac.uk" in na.NCOM
+    assert "NCO:   netCDF Operators version 4.9.2 (Homepage = http://nco.sf.net, Code = http://github.com/nco/nco)" in na.NCOM
+
+    assert "Access to these data is available to any registered CEDA user." in na.NCOM
+    assert "Tue Nov 24 15:46:02 2020: ncks -d lat,,,100 -d lon,,,100 --variable wet /badc/cru/data/cru_ts/cru_ts_4.04/data/wet/cru_ts4.04.1901.2019.wet.dat.nc ./archive/badc/cru/data/cru_ts/cru_ts_4.04/data/wet/cru_ts4.04.1901.2019.wet.dat.nc" in na.NCOM
+    assert "Thu 16 Apr 2020 01:19:04 BST : User ianharris : Program makegridsauto.for called by update.for" in na.NCOM
+
+    # Check variable attributes match NASA Ames content
+    assert "Variable wet: wet day frequency (days)" in na.SCOM
+    assert "long_name = wet day frequency" in na.SCOM
+    assert "correlation_decay_distance = 450.0" in na.SCOM
+    assert np.isclose(na.VMISS[0], 9.96921e+36)
