@@ -37,7 +37,6 @@ hp = header_partitions
 version = nappy.utils.getVersion()
 DEBUG = nappy.utils.getDebug() 
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 

@@ -21,7 +21,6 @@ import numpy as np
 # Import from nappy package
 import nappy.nc_interface.na_to_xarray
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 

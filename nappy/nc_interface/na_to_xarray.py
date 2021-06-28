@@ -57,7 +57,6 @@ Where:
 
 DEBUG = nappy.utils.getDebug() 
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 
