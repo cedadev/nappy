@@ -27,7 +27,6 @@ default_delimiter = nappy.utils.getDefault("default_delimiter")
 default_float_format = nappy.utils.getDefault("default_float_format")
 
 # Define logger
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 

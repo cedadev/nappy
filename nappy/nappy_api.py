@@ -123,7 +123,6 @@ ffi = nappy.chooseFFI(na_dict)
 
 # Import standard library modules
 import logging
-logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 # Import local modules
