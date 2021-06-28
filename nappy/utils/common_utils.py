@@ -18,7 +18,6 @@ import logging
 from nappy.utils import parse_config
 from nappy.utils import text_parser
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 

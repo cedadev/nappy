@@ -24,7 +24,6 @@ import nappy.utils
 import nappy.utils.common_utils
 import nappy.nc_interface.xarray_to_na
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 

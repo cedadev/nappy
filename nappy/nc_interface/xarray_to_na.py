@@ -45,7 +45,6 @@ var_limit = 5000 # surely never going to get this many vars in a file!
 
 DEBUG = nappy.utils.getDebug() 
 
-logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
