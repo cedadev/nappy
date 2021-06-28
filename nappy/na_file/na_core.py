@@ -25,7 +25,7 @@ class NACore:
     class is sub-classed by all NAFile classes.
     """
     
-    var_and_units_pattern = re.compile("^\s*(.*)\((.+?)\)(.*)\s*$")
+    var_and_units_pattern = re.compile(r"^\s*(.*)\((.+?)\)(.*)\s*$")
     na_dictionary_keys = ("A", "AMISS", "ANAME", "ASCAL", "DATE", "DX",
                      "FFI", "IVOL", "LENA", "LENX", "MNAME", "NAUXC",
                      "NAUXV", "NCOM", "NIV", "NLHEAD", "NNCOML",
