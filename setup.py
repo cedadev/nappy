@@ -44,6 +44,7 @@ setup(
     url='https://github.com/cedadev/nappy',
     license=license(),
     platforms='all',
+    python_requires='>=3.5',
 
     # We make the package non-zip_safe so that we don't need to
     # change the way ini files are read too much.
