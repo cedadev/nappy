@@ -122,18 +122,16 @@ ffi = nappy.chooseFFI(na_dict)
 """
 
 # Import standard library modules
-from __future__ import annotations
 import logging
+from typing import Optional, Dict
+
 log = logging.getLogger(__name__)
-from typing import Union, Optional, Dict, TYPE_CHECKING
 
 # Import local modules
 import nappy.utils.common_utils
 import nappy.utils.compare_na
 import nappy.utils.text_parser
-
-if TYPE_CHECKING:
-    from nappy.na_file.na_file import NAFile
+from nappy.na_file.na_file import NAFile
 
 # Bring some utils into the API
 compareNA = nappy.utils.compare_na.compareNA
@@ -149,7 +147,7 @@ default_float_format = nappy.utils.common_utils.getDefault("default_float_format
 
 def openNAFile(filename: str, mode: str = "r", na_dict: Optional[Dict] = None,
                ignore_header_lines: int = 0) \
-        -> Union[NAFile]:
+        -> NAFile:
     """
     Function wrapper around the NASA Ames File classes. Any NASA Ames
     file can be opened through this function and the appropriate read or
