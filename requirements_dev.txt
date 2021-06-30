@@ -6,3 +6,8 @@ cftime
 # Testing
 pytest
 gitpython
+docutils
+flake8
+nose
+pypandoc
+

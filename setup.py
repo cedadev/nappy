@@ -60,7 +60,7 @@ setup(
     extras_require={
         'netcdf_conversion': ['xarray']
     },
-    tests_require=read('requirements-dev.txt').splitlines(),
+    tests_require=read('requirements_dev.txt').splitlines(),
     test_suite='nose.collector',
 
     entry_points={

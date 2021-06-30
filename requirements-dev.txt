@@ -1,4 +1,0 @@
-docutils
-flake8
-nose
-pypandoc
