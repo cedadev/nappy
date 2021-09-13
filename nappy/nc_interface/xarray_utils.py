@@ -243,7 +243,9 @@ def is_time(coord, test_by_values=False):
 
     if test_by_values and len(coord) > 0:
         # Test the first value to see if it is a datetime object
-        if isinstance(coord.data.flat[0], cftime.datetime):
+        values = resolve_array(coord.data)
+
+        if isinstance(values.flat[0], cftime.datetime):
             return True
 
     return False
@@ -306,11 +308,8 @@ def getArrayAsList(da, missing_value=None, handle_datetimes=True):
         arr = datetimes_to_nums(da)
 
     elif missing_value is not None:
-        # Need to compute the array if dask array
-        if hasattr(da.data, "compute"):
-            found_nans = np.isnan(da.data.compute()).any()
-        else:
-            found_nans = np.isnan(da.data).any()
+        arr = resolve_array(da.data)
+        found_nans = np.isnan(arr).any()
 
         if found_nans:
             arr = da.fillna(missing_value).data
@@ -320,8 +319,17 @@ def getArrayAsList(da, missing_value=None, handle_datetimes=True):
     else:
         arr = da.data
 
-    if hasattr(arr, "compute"):
-        arr = arr.compute()
+    arr = resolve_array(arr)
 
     return arr.tolist()
 
+
+def resolve_array(arr):
+    """
+    Takes an array that may be a numpy/masked or Dask array.
+    If it is a Dask array then `compute` it to convert to values.
+    """
+    if hasattr(arr, "compute"):
+        arr = arr.compute()
+
+    return arr
