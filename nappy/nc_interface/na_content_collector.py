@@ -353,7 +353,7 @@ class NAContentCollector(nappy.na_file.na_core.NACore):
 
             # Populate the variable list with the array
             # Make sure missing values are converted to real values using the required missing value
-            self.na_dict["V"].append(xarray_utils.getArrayAsList(var, missing_value=miss))
+            self.na_dict["V"].append(xarray_utils.getArrayAsList(var, missing_value=miss, handle_datetimes=True))
 
             # Create independent variable info
             if not "X" in self.na_dict:
