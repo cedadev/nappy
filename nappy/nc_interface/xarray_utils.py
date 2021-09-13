@@ -42,16 +42,23 @@ def getBestName(var):
     if not name:
         raise Exception("Cannot find a valid name for variable.")
 
-    if hasattr(var, "units") and not re.match(r"^\s+$", var.units):
+    units = getattr(var, "units", "")
 
-        units = var.units.strip()
+    # See if we can get the units from the encoding if not defined.
+    # This is required for time.
+    if not units:
+        units = var.encoding.get("units", "")
+
+    units = units.strip()
+
+    if units:
         name = f"{name} ({units})"
 
         if name.count(f"({units})") > 1:
             name = name.replace(f"({units})", "")  # remove all (units) and start again
             name = f"{name}({units})"              # using the space inserted last time
 
-    # Remove empty parantheses from end of name if there
+    # Remove empty parentheses from end of name if there
     if name[-2:] == "()": 
         name = name[:-2]
 

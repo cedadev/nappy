@@ -259,7 +259,7 @@ def convertNCToNA(nc_file, na_file=None, var_ids=None, na_items_to_override=None
               structures found.
     delimiter - the delimiter you wish to use between data items in the output file such 
               as "   ", "\t" or ",".
-    float_format - a python formatting string such as "%s", "%g" or "%5.2f" used for 
+    float_format - a python formatting string such as "%s", "%.10g" or "%5.2f" used for 
               formatting floats when written to file.
     size_limit - if format FFI is 1001 then chop files up into size_limit rows of data.
     annotation - if set to True write the output file with an additional left-hand column 
@@ -326,7 +326,7 @@ def convertXarrayObjectsToNA(xr_vars, global_attributes, na_file,
                 structures found.
     delimiter - the delimiter you wish to use between data items in the output file 
                 such as "   ", "\t" or ",".
-    float_format - a python formatting string such as "%s", "%g" or "%5.2f" used for 
+    float_format - a python formatting string such as "%s", "%.10g" or "%5.2f" used for 
                 formatting floats when written to file.
     size_limit - if format FFI is 1001 then chop files up into size_limit rows of data.
     annotation - if set to True write the output file with an additional left-hand 
