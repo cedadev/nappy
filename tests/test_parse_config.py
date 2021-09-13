@@ -4,7 +4,7 @@ from nappy.utils.parse_config import (getConfigDict, getAnnotationsConfigDict,
 
 def test_getConfigDict():
     cd = getConfigDict()
-    assert cd["main"]["default_float_format"] == "%g"
+    assert cd["main"]["default_float_format"] == "%.10g"
 
 
 def test_getAnnotationsConfigDict():

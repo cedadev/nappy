@@ -43,7 +43,7 @@ def test_auxiliary_vars_converted(load_ceda_test_data):
     xr_to_na.convert()
 
     output_file = os.path.join(output_dir, f"output_01.csv")
-    xr_to_na.writeNAFiles(output_file, delimiter=",", float_format="%g")
+    xr_to_na.writeNAFiles(output_file, delimiter=",")
     output_file_paths.extend(xr_to_na.output_files_written)
 
     expected_var_names = ['projection_x_coordinate_bnds', 'projection_y_coordinate_bnds',
@@ -64,3 +64,8 @@ def test_auxiliary_vars_converted(load_ceda_test_data):
     if not_found:
         raise Exception(f"Expected variables {not_found} not found in CSV files.")
 
+    # Check time bounds are correct and not expontent formatted (requires "%.10g" format)
+    last_file = output_file_paths[-1]
+    lines = [l.strip() for l in open(last_file).readlines() if l.strip()]
+    assert [line.startswith("time_bnds") for line in lines]
+    assert "1498953,1499673" == lines[-1].strip()
