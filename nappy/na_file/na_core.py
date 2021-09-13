@@ -3,8 +3,8 @@
 #   Q Public License, version 1.0 or later. http://ndg.nerc.ac.uk/public_docs/QPublic_license.txt
 
 """
-naCore.py
-=========
+na_core.py
+==========
 
 Holds the NACore class that holds the None type version
 of all the possible NASA Ames variables described in the Gaines
