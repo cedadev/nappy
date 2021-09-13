@@ -144,9 +144,10 @@ class XarrayToNA:
               
                 var_metadata = var_obj.attrs
                 var_obj = xr.DataArray(np.array(var_obj), 
-                                   id = xarray_utils.getBestName(var_metadata).replace(" ", "_"), 
-                                   attributes=var_metadata)
-                var_obj.value = float(var_obj._data)
+                                   name=xarray_utils.getBestName(var_obj).replace(" ", "_"), 
+                                   attrs=var_metadata)
+                # Add the single value to the attributes so it will get rendered in the NA comments
+                var_obj.attrs['value'] = float(var_obj.data)
                 
             vars.append(var_obj)
 
@@ -215,6 +216,8 @@ class XarrayToNA:
         if len(self.na_dict_list) == 1:
             file_names = [na_file]
         else:
+            file_names = []
+
             for file_counter in range(1, len(self.na_dict_list) + 1):
                 suffix = f"_{file_counter}"
                 new_name = (".".join(name_parts[:-1])) + suffix + "." + name_parts[-1]
@@ -511,10 +514,22 @@ class XarrayDatasetToNA(XarrayToNA):
         """
         Sets up instance variables and call parent class.
         """
-        xr_variables = [da for da in iter(xr_dset.values())]
+        main_var_keys = list(xr_dset.keys())
+
+        # Also capture variables that are auxiliary coords of main variables 
+        # (i.e. they are non-dimension coordinates)
+        aux_coord_var_keys = set([coord for var in xr_dset.values() for coord in var.coords.keys() \
+                                  if coord not in var.dims])
+
+        # Compile into one list of variable to convert
+        xr_variables = [xr_dset[key] for key in main_var_keys]
+        xr_variables.extend([xr_dset[key] for key in aux_coord_var_keys \
+                             if key not in main_var_keys])
+
         global_attributes = xr_dset.attrs.copy()
 
         super().__init__(xr_variables, global_attributes=global_attributes,
                          na_items_to_override=na_items_to_override,
                          only_return_file_names=only_return_file_names,
                          requested_ffi=requested_ffi)
+

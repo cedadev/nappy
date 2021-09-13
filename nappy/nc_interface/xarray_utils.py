@@ -13,15 +13,17 @@ import cf_xarray  # noqa
 import cftime
 
 
-#TIME_UNITS_REGEX = re.compile("time \((\w+\s+?since\s+?\d+-\d+-\d+\s+?\d+:\d+:\d+.*)\)")
-
 
 def getBestName(var):
     """
     Returns the most appropriate variable name for a NASA Ames header.
     """
+    # Return itself if is string
+    if isinstance(var, str):
+        return var
+
     name = None
-    att_order = ("long_name", "standard_name", "title", "name", "shortname", "id")
+    att_order = ("long_name", "standard_name", "title", "name", "short_name", "id")
 
     # Deal with object that has attributes
     for att in att_order:
@@ -30,14 +32,14 @@ def getBestName(var):
             break
 
     # Deal with object that has dictionary lookup instead of attributes
-    if hasattr(var, "get") and name is None:
+    if hasattr(var, "get") and not name:
         for att in att_order:
             if att in var:   
                 name = var[att]
                 break
 
     # Raise an error if no name
-    if name == None:
+    if not name:
         raise Exception("Cannot find a valid name for variable.")
 
     if hasattr(var, "units") and not re.match(r"^\s+$", var.units):
@@ -215,11 +217,12 @@ def is_level(coord):
     return False
 
 
-def is_time(coord):
+def is_time(coord, test_by_values=False):
     """
     Determines if a coordinate is time.
 
     :param coord: coordinate of xarray dataset e.g. coord = ds.coords[coord_id]
+    :test_by_values: boolean to decide whether to identify by checking first value type
     :return: (bool) True if the coordinate is time.
     """
     if "time" in coord.cf and coord.cf["time"].name == coord.name:
@@ -237,6 +240,11 @@ def is_time(coord):
 
     if coord.attrs.get("standard_name", None) == "time":
         return True
+
+    if test_by_values and len(coord) > 0:
+        # Test the first value to see if it is a datetime object
+        if isinstance(coord.data.flat[0], cftime.datetime):
+            return True
 
     return False
 
@@ -294,7 +302,7 @@ def getArrayAsList(da, missing_value=None, handle_datetimes=True):
     If ``handle_datetimes`` is True, then ensure that the units and
     calendar are used to convert datetimes to sensible values.
     """
-    if is_time(da) and handle_datetimes:
+    if is_time(da, test_by_values=True) and handle_datetimes:
         arr = datetimes_to_nums(da)
 
     elif missing_value is not None:
