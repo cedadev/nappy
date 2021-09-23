@@ -14,6 +14,8 @@ Functions and classes commonly used in nappy.
 from io import StringIO
 import logging
 
+import numpy as np
+
 # Imports from local package
 from nappy.utils import parse_config
 from nappy.utils import text_parser
@@ -251,3 +253,18 @@ def fuzzy_contains(item, seq):
     """
     lseq = [safe_name(i) for i in seq]
     return safe_name(item) in lseq
+
+
+def get_rank_zero_array_value(arr):
+    """
+    Return an appropriate value for a rank-zero array value.
+    It returns a float (for a number) or a string (from a string
+    or bytes string).
+    """
+    if arr.dtype.type is np.str_:
+        return str(arr)
+    elif arr.dtype.type is np.bytes_:
+        return arr.flat[0].decode()
+    else:
+        return float(arr) 
+

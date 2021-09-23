@@ -20,8 +20,7 @@ import numpy as np
 
 # Import from nappy package
 import nappy
-import nappy.utils
-import nappy.utils.common_utils
+from nappy.utils.common_utils import fuzzy_contains, get_rank_zero_array_value
 import nappy.nc_interface.xarray_to_na
 
 log = logging.getLogger(__name__)
@@ -77,6 +76,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
 
         # Identify bounds variables
         bounds_vars = {ds[var_id].attrs.get("bounds", None) for var_id in ds.variables}
+
         if None in bounds_vars:
             bounds_vars.remove(None)
 
@@ -84,7 +84,7 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
             if var_ids == None or var_id in var_ids:
 
                 # Process required variables
-                if not nappy.utils.common_utils.fuzzy_contains(var_id, exclude_vars):
+                if not fuzzy_contains(var_id, exclude_vars):
                     if exclude_bounds and var_id in bounds_vars:
                         continue
 
@@ -92,7 +92,9 @@ class NCToNA(nappy.nc_interface.xarray_to_na.XarrayToNA):
 
                     # Check whether singleton variable, if so create variable                   
                     if hasattr(da, "shape") and da.shape == ():
-                        da = xr.DataArray(np.array(float(da)), attrs=vm.attrs)
+                        # Test type of the data to convert  
+                        data_value = get_rank_zero_array_value(da.values) 
+                        da = xr.DataArray(np.array(data_value), name=da.name, attrs=da.attrs)
 
                     xr_variables.append(da)
 

@@ -8,7 +8,10 @@ from nappy.nc_interface.nc_to_na import NCToNA
 import nappy.utils
 
 from .common import data_files, test_outputs, cached_outputs, MINI_BADC_DIR
+
 wet_nc = os.path.join(MINI_BADC_DIR, "cru/data/cru_ts/cru_ts_4.04/data/wet/cru_ts4.04.1901.2019.wet.dat.nc")
+groundfrost_nc = os.path.join(MINI_BADC_DIR, "ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.0.3.0/1km/"
+                               "groundfrost/mon/v20210712/groundfrost_hadukgrid_uk_1km_mon_196101-196112.nc")
 
 
 DELIMITER = nappy.utils.getDefault("default_delimiter") 
@@ -155,7 +158,7 @@ def test_nc_to_na_all_global_attributes_correct(load_ceda_test_data):
     infile = wet_nc
     na_output_file = os.path.join(test_outputs, "cru-ts-wet-from-nc.na")
 
-    converter = NCToNA(infile, na_items_to_override={})  #{"ONAME": "Data held at British Atmospheric Data Centre, RAL, UK."})
+    converter = NCToNA(infile, na_items_to_override={}) 
     converter.writeNAFiles(na_output_file, float_format="%g")
 
     # Re-open the file and check the outputs
@@ -181,3 +184,21 @@ def test_nc_to_na_all_global_attributes_correct(load_ceda_test_data):
     assert "long_name = wet day frequency" in na.SCOM
     assert "correlation_decay_distance = 450.0" in na.SCOM
     assert np.isclose(na.VMISS[0], 9.96921e+36)
+
+
+def test_convert_data_with_string_variable(load_ceda_test_data):
+    """
+    Checks that a string variable gets converted properly.
+    """
+    infile = groundfrost_nc
+    na_output_file = os.path.join(test_outputs, "haduk-grid-groundfrost-from-nc.na")
+
+    converter = NCToNA(infile) 
+    converter.writeNAFiles(na_output_file, float_format="%g")
+
+    # Re-open the file and check the outputs
+    na = nappy.openNAFile(na_output_file[:-3] + "_1.na")
+    na.readData()
+
+    assert "value = natural_grasses" in na.SCOM 
+    assert "value = 0.0" in na.SCOM

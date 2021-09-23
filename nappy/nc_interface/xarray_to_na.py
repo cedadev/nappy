@@ -20,7 +20,8 @@ import numpy as np
 # Import from nappy package
 import nappy
 import nappy.utils
-import nappy.utils.common_utils
+from nappy.utils.common_utils import modifyNADictCopy, get_rank_zero_array_value
+
 import nappy.na_file.na_core
 
 from . import xarray_utils
@@ -144,10 +145,10 @@ class XarrayToNA:
               
                 var_metadata = var_obj.attrs
                 var_obj = xr.DataArray(np.array(var_obj), 
-                                   name=xarray_utils.getBestName(var_obj).replace(" ", "_"), 
+                                   name=xarray_utils.getBestName(var_obj), ###.replace(" ", "_"), 
                                    attrs=var_metadata)
                 # Add the single value to the attributes so it will get rendered in the NA comments
-                var_obj.attrs['value'] = float(var_obj.data)
+                var_obj.attrs['value'] = get_rank_zero_array_value(var_obj.values)
                 
             vars.append(var_obj)
 
@@ -397,7 +398,7 @@ class XarrayToNA:
                 current_block.append(v[start:end])
 
             # Adjust X accordingly in the na dictionary, because independent variable has been reduced in size
-            na_dict_copy = nappy.utils.common_utils.modifyNADictCopy(this_na_dict, current_block, 
+            na_dict_copy = modifyNADictCopy(this_na_dict, current_block, 
                                                                       start, end, ivol, nvol)
             # Append a letter to the file name for writing this block to
             file_name_plus_letter = f"{file_name[:-3]}-{ivol:03d}.na"
