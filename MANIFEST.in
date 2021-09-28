@@ -1,3 +1,4 @@
 include LICENSE
 include requirements.txt
-recursive-include lib *.ini
+include requirements_dev.txt
+recursive-include nappy *.ini
