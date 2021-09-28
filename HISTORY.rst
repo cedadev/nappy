@@ -1,6 +1,12 @@
 Version History
 ===============
 
+v2.0.1 (28/09/2021)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* Added ``requirements_dev.txt`` to manifest file because it is read by ``setup.py``.
+
 v2.0.0 (27/09/2021)
 -------------------
 Bug Fixes
