@@ -142,7 +142,8 @@ default_delimiter = nappy.utils.common_utils.getDefault("default_delimiter")
 default_float_format = nappy.utils.common_utils.getDefault("default_float_format")
 
 
-def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
+def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0,
+               var_and_units_callback=None):
     """
     Function wrapper around the NASA Ames File classes. Any NASA Ames
     file can be opened through this function and the appropriate read or
@@ -151,7 +152,8 @@ def openNAFile(filename, mode="r", na_dict=None, ignore_header_lines=0):
     if mode == "r":
         ffi = readFFI(filename, ignore_header_lines)
         na_class = getNAFileClass(ffi)
-        return na_class(filename, ignore_header_lines, mode)
+        return na_class(filename, ignore_header_lines, mode,
+                        var_and_units_callback=var_and_units_callback)
 
     elif mode == "w":
         if 'FFI' in na_dict and type(na_dict['FFI']) == type(3):

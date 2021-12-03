@@ -84,13 +84,19 @@ class NACore:
         If it can match variable name and units from the name it does and returns
         (var_name, units). Otherwise returns (item, None).
         """
-        match = NACore.var_and_units_pattern.match(item)
 
-        if match:
-            (v1, units, v2) = match.groups()
-            var_name = v1 + " " + v2
+        # Has a callback function been set to do this? If so, use it. If not,
+        # fall back on a default regular expression.
+        if self.var_and_units_callback:
+            (var_name, units) = self.var_and_units_callback(item)
+        
         else:
-            (var_name, units) = (item, None)   
+            match = NACore.var_and_units_pattern.match(item)
+            if match:
+                (v1, units, v2) = match.groups()
+                var_name = v1 + " " + v2
+            else:
+                (var_name, units) = (item, None)   
   
         return (var_name.strip(), units)
 
