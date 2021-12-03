@@ -151,7 +151,7 @@ class NACore:
         """
         avars = []
 
-        if hasattr(self, "NAUXV"):
+        if hasattr(self, "NAUXV") and self.NAUXV is not None:
             for i in range(self.NAUXV):
                 avars.append(self.getAuxVariable(i))
 
