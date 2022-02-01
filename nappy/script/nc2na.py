@@ -125,9 +125,7 @@ def nc2na(args=None):
         args = sys.argv[1:]
 
     arg_dict = parseArgs(args)
-    nc_file = arg_dict["nc_file"]
-    del arg_dict["nc_file"]
-    na_files = apply(nappy.convertNCToNA, [nc_file], arg_dict)
+    na_files = nappy.convertNCToNA(**arg_dict)
 
     # If user only wants files then only give them that
     if arg_dict["only_return_file_names"]:
@@ -139,6 +137,8 @@ def nc2na(args=None):
         print("\nSuccessfully wrote: ")
         for naf in na_files:
             print("    ", naf)
+
+    return na_files
 
 
 if __name__ == "__main__":
