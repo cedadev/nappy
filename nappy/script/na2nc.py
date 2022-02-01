@@ -13,8 +13,8 @@ Usage
 =====
 
    na2nc.py [-m <mode>] [-g <global_atts_list>]
-            [-r <rename_vars_list>] [-t <time_units>] [-n] 
-            -i <na_file> [-o <nc_file>] 
+            [-r <rename_vars_list>] [-t <time_units>] [-n]
+            -i <na_file> [-o <nc_file>]
 
 Where
 -----
@@ -27,7 +27,7 @@ Where
     <na_file>			is the input NASA Ames file path
     <nc_file>			is the output NetCDF file path (default is to replace ".na" from NASA Ames
            			 file with ".nc").
- 
+
 """
 
 # Imports from python standard library
@@ -68,7 +68,7 @@ def parseArgs(args):
         (arg_list, dummy) = getopt.getopt(args, "i:o:m:v:a:g:t:nr:")
     except getopt.GetoptError as e:
         exitNicely(str(e))
-    
+
     for arg, value in arg_list:
         if arg == "-i":
             a["na_file"] = value
@@ -113,11 +113,10 @@ def na2nc(args=None):
 
     if args is None:
         args = sys.argv[1:]
-    
+
     arg_dict = parseArgs(args)
-    na_file = arg_dict["na_file"]
-    del arg_dict["na_file"]
-    nc_file = apply(nappy.convertNAToNC, [na_file], arg_dict)
+    nc_file = nappy.convertNAToNC(**arg_dict)
+    return nc_file
 
 
 if __name__ == "__main__":
