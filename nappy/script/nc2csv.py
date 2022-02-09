@@ -39,11 +39,12 @@ Where
 
 # Imports from python standard library
 import sys
+import getopt
 
 # Import from nappy package
-import nc2na
+import nappy
+from nappy.utils.common_utils import makeDictFromCommaSepString
 
-# Uses nc2na(...) directly
 
 def exitNicely(msg=""):
     "Exits nicely!"
@@ -51,11 +52,97 @@ def exitNicely(msg=""):
     if msg != "": print("ERROR:", msg)
     sys.exit()
 
-if __name__ == "__main__":
 
+def parseArgs(args):
+    """
+    Parses arguments and returns dictionary.
+    """
+    arg_dict = {}
+    a = arg_dict
+
+    # Set up defaults
+    a["nc_file"] = None
+    a["var_ids"] = None
+    a["requested_ffi"] = None
+    a["float_format"] = nappy.default_float_format
+    a["delimiter"] = nappy.default_delimiter
+    a["size_limit"] = None
+    a["exclude_vars"] = []
+    a["na_items_to_override"] = {}
+    a["only_return_file_names"] = False
+    a["na_file"] = None
+    a["no_header"] = False
+    a["annotation"] = False
+
+    try:
+        (arg_list, dummy) = getopt.getopt(args, "i:o:v:f:d:l:e:",
+                              ["ffi=", "overwrite-metadata=", "names-only",
+                               "no-header", "annotated"])
+    except getopt.GetoptError as e:
+        exitNicely(str(e))
+
+    for arg, value in arg_list:
+        if arg == "-i":
+            a["nc_file"] = value
+        elif arg == "-o":
+            a["na_file"] = value
+        elif arg == "-v":
+            a["var_ids"] = value.split(",")
+        elif arg == "--ffi":
+            a["requested_ffi"] = int(value)
+        elif arg == "-f":
+            a["float_format"] = value
+        elif arg == "-d":
+            a["delimiter"] = value
+        elif arg == "--limit_ffi_1001_rows":
+            a["size_limit"] = int(value)
+        elif arg == "-e":
+            a["exclude_vars"] = value.split(",")
+        elif arg == "--overwrite-metadata":
+            a["na_items_to_override"] = makeDictFromCommaSepString(value)
+        elif arg == "--names-only":
+            a["only_return_file_names"] = True
+        elif arg == "--no-header":
+            a["no_header"] = True
+        elif arg == "--annotated":
+            a["annotation"] = True
+        else:
+            exitNicely("Argument '" + arg + "' not recognised!")
+
+    if not a["nc_file"]:
+        exitNicely("Please provide argument '-i <nc_file>'")
+
+    return a
+
+
+def nc2csv(args=None):
+    """
+    Controller for conversion of NetCDF file to NASA Ames files.
+    """
+
+    if args is None:
+        args = sys.argv[1:]
+
+    arg_dict = parseArgs(args)
+    csv_files = nappy.convertNCToNA(**arg_dict)
+
+    # If user only wants files then only give them that
+    if arg_dict["only_return_file_names"]:
+        print("\nExpected file names would be:")
+        for naf in csv_files:
+            print("    ", naf)
+
+    else:
+        print("\nSuccessfully wrote: ")
+        for naf in csv_files:
+            print("    ", naf)
+
+    return csv_files
+
+if __name__ == "__main__":
     args = sys.argv[1:]
     if "-d" in args:
         exitNicely("nc2csv.py does not accept the -d argument as the delimiter is fixed as a comma, try using nc2na.py instead.")
 
     args.extend(["-d", ","])
-    nc2na.nc2na(args)
+    nc2csv(args)
