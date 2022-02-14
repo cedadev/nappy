@@ -26,12 +26,12 @@ def custom_parser(string):
         return string, ''
 
 
-# Expected output without custom parser
+# Expected output without custom parser - PV units incorrect
 expected1 = [('Geopotential height', 'gpm'),
              ('Temperature', 'K'),
              ('Potential vorticity (K m**2/ )', 'kg s')]
 
-# Expected output with custom parser
+# Expected output with custom parser - PV units correct
 expected2 = expected1.copy()
 expected2[2] = ('Potential vorticity', 'K m**2/(kg s)')
 
