@@ -13,29 +13,29 @@ Converts a NetCDF file into one or more NASA Ames file.
 Usage
 =====
 
-    nc2na.py [-v <var_list>] [--ffi=<ffi>] [-f <float_format>] 
-             [-d <delimiter>] [-l <limit_ffi_1001_rows>] 
-             [-e <exclude_vars>] [--overwrite-metadata=<key1>,<value1>[,<key2>,<value2>[...]]] 
+    nc2na.py [-v <var_list>] [--ffi=<ffi>] [-f <float_format>]
+             [-d <delimiter>] [-l <limit_ffi_1001_rows>]
+             [-e <exclude_vars>] [--overwrite-metadata=<key1>,<value1>[,<key2>,<value2>[...]]]
              [--names-only] [--no-header] [--annotated]
-             -i <nc_file> [-o <na_file>] 
+             -i <nc_file> [-o <na_file>]
 Where
 -----
 
     <nc_file> 			- name of input file (NetCDF).
     <na_file>	 		- name of output file (NASA Ames or CSV) - will be used as base name if multiple files.
     <var_list>           	- a comma-separated list of variables (i.e. var ids) to include in the output file(s).
-    <ffi>			- NASA Ames File Format Index (FFI) to write to (normally automatic).  
+    <ffi>			- NASA Ames File Format Index (FFI) to write to (normally automatic).
     <float_format>          	- a python formatting string such as %s, %g or %5.2f
     <delimiter>	 		- the delimiter you wish to use between data items in the output file such as "   " or "\t"
-    <limit_ffi_1001_rows> 	- if format FFI is 1001 then chop files up into <limitFFI1001Rows> rows of data.  
+    <limit_ffi_1001_rows> 	- if format FFI is 1001 then chop files up into <limitFFI1001Rows> rows of data.
     <exclude_vars>          	- a comma-separated list of variables (i.e. var ids) to exclude in the output file(s).
     <key1>,<value1>[,<key2>,<value2>[...]] - list of comma-separated key,value pairs to overwrite in output files:
-								* Typically the keys are in: 
+								* Typically the keys are in:
                                    * "DATE", "RDATE", "ANAME", "MNAME","ONAME", "ORG", "SNAME", "VNAME".
     --names-only		- only display a list of file names that would be written (i.e. don't convert actual files).
     --no-header			- Do not write NASA Ames header
     --annotated			- add annotation column in first column
-    
+
 """
 
 # Imports from python standard library
@@ -44,7 +44,7 @@ import getopt
 
 # Import from nappy package
 import nappy
-from nappy.utils.common_utils import makeListFromCommaSepString, makeDictFromCommaSepString
+from nappy.utils.common_utils import makeDictFromCommaSepString
 
 
 def exitNicely(msg=""):
@@ -76,7 +76,7 @@ def parseArgs(args):
     a["annotation"] = False
 
     try:
-        (arg_list, dummy) = getopt.getopt(args, "i:o:v:f:d:l:e:", 
+        (arg_list, dummy) = getopt.getopt(args, "i:o:v:f:d:l:e:",
                               ["ffi=", "overwrite-metadata=", "names-only",
                                "no-header", "annotated"])
     except getopt.GetoptError as e:
@@ -96,7 +96,7 @@ def parseArgs(args):
         elif arg == "-d":
             a["delimiter"] = value
         elif arg == "--limit_ffi_1001_rows":
-            a["size_limit"] = long(value)
+            a["size_limit"] = int(value)
         elif arg == "-e":
             a["exclude_vars"] = value.split(",")
         elif arg == "--overwrite-metadata":
@@ -125,9 +125,7 @@ def nc2na(args=None):
         args = sys.argv[1:]
 
     arg_dict = parseArgs(args)
-    nc_file = arg_dict["nc_file"]
-    del arg_dict["nc_file"]
-    na_files = apply(nappy.convertNCToNA, [nc_file], arg_dict)
+    na_files = nappy.convertNCToNA(**arg_dict)
 
     # If user only wants files then only give them that
     if arg_dict["only_return_file_names"]:
@@ -139,6 +137,8 @@ def nc2na(args=None):
         print("\nSuccessfully wrote: ")
         for naf in na_files:
             print("    ", naf)
+
+    return na_files
 
 
 if __name__ == "__main__":

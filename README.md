@@ -11,6 +11,7 @@ A NASA Ames I/O package - A python input/output package for NASA Ames file forma
 This repository was previously hosted on CEDA's Subversion repository. The first tagged release here is:
 
  - version 1.1.4
+ - [all releases](https://github.com/cedadev/nappy/releases/)
 
 ## Reference doc
 
@@ -185,7 +186,7 @@ Get a dictionary of the file contents in the form of NASA Ames documentation:
 Grab the normal comments:
 
 ```pydoc
->>> comm=myfile.naDict["NCOM"]
+>>> comm=myfile.na_dict["NCOM"]
 >>> print(comm)
 ['The files included in this data set illustrate each of the 9 NASA Ames file', 
 'format indices (FFI). A detailed description of the NASA Ames format can be', 
@@ -222,7 +223,7 @@ Read the actual data:
 Inspect the data array ("V") in the NASA Ames dictionary:
 
 ```pydoc
->>> print(myfile.naDict["V"})
+>>> print(myfile.na_dict["V"])
 [[[-3.0, -2.6000000000000001, -2.2999999999999998, 2.0, 4.7999999999999998, 
 4.5999999999999996, 4.5, 3.0, -0.90000000000000002], [-15.1, -4.2000000000000002, 
 6.9000000000000004, 12.800000000000001, 14.699999999999999, 20.0, 21.5, 18.0, 
