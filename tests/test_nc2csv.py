@@ -2,7 +2,7 @@ import os
 import xarray as xr
 
 from .test_nc2na import _generic_nc_to_na_test
-from .common import MINI_BADC_DIR
+from .common import MINI_BADC_DIR, cached_outputs
 from nappy.nc_interface.xarray_to_na import XarrayDatasetToNA
 
 
@@ -36,7 +36,7 @@ def test_nc_to_csv_4010():
 def test_auxiliary_vars_converted(load_ceda_test_data):
     ds = xr.open_dataset(haduk_grid_nc, use_cftime=True)
 
-    output_dir = "."
+    output_dir = cached_outputs
     output_file_paths = []
 
     xr_to_na = XarrayDatasetToNA(ds)
