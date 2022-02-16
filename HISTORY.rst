@@ -2,7 +2,7 @@ Version History
 ===============
 
 v2.0.2 (pending release)
--------------------
+------------------------
 Bug Fixes
 ^^^^^^^^^
 * Fixed bugs in getAuxVariable() and getAuxVariables()
