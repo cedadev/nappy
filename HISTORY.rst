@@ -1,6 +1,16 @@
 Version History
 ===============
 
+v2.0.2 (pending release)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* Fixed bugs in getAuxVariable() and getAuxVariables()
+
+New Features
+^^^^^^^^^^^^
+* Option to supply a custom parser function to split variable names from units
+
 v2.0.1 (28/09/2021)
 -------------------
 Bug Fixes
