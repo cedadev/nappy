@@ -103,3 +103,6 @@ setup_env.sh
 
 # Pycharm files
 .idea
+
+# VS Code files
+*.code-workspace
