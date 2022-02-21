@@ -17,6 +17,7 @@ import logging
 import numpy as np
 
 # Imports from local package
+from nappy import __version__
 from nappy.utils import parse_config
 from nappy.utils import text_parser
 
@@ -132,8 +133,9 @@ def getVersion():
     """
     Gets config dict for version.
     """
-    version = parse_config.getConfigDict()["main"]["version"]
-    return version
+    # deprecated:
+    # version = parse_config.getConfigDict()["main"]["version"]
+    return __version__
 
 
 def getDebug():
