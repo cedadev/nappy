@@ -62,16 +62,23 @@ def test_na_file(ffi):
     res = nappy.utils.compare_na.compNAFiles(infile, out_csv, delimiter_2=",")
     assert res is True
 
+    # Test getAuxVariables()
+    auxv = fin.getAuxVariables()
+    if na_dict.get('NAUXV', 0):
+        assert len(auxv) == na_dict['NAUXV']
+    else:
+        assert not auxv
+
     # An extra test for FFI 1001
-    # Tests an input file with curly braces
-    cb_file = os.path.join(data_files, "1001_cb.na")
-    fin = nappy.openNAFile(cb_file)
-    fin.readData()
+    if ffi == 1001:
+        # Tests an input file with curly braces
+        cb_file = os.path.join(data_files, "1001_cb.na")
+        fin = nappy.openNAFile(cb_file)
+        fin.readData()
 
-    na_dict = fin.getNADict()
-    foutname = os.path.join(test_outputs, "test_1001_cb_rewritten.na")
+        na_dict = fin.getNADict()
+        foutname = os.path.join(test_outputs, "test_1001_cb_rewritten.na")
 
-    fobj = nappy.openNAFile(foutname, mode="w", na_dict=na_dict)
-    fobj.write()
-    assert isinstance(fobj, nappy.na_file.na_file.NAFile)
-
+        fobj = nappy.openNAFile(foutname, mode="w", na_dict=na_dict)
+        fobj.write()
+        assert isinstance(fobj, nappy.na_file.na_file.NAFile)

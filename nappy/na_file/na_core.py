@@ -120,7 +120,10 @@ class NACore:
         """
         (variable, units) = self._attemptVarAndUnitsMatch(self.ANAME[avar_number])
         miss = self.getAuxMissingValue(avar_number)
-        scale = self.getAuxScaleFactor(avar_number)
+        if self.NAUXC is None or avar_number < (self.NAUXV - self.NAUXC):
+            scale = self.getAuxScaleFactor(avar_number)
+        else:
+            scale = None
         return (variable, units, miss, scale)    
 
     def getVariables(self):
@@ -151,7 +154,7 @@ class NACore:
         """
         avars = []
 
-        if not hasattr(self, "NAUXV"):
+        if hasattr(self, "NAUXV") and self.NAUXV is not None:
             for i in range(self.NAUXV):
                 avars.append(self.getAuxVariable(i))
 
