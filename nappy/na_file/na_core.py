@@ -70,7 +70,7 @@ class NACore:
         if self.var_and_units_callback:
             (var_name, units) = self.var_and_units_callback(item)
         else:
-            match = self._var_and_units_pattern.match(item)
+            match = self.var_and_units_pattern.match(item)
             if match:
                 (v1, units, v2) = match.groups()
                 var_name = v1 + " " + v2
