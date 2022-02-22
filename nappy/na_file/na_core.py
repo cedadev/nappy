@@ -24,8 +24,6 @@ class NACore:
     a number of methods to access information in files. This
     class is sub-classed by all NAFile classes.
     """
-
-    var_and_units_pattern = re.compile(r"^\s*(.*)\((.+?)\)(.*)\s*$")
     na_dictionary_keys = ("A", "AMISS", "ANAME", "ASCAL", "DATE", "DX",
                           "FFI", "IVOL", "LENA", "LENX", "MNAME", "NAUXC",
                           "NAUXV", "NCOM", "NIV", "NLHEAD", "NNCOML",
@@ -42,6 +40,8 @@ class NACore:
         # Set up attributes for all possible NASA Ames dictionary items
         for key in NACore.na_dictionary_keys:
             setattr(self, key, None)
+
+        self._var_and_units_pattern = re.compile(r"^\s*(.*)\((.+?)\)(.*)\s*$")
 
 
     def __getitem__(self, item):
@@ -64,21 +64,33 @@ class NACore:
         If it can match variable name and units from the name it does and returns
         (var_name, units). Otherwise returns (item, None).
         """
-
+        var_name, units = item, None
         # Has a callback function been set to do this? If so, use it. If not,
-        # fall back on a default regular expression.
+        # fall back using the regex from var_and_units_pattern.
         if self.var_and_units_callback:
             (var_name, units) = self.var_and_units_callback(item)
-
         else:
-            match = NACore.var_and_units_pattern.match(item)
+            match = self._var_and_units_pattern.match(item)
             if match:
                 (v1, units, v2) = match.groups()
                 var_name = v1 + " " + v2
-            else:
-                (var_name, units) = (item, None)
 
         return (var_name.strip(), units)
+
+
+    @property
+    def var_and_units_pattern(self):
+        """
+        a regex or function to parse vnames to (name & description, unit)
+        """
+        return self._var_and_units_pattern
+
+
+    @var_and_units_pattern.setter
+    def var_and_units_pattern(self, new_pattern):
+        if not isinstance(new_pattern, re.Pattern):
+            raise TypeError(f"new pattern must be re.Pattern, not {type(new_pattern)}")
+        self._var_and_units_pattern = new_pattern
 
 
     def getNADict(self):
