@@ -81,7 +81,7 @@ class NACore:
     @property
     def var_and_units_pattern(self):
         """
-        a regex or function to parse vnames to (name & description, unit)
+        a regex to parse vnames to (name & description, unit)
         """
         return self._var_and_units_pattern
 
