@@ -106,5 +106,12 @@ setup_env.sh
 # Pycharm files
 .idea
 
-# VS Code files
+# Mac
+**.DS_Store
+
+# VS Code
+.vscode
 *.code-workspace
+
+# linters
+.pylint.d
