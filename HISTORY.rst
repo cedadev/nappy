@@ -1,15 +1,22 @@
 Version History
 ===============
 
-v2.0.2 (pending release)
-------------------------
+v2.0.2 (10/03/2022)
+-------------------
+
 Bug Fixes
 ^^^^^^^^^
-* Fixed bugs in getAuxVariable() and getAuxVariables()
+* Fixed bugs in `getAuxVariable()` and `getAuxVariables()`
 
 New Features
 ^^^^^^^^^^^^
-* Option to supply a custom parser function to split variable names from units
+* Option to supply a custom parser function to split variable names from units:
+  * Implemented using ``var_and_units_pattern`` as an attribute with a ``@setter`` which can 
+    be modified after creating the ``NAFile`` object with ``openNAFile``.
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Removed support for Python3.6.
 
 v2.0.1 (28/09/2021)
 -------------------
