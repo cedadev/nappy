@@ -47,7 +47,7 @@ setup(
 
     # We make the package non-zip_safe so that we don't need to
     # change the way ini files are read too much.
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests")),
     package_data={
         'nappy': [
             'config/*.ini'
