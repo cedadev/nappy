@@ -29,7 +29,7 @@ if os.path.exists('MANIFEST'):
 
 try:
     import pypandoc
-    LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
+    LONG_DESCRIPTION = pypandoc.convert_file('README.md', 'rst')
 except(IOError, ImportError, OSError):
     LONG_DESCRIPTION='A python package for reading/writing NASA Ames files, writing NASA Ames-style CSV files and converting to/from NetCDF'
 
