@@ -70,14 +70,22 @@ You should then be able to import nappy with:
 ```
 
 #### Option 3: Installing to a virtualenv
+Download the requirements.txt file from [the nappy github page](https://github.com/cedadev/nappy) into your working directory. Then run the following commands in the terminal.
 
+On Unix or MacOS run:
 ```bash
-virtualenv nappy
-cd nappy
-source bin/activate
-git clone https://github.com/cedadev/nappy.git
-cd nappy
-python setup.py install
+python -m venv .nappy-env
+source .nappy-env/bin/activate
+pip install -r requirements.txt
+pip install git+https://github.com/cedadev/nappy.git
+```
+
+On Windows PowerShell run:
+```PowerShell
+python -m venv .nappy-env
+& .nappy-env/Scripts/activate.ps1
+pip install -r requirements.txt
+pip install git+https://github.com/cedadev/nappy.git
 ```
 
 ## Usage Examples
