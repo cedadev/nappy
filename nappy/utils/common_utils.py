@@ -14,8 +14,6 @@ Functions and classes commonly used in nappy.
 from io import StringIO
 import logging
 
-# import numpy as np
-
 # Imports from local package
 from nappy import __version__
 from nappy.utils import parse_config
@@ -157,7 +155,7 @@ def getDefault(item):
 def makeDictFromCommaSepString(s):
     """
     Reads in comma-separated list and converts to dictionary of successive
-    keyword,value pairs.
+    keyword, value pairs.
     """
     if s.count(",") % 2 == 0:
         raise Exception("Must provide even number of items in argument of commas-separated pairs of values: " + s)
@@ -173,7 +171,7 @@ def makeDictFromCommaSepString(s):
 def makeListFromCommaSepString(s):
     """
     Reads in comma-separated list and converts to list of successive
-    keyword,value pairs.
+    keyword, value pairs.
     """
     if s.count(",") % 2 == 0:
         raise Exception("Must provide even number of items in argument of commas-separated pairs of values: " + s)
@@ -243,7 +241,7 @@ def stripQuotes(s):
 
 def safe_name(s):
     """
-    Replace spaces with underscores and convert to lower case.
+    Replace spaces with underscores and convert to lowercase.
     """
     return s.lower().replace(" ", "_")
 
@@ -251,7 +249,7 @@ def safe_name(s):
 def fuzzy_contains(item, seq):
     """
     Return whether `item` is in `seq`, having converted all 
-    to lower case and replaced spaces with underscores.
+    to lowercase and replaced spaces with underscores.
     """
     lseq = [safe_name(i) for i in seq]
     return safe_name(item) in lseq
@@ -263,6 +261,9 @@ def get_rank_zero_array_value(arr):
     It returns a float (for a number) or a string (from a string
     or bytes string).
     """
+    # Local import of numpy enables pip install to work properly
+    import numpy as np
+
     if arr.dtype.type is np.str_:
         return str(arr)
     elif arr.dtype.type is np.bytes_:
