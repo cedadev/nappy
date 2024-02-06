@@ -14,7 +14,7 @@ Functions and classes commonly used in nappy.
 from io import StringIO
 import logging
 
-import numpy as np
+# import numpy as np
 
 # Imports from local package
 from nappy import __version__
