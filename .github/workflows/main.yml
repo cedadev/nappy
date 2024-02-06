@@ -26,6 +26,7 @@ jobs:
         pip install flake8 black pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
+        # Install package locally to check pip install works properly
         pip install -e . --no-deps
 #    - name: Lint with flake8
 #      run: flake8 roocs_utils tests
