@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.10, 3.11]
+        python-version: [3.8, 3.9, 3.10, 3.11]
 
     steps:
     - uses: actions/checkout@main
@@ -26,6 +26,7 @@ jobs:
         pip install flake8 black pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
+        pip install -e . --no-deps
 #    - name: Lint with flake8
 #      run: flake8 roocs_utils tests
 #      if: matrix.python-version == 3.6
