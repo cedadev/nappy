@@ -14,8 +14,6 @@ Functions and classes commonly used in nappy.
 from io import StringIO
 import logging
 
-import numpy as np
-
 # Imports from local package
 from nappy import __version__
 from nappy.utils import parse_config
@@ -263,6 +261,9 @@ def get_rank_zero_array_value(arr):
     It returns a float (for a number) or a string (from a string
     or bytes string).
     """
+    # Import numpy here so that pip install works without error
+    import numpy as np
+
     if arr.dtype.type is np.str_:
         return str(arr)
     elif arr.dtype.type is np.bytes_:
