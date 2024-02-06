@@ -1,6 +1,13 @@
 Version History
 ===============
 
+v2.0.3 (06/02/2024)
+-------------------
+
+Bug Fixes
+^^^^^^^^^
+* Fixed problem with `pip install` failing (by moving `import numpy` line).
+
 v2.0.2 (10/03/2022)
 -------------------
 
