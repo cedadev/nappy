@@ -2,5 +2,5 @@ netCDF4
 scipy
 numpy
 xarray
-cf_xarray
+cf_xarray<=0.8.4
 cftime
