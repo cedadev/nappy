@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "nappy"
+version = "2.1.0"
+description = "NASA Ames Processing in Python"
+#long_description = "A python package for reading/writing NASA Ames files, writing NASA Ames-style CSV files and converting to/from NetCDF"
+authors = ["Ag Stephens <ag.stephens@stfc.ac.uk>, Daniel Westwood <daniel.westwood@stfc.ac.uk>"]
+license = "{file='LICENSE'}"
+readme = "README.md"
+
+include = [
+    { path = 'config/*.ini' }
+]
+
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Console',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python'
+]
+
+[project.urls]
+Repository = "https://github.com/cedadev/nappy"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+netcdf4 = "^1.7.2"
+scipy = "^1.14.1"
+numpy = "^2.1.2"
+xarray = "^2024.10.0"
+cf-xarray = "0.8.4"
+cftime = "^1.6.4.post1"
+pytest = "^8.3.3"
+gitpython = "^3.1.43"
+docutils = "^0.21.2"
+flake8 = "^7.1.1"
+nose = "^1.3.7"
+pypandoc = "^1.14"
+setuptools = "^75.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+na2nc = "nappy.script.na2nc:na2nc"
+nc2na = "nappy.script.nc2na:nc2na"
+nc2csv = "nappy.script.nc2csv:nc2csv"
+
