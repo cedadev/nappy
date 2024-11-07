@@ -1,6 +1,15 @@
 Version History
 ===============
 
+v2.1.0 (28/10/2024)
+-------------------
+
+New Features
+^^^^^^^^^^^^
+
+* Updated package dependency management to use poetry
+* Updated version get method to use importlib
+
 v2.0.3 (06/02/2024)
 -------------------
 
